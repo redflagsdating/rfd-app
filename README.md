@@ -1,4 +1,4 @@
-# red_flags
+# Red Flags Dating App
 
 A new Flutter project.
 

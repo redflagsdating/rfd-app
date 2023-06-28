@@ -1,6 +1,13 @@
 {
     "recommendations": [
         "dart-code.flutter",
-        "dart-code.dart-code"
+        "dart-code.dart-code",
+        "jeroen-meijer.pubspec-assist",
+        "marcelovelasquez.flutter-tree",
+        "aaron-bond.better-comments",
+        "naumovs.color-highlight",
+        "davidanson.vscode-markdownlint",
+        "usernamehw.errorlens",
+        "streetsidesoftware.code-spell-checker"
     ]
 }

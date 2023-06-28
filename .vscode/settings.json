@@ -9,7 +9,16 @@
 	// programs output.
 	"debug.internalConsoleOptions": "openOnSessionStart",
 
+	// screenshot is for mobile, I use device preview instead
+	// "dart.flutterScreenshotPath": null,
+	// "dart.flutterCreateOrganization": "io.github.fredgrott",
+	"dart.devToolsTheme": "dark",
+	"dart.previewFlutterUiGuides": true,
+
 	"[dart]": {
+		"editor.defaultFormatter": "Dart-Code.dart-code",
+		"editor.suggest.snippetsPreventQuickSuggestions": false,
+		
 		// Automatically format code on save and during typing of certain characters
 		// (like `;` and `}`).
 		"editor.formatOnSave": true,
@@ -39,6 +48,60 @@
 		// current file when a language service does not provide its own completions.
 		// This results in code completion suggesting words when editing comments and
 		// strings. This setting will prevent that.
-		"editor.wordBasedSuggestions": false,
-	}
+		"editor.wordBasedSuggestions": false
+	},
+	"workbench.colorCustomizations": {
+		"editorCodeLens.foreground": "#7982a9",
+		"errorLens.errorForegroundLight": "#e45454",
+		"errorLens.errorMessageBackground": "#e4545419",
+		"errorLens.errorBackgroundLight": "#e4545419",
+		"errorLens.warningBackground":"#ff942f1b",
+		"errorLens.warningMessageBackground":"#ff942f19",
+		"errorLens.warningBackgroundLight":"#ff942f20",
+		"errorLens.warningForeground":"#fa973a",
+		"errorLens.warningForegroundLight": "#ff942f",
+		"errorLens.infoBackground":"#00b7e420",
+		"errorLens.infoMessageBackground":"#00b7e419",
+		"errorLens.infoBackgroundLight":"#00b7e420",
+		"errorLens.infoForeground":"#00b7e4",
+		"errorLens.infoForegroundLight":"#00b7e4",
+		"errorLens.hintBackground":"#17a2a220",
+		"errorLens.hintMessageBackground":"#17a2a219",
+		"errorLens.hintBackgroundLight":"#17a2a220",
+		"errorLens.hintForeground":"#2faf64",
+		"errorLens.hintForegroundLight":"#2faf64",
+		"errorLens.statusBarIconErrorForeground": "#ff6464",
+		"errorLens.statusBarIconWarningForeground":"#fa973a",
+		"errorLens.statusBarErrorForeground":"#ff6464",
+		"errorLens.statusBarWarningForeground":"#fa973a",
+		"errorLens.statusBarInfoForeground":"#00b7e4",
+		"errorLens.statusBarHintForeground":"#2faf64",
+		"foreground": "#959cbd",
+		"panelTitle.activeBorder": "#3d59a1",
+		"panelTitle.activeForeground": "#bdc7f0",
+		"panelTitle.inactiveForeground": "#959cbd",
+		"tab.activeForeground": "#bdc7f0",
+		"tab.inactiveForeground": "#959cbd",
+		"breadcrumb.foreground": "#959cbd",
+		"breadcrumb.focusForeground": "#bdc7f0",
+		"breadcrumb.activeSelectionForeground": "#bdc7f0",
+		"statusBar.foreground": "#bdc7f0",
+		"list.focusForeground": "#bdc7f0",
+		"list.hoverForeground": "#bdc7f0",
+		"list.activeSelectionForeground": "#bdc7f0",
+		"list.inactiveSelectionForeground": "#bdc7f0",
+		"list.inactiveSelectionBackground": "#202330",
+		"sideBar.foreground": "#959cbd",
+		"dropdown.foreground": "#959cbd",
+		"menu.foreground": "#bdc7f0",
+		"menubar.selectionForeground": "#bdc7f0",
+		"input.foreground": "#959cbd",
+		"input.placeholderForeground": "#959cbd",
+		"activityBar.foreground": "#bdc7f0",
+		"activityBar.inactiveForeground": "#787c99",
+		"gitDecoration.ignoredResourceForeground": "#696d87"
+	},
+	"cSpell.words": [
+		"wireframe"
+	]
 }
