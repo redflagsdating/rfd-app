@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "775764266894",
+    "project_id": "rf-app-dev-7145f",
+    "storage_bucket": "rf-app-dev-7145f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:775764266894:android:0319ebe6a32bfd41b65edf",
+        "android_client_info": {
+          "package_name": "com.example.red_flags"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "775764266894-o1i3aviremmkmeei0i32tbje5kt73qev.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5nIrW_Hq8QoSJtUdTE8CyyLMuVMur71s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "775764266894-o1i3aviremmkmeei0i32tbje5kt73qev.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "775764266894-bc8e01h2b7qhenjibvpegc587t58gc1s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.redFlags.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

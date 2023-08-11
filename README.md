@@ -1,16 +1,54 @@
 # Red Flags Dating App
 
-A new Flutter project.
+*To be updated...*
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Install
 
-A few resources to get you started if this is your first Flutter project:
+#### VS Code
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+For better DX and seamless onboarding experience, [VS Code](https://code.visualstudio.com/download) is the primary IDE for the Dev team to ensure you have all the essential plugins, settings and tools from the repository to start developing.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[Download VS Code](https://code.visualstudio.com/download)
+
+> Using the same IDE across the Dev team saves your time on trouble shooting compatibility issues and maximize sharable knowledge/experience with the same language in the team.
+
+#### Flutter
+
+Follow [the Flutter official guide](https://docs.flutter.dev/get-started/install) to install required software.
+
+> Note: Platform setup for `iOS` and `Android` only.
+
+#### Firebase CLI
+
+Follow [the Firebase official installation guide](https://firebase.google.com/docs/cli?authuser=0#setup_update_cli).
+
+### Setup
+
+Clone the repo then install packages
+
+```bash
+cd rfd-app
+flutter pub get
+```
+
+### Run
+
+By default, `Flutter` reads `lib/main.dart` to run the app, you can either run via **terminal** at the root level
+
+> Run via command line without specifying device will default use the first **Available Device**. See [How to switch Flutter devices](https://dartcode.org/docs/quickly-switching-between-flutter-devices/)
+
+```bash
+flutter run
+```
+
+or you can run the app via **VS Code** which allows you to easily switch devices.
+
+Locate the **VS Code** status bar at the bottom of the window, select a device from the `Device Selector` area (see [Run the app](https://docs.flutter.dev/get-started/test-drive) section with a screenshot)
+
+> You should have both **iOS** and **Android** simulators on your **VS Code** available devices if you have followed the [the Flutter official guide](https://docs.flutter.dev/get-started/install).
+
+> You can also connect your **iOS/Android** devices via USB and it should show up on your **VS Code** available devices.
+
+open `lib/main.dart` in you **VS Code**, click the menu `Run > Start Debugging`

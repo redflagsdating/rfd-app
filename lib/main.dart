@@ -1,37 +1,53 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'firebase_options.dart';
+
+void main() async {
+  runApp(const App());
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Red Flags Dating',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a blue toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade800),
-        useMaterial3: true,
+    return PlatformProvider(
+      builder: (context) => PlatformApp(
+        title: 'Red Flags Dating',
+        home: const MyHomePage(title: 'Red Flags Dating'),
+        material: (_, __) => MaterialAppData(
+          theme: ThemeData(
+            // This is the theme of your application.
+            //
+            // TRY THIS: Try running your application with "flutter run". You'll see
+            // the application has a blue toolbar. Then, without quitting the app,
+            // try changing the seedColor in the colorScheme below to Colors.green
+            // and then invoke "hot reload" (save your changes or press the "hot
+            // reload" button in a Flutter-supported IDE, or press "r" if you used
+            // the command line to start the app).
+            //
+            // Notice that the counter didn't reset back to zero; the application
+            // state is not lost during the reload. To reset the state, use hot
+            // restart instead.
+            //
+            // This works for code too, not just values: Most code changes can be
+            // tested with just a hot reload.
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade800),
+            useMaterial3: true,
+          ),
+        ),
+        cupertino: (_, __) => CupertinoAppData(
+          theme: const CupertinoThemeData(
+              primaryColor: CupertinoColors.activeBlue),
+        ),
       ),
-      home: const MyHomePage(title: 'Red Flags Dating'),
     );
   }
 }
@@ -76,8 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
+    return PlatformScaffold(
+      appBar: PlatformAppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
@@ -115,11 +131,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _incrementCounter,
+      //   tooltip: 'Increment',
+      //   child: const Icon(Icons.add),
+      // ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
