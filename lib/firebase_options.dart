@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '775764266894',
     projectId: 'rf-app-dev-7145f',
     storageBucket: 'rf-app-dev-7145f.appspot.com',
-    iosClientId: '775764266894-bntpq6ceg916fnc7hu09kahhsnu6oa4h.apps.googleusercontent.com',
+    iosClientId:
+        '775764266894-bntpq6ceg916fnc7hu09kahhsnu6oa4h.apps.googleusercontent.com',
     iosBundleId: 'com.example.redFlags',
   );
 }
