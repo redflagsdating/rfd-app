@@ -2,6 +2,13 @@
 
 *To be updated...*
 
+## Technologies
+
+- [Flutter](https://docs.flutter.dev/)
+- [Dart](https://dart.dev/)
+- [Firebase](https://firebase.google.com/)
+
+
 ## Folder structure
 
 ```bash
@@ -24,11 +31,7 @@
     ├── ios                         # Managed by Xcode
     ├── android                     # Managed by Android Studio
     ├── .vscode                     # Workspace VS Code settings 
-    ├── .githooks                   # Hoist .git/hooks folder for source control
-    ├── linux                       # Ignored
-    ├── macos                       # Ignored
-    ├── web                         # Ignored
-    ├── windows                     # Ignored                 
+    ├── .githooks                   # Hoist .git/hooks folder for source control             
     └── ...
 ```
 
@@ -96,3 +99,11 @@ Locate the **VS Code** status bar at the bottom of the window, select a device f
 > You can also connect your **iOS/Android** devices via USB and it should show up on your **VS Code** available devices.
 
 open `lib/main.dart` in you **VS Code**, click the menu `Run > Start Debugging`
+
+## Documentation
+
+- [Quick Start](/docs/quick-start.md)
+- [Flutter cheat sheet](/docs/flutter.md)
+- [Android cheat sheet](/docs/android.md)
+- [iOS cheat sheet](/docs/ios.md)
+- [Firebase cheat sheet](/docs/firebase.md)

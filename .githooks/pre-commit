@@ -1,7 +1,9 @@
 #!/bin/sh
 
+# The "flutter format" is deprecated and replaced by "dart format"
 dart format .
 
+# Code linting
 flutter analyze
 if [ $? -ne 0 ]; then
   exit 1
