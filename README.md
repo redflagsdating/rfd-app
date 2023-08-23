@@ -74,6 +74,7 @@ Follow [the Firebase official installation guide](https://firebase.google.com/do
 - *Clone the repo*
 - *Install dependent packages*
 - *Change Git Hooks path*
+- *Config `git` user info*
 
 ```bash
 # Clone the repo
@@ -89,6 +90,12 @@ flutter pub get
 ```bash
 # Change Git Hooks path
 git config core.hooksPath .githooks/
+```
+
+```bash
+# Config git user info
+git config --global user.name "John Smith"
+git config --global user.email john@redflagsdating.com
 ```
 
 ### Run
