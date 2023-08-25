@@ -2,7 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:red_flags/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+enum SignInProvider {
+  google,
+  facebook,
+}
 
 enum AuthStatus {
   uninitialized,
@@ -30,40 +36,71 @@ class AuthProvider extends ChangeNotifier {
     required this.firebaseFirestore,
   });
 
+  /// Google Sign-in provider
+  Future<UserCredential?> _signInWithGoogle() async {
+    GoogleSignInAccount? gUser = await gSignIn.signIn();
+
+    // Google Sign In abandoned
+    if (gUser == null) {
+      _status = AuthStatus.authenticateCanceled;
+      notifyListeners();
+
+      return null;
+    }
+
+    GoogleSignInAuthentication? gAuth = await gUser.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
+
+    return await firebaseAuth.signInWithCredential(credential);
+  }
+
+  /// Facebook Sign-in provider
+  Future<UserCredential?> _signInWithFacebook() async {
+    return null;
+  }
+
+  ///
+  Future<bool> isSignedIn() async {
+    bool isSignedIn = await gSignIn.isSignedIn();
+
+    return isSignedIn &&
+        localStorage.getString(UserFields.id.name)?.isNotEmpty == true;
+  }
+
+  ///
   void handleException() {
     _status = AuthStatus.authenticateException;
     notifyListeners();
   }
 
-  Future<bool> isSignedIn() async {
-    bool isSignedIn = await gSignIn.isSignedIn();
+  ///
+  Future<bool> handleSignIn(SignInProvider provider) async {
+    late UserModel userModel;
+    late UserCredential? credential;
 
-    return isSignedIn && localStorage.getString('id')?.isNotEmpty == true;
-  }
-
-  Future<bool> handleSignIn() async {
     _status = AuthStatus.authenticating;
     notifyListeners();
 
-    GoogleSignInAccount? gUser = await gSignIn.signIn();
+    switch (provider) {
+      case SignInProvider.google:
+        {
+          credential = await _signInWithGoogle();
+        }
+        break;
 
-    // Authentication cancelled
-    if (gUser == null) {
-      _status = AuthStatus.authenticateCanceled;
-      notifyListeners();
-
-      return false;
+      case SignInProvider.facebook:
+        {
+          credential = await _signInWithFacebook();
+        }
+        break;
     }
 
-    GoogleSignInAuthentication? gAuth = await gUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
-    );
-    User? firebaseUser =
-        (await firebaseAuth.signInWithCredential(credential)).user;
+    User? firebaseUser = credential?.user;
 
-    // Authentication error
     if (firebaseUser == null) {
       _status = AuthStatus.authenticateError;
       notifyListeners();
@@ -71,43 +108,34 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
 
+    // Check the user existence in Firestore
     final QuerySnapshot result = await firebaseFirestore
-        .collection('users')
-        .where('id', isEqualTo: firebaseUser.uid)
+        .collection(UserModel.collection)
+        .where(UserFields.id.name, isEqualTo: firebaseUser.uid)
         .get();
     final List<DocumentSnapshot> documents = result.docs;
 
     if (documents.isEmpty) {
-      // Save new user to Firestore
-      firebaseFirestore.collection('users').doc(firebaseUser.uid).set({
-        'id': firebaseUser.uid,
-        'email': firebaseUser.email,
-        'photoUrl': firebaseUser.photoURL,
-        'phoneNumber': firebaseUser.phoneNumber,
-        'displayName': firebaseUser.displayName,
-        'createdAt': DateTime.now().millisecondsSinceEpoch.toString()
-      });
-
-      // Write new user to local storage
-      await localStorage.setString('id', firebaseUser.uid);
-      await localStorage.setString('email', firebaseUser.email ?? '');
-      await localStorage.setString('photoUrl', firebaseUser.photoURL ?? '');
-      await localStorage.setString(
-          'phoneNumber', firebaseUser.phoneNumber ?? '');
-      await localStorage.setString(
-          'displayName', firebaseUser.displayName ?? '');
+      // New user
+      userModel = UserModel.fromUser(firebaseUser);
+      firebaseFirestore
+          .collection(UserModel.collection)
+          .doc(firebaseUser.uid)
+          .set(userModel.toJSON());
     } else {
-      // Already signed up, retrieve data from Firestore
+      // Existing signed up user
       DocumentSnapshot docSnapshot = documents[0];
-
-      await localStorage.setString('id', docSnapshot.get('id'));
-      await localStorage.setString('email', docSnapshot.get('email'));
-      await localStorage.setString('photoUrl', docSnapshot.get('photoUrl'));
-      await localStorage.setString(
-          'phoneNumber', docSnapshot.get('phoneNumber'));
-      await localStorage.setString(
-          'displayName', docSnapshot.get('displayName'));
+      userModel = UserModel.fromDocument(docSnapshot);
     }
+
+    // Keep user data in the local storage
+    await localStorage.setString(UserFields.id.name, userModel.id);
+    await localStorage.setString(UserFields.email.name, userModel.email);
+    await localStorage.setString(UserFields.photoUrl.name, userModel.photoUrl);
+    await localStorage.setString(
+        UserFields.phoneNumber.name, userModel.phoneNumber);
+    await localStorage.setString(
+        UserFields.displayName.name, userModel.displayName);
 
     _status = AuthStatus.authenticated;
     notifyListeners();
@@ -115,8 +143,11 @@ class AuthProvider extends ChangeNotifier {
     return true;
   }
 
+  ///
   Future<void> handleSignOut() async {
     _status = AuthStatus.uninitialized;
+
+    await localStorage.clear();
 
     await firebaseAuth.signOut();
     await gSignIn.disconnect();

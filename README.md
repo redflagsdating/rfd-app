@@ -1,20 +1,23 @@
 # Red Flags Dating App
 
-*To be updated...*
+- [Technologies](#technology)
+- [Folder Structure](#folder-structure)
+- [Getting Started](#getting-started)
+- [Developer Guide](#developer-guide)
 
-## Technologies
+## Technology
 
 - [Flutter](https://docs.flutter.dev/)
 - [Dart](https://dart.dev/)
 - [Firebase](https://firebase.google.com/)
 
 
-## Folder structure
+## Folder Structure
 
 ```yml
     .
-    ├── lib                         # Dev source folder
-    │   ├── main.dart               # Main entry trigger runApp()
+    ├── lib                         # Source code folder
+    │   ├── main.dart               # Flutter app init
     │   ├── app.dart                # App widget 
     │   ├── models/                 # Data models (Domain layer)
     │   ├── widgets/                # Flutter widgets (Presentation layer)
@@ -32,7 +35,7 @@
     │   ├── widget_test.dart       
     │   └── ... 
     │                
-    ├── docs
+    ├── docs                        # Developer guide
     │   ├── quick-start.md                 
     │   └── ... 
     │  
@@ -123,7 +126,7 @@ or locate the **VS Code** status bar at the bottom of the window, select a devic
 
 > You can also connect your **iOS/Android** devices via USB and it should show up on your **VS Code** available devices.
 
-## Documentation
+## Developer Guide
 
 - [Quick Start](/docs/quick-start.md)
 - Flutter

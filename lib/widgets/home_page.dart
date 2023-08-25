@@ -37,6 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
     return PlatformScaffold(
       cupertino: (_, __) => CupertinoPageScaffoldData(
           navigationBar: CupertinoNavigationBar(
@@ -50,6 +52,24 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                await authProvider.handleSignOut();
+
+                // ignore: use_build_context_synchronously
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignInPage()),
+                );
+              },
+              child: const Text('Sign out'),
+            ),
+          )
+        ],
       ),
       // body: Center(
       //   // Center is a layout widget. It takes a single child and positions it

@@ -32,7 +32,7 @@ class SignInPageState extends State<SignInPage> {
             child: TextButton(
               onPressed: () async {
                 // authProvider.handleSignOut();
-                authProvider.handleSignIn().then(
+                authProvider.handleSignIn(SignInProvider.google).then(
                   (isSuccess) {
                     if (isSuccess) {
                       Navigator.pushReplacement(
