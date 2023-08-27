@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/providers/auth_provider.dart';
-
-import 'home_page.dart';
+import 'package:red_flags/services/auth_provider.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -31,21 +29,7 @@ class SignInPageState extends State<SignInPage> {
           Center(
             child: TextButton(
               onPressed: () async {
-                // authProvider.handleSignOut();
-                authProvider.handleSignIn(SignInProvider.google).then(
-                  (isSuccess) {
-                    if (isSuccess) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const MyHomePage(
-                            title: 'Signed Red Flags Dating',
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                );
+                await authProvider.handleSignIn(SignInProvider.google);
               },
               child: const Text('Sign in with Google'),
             ),

@@ -1,18 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/providers/auth_provider.dart';
+import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/widgets/home_page.dart';
+import 'package:red_flags/widgets/signin_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'widgets/home_page.dart';
 
 class App extends StatelessWidget {
   final SharedPreferences localStorage;
-  final FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   // final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
   App({super.key, required this.localStorage});
@@ -23,35 +21,47 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthProvider>(
           create: (_) => AuthProvider(
-            gSignIn: GoogleSignIn(),
             localStorage: localStorage,
-            firebaseAuth: FirebaseAuth.instance,
-            firebaseFirestore: firebaseFirestore,
+            firestore: firestore,
           ),
         )
       ],
       // Automatically switch to material or cupertino base on the platform
       child: PlatformProvider(
-        builder: (context) => PlatformApp(
-          title: 'Red Flags Dating',
-          home: const MyHomePage(title: 'Red Flags Dating'),
-          // Android app
-          material: (_, __) => MaterialAppData(
-            color: Colors.greenAccent,
-            theme: ThemeData(
-              appBarTheme: const AppBarTheme(centerTitle: true),
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade200),
-              useMaterial3: true,
+        builder: (context) {
+          AuthProvider authProvider = Provider.of<AuthProvider>(context);
+
+          return PlatformApp(
+            home: ListenableBuilder(
+              listenable: authProvider,
+              // TODO: Page transition animation
+              builder: (context, __) {
+                if (authProvider.status != AuthStatus.authenticated) {
+                  return const SignInPage();
+                }
+
+                return const MyHomePage(title: 'Red Flags Dating');
+              },
             ),
-          ),
-          // iOS app
-          cupertino: (_, __) => CupertinoAppData(
-            theme: const CupertinoThemeData(
-              barBackgroundColor: CupertinoColors.systemRed,
-              scaffoldBackgroundColor: CupertinoColors.white,
+            // Android app
+            material: (_, __) => MaterialAppData(
+              color: Colors.greenAccent,
+              theme: ThemeData(
+                appBarTheme: const AppBarTheme(centerTitle: true),
+                colorScheme:
+                    ColorScheme.fromSeed(seedColor: Colors.red.shade200),
+                useMaterial3: true,
+              ),
             ),
-          ),
-        ),
+            // iOS app
+            cupertino: (_, __) => CupertinoAppData(
+              theme: const CupertinoThemeData(
+                barBackgroundColor: CupertinoColors.systemRed,
+                scaffoldBackgroundColor: CupertinoColors.white,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

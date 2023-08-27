@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot;
 import 'package:firebase_auth/firebase_auth.dart' show User;
 
 enum UserFields {
-  id,
+  uid,
   email,
   displayName,
   photoUrl,
@@ -15,7 +15,7 @@ class UserModel {
   // Firestore Database collection name
   static const collection = 'users';
 
-  final String id;
+  final String uid;
   final String email;
   final String createdAt;
   final String photoUrl;
@@ -23,7 +23,7 @@ class UserModel {
   final String displayName;
 
   const UserModel({
-    required this.id,
+    required this.uid,
     required this.email,
     required this.createdAt,
     required this.photoUrl,
@@ -34,7 +34,7 @@ class UserModel {
   ///
   Map<String, String> toJSON() {
     return {
-      UserFields.id.name: id,
+      UserFields.uid.name: uid,
       UserFields.email.name: email,
       UserFields.createdAt.name: createdAt,
       UserFields.photoUrl.name: photoUrl,
@@ -46,7 +46,7 @@ class UserModel {
   /// Covert Firebase User into UserModel
   factory UserModel.fromUser(User? firebaseUser) {
     return UserModel(
-      id: firebaseUser?.uid ?? '',
+      uid: firebaseUser?.uid ?? '',
       email: firebaseUser?.email ?? '',
       createdAt: firebaseUser?.uid != null
           ? DateTime.now().millisecondsSinceEpoch.toString()
@@ -60,7 +60,7 @@ class UserModel {
   /// Convert DocumentSnapshot from Firestore query result to UserModel
   factory UserModel.fromDocument(DocumentSnapshot? doc) {
     return UserModel(
-      id: doc?.get(UserFields.id.name) ?? '',
+      uid: doc?.get(UserFields.uid.name) ?? '',
       email: doc?.get(UserFields.email.name) ?? '',
       createdAt: doc?.get(UserFields.createdAt.name) ?? '',
       photoUrl: doc?.get(UserFields.photoUrl.name) ?? '',
