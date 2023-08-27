@@ -29,7 +29,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.example.red_flags"
+    namespace "com.redflags.app"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -48,7 +48,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.red_flags"
+        applicationId "com.redflags.app"
         // cloud_firestore plugin requires Android SDK 19 above
         minSdkVersion 21
         targetSdkVersion flutter.targetSdkVersion

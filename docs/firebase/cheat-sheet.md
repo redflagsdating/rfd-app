@@ -7,18 +7,18 @@
 
 ### Google Sign-In
 
-- *(Android Only)* [Set up your machine **SHA1** key for Android app on Firebase ](#sha1-key)
+- [Set up SHA1 key](#sha1-key) *(Android Only)*
+- [Set up client id](#set-up-client-id) *(iOS Only)*
 
 > See [Federated identity & social sign-in](https://firebase.google.com/docs/auth/flutter/federated-auth#google) doc for more insight
 
-#### SHA1 key
+#### <u>SHA1 key</u>
 
 You need to ensure your machine's **SHA1** key has been configured on Firebase for using Google Sign-In with Android. There are [few different ways](https://developers.google.com/android/guides/client-auth) to get the **SHA1** of your signing certificate and using **Gradle** `signingReport` command is the easiest way for development purpose.
 
 Open the repository in **Android Studio**, click on ***Gradle*** tab on the top-right
 
 <img src="./gradel-tab.png" width="150px" />
-
 
 Click ***Execute Gradle Task*** icon
 
@@ -47,4 +47,69 @@ Valid until: Saturday, 26 July 2053
 
 Go to **Firebase** console > ***Project settings*** > ***Add fingerprint*** then paste the **SHA1** key then save.
 
-<img src="./firebase-project-settings.png" width="800px" />
+<img src="./firebase-project-settings-android.png" width="800px" />
+
+#### <u>Set up client id</u>
+
+Open `ios/Runner/GoogleService-Info.plist` file and go to [Firebase console](https://console.firebase.google.com/) > ***Project settings*** > ***iOS*** app.
+
+Ensure `GOOGLE_APP_ID` and `BUNDLE_ID` in the `GoogleService-Info.plist` are matched with the `App ID` and `Bundle ID` respectively.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+...
+<key>BUNDLE_ID</key>
+<string>com.redflags.app</string>
+...
+<key>GOOGLE_APP_ID</key>
+<string>1:775764266894:ios:f4e7ec7603147392b65edf</string>
+</dict>
+</plist>
+```
+
+<img src="./firebase-project-settings-ios.png" width="800px" />
+
+Go to [GCP console](https://console.cloud.google.com/) > ***API and services*** > ***Credentials*** > ***OAuth 2.0 Client IDs*** > `iOS client for com.redflags.app (auto created by Google Service)`.
+
+<img src="./gcp-oauth-client-ids.png" width="600px" />
+
+Ensure `CLIENT_ID` and `REVERSED_CLIENT_ID` in the `GoogleService-Info.plist` are matched with the `Client ID` and `iOS URL scheme` respectively.
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+<key>CLIENT_ID</key>
+<string>775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com</string>
+<key>REVERSED_CLIENT_ID</key>
+<string>com.googleusercontent.apps.775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp</string>
+...
+</dict>
+</plist>
+```
+
+<img src="./gcp-oauth-ios-client-ids.png" width="600px" />
+
+Open `ios/Runner/Info.plist` then copy and paste the below snippet and ensure `GIDClientID` and `CFBundleURLSchemes` are matched with the `Client ID` and `iOS URL scheme` respectively.
+
+```xml
+<!-- Google Sign-in Section -->
+<key>GIDClientID</key>
+<string>775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com</string>
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleTypeRole</key>
+    <string>Editor</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>com.googleusercontent.apps.775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp</string>
+    </array>
+  </dict>
+</array>
+<!-- End of the Google Sign-in Section -->
+```

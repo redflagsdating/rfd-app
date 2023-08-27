@@ -63,7 +63,7 @@ class AuthProvider extends ChangeNotifier {
     return null;
   }
 
-  ///
+  /// TODO: Refactor to support multiple providers check
   Future<bool> isSignedIn() async {
     bool isSignedIn = await gSignIn.isSignedIn();
 
@@ -143,7 +143,7 @@ class AuthProvider extends ChangeNotifier {
     return true;
   }
 
-  ///
+  /// TODO: Support multiple providers signout
   Future<void> handleSignOut() async {
     _status = AuthStatus.uninitialized;
 

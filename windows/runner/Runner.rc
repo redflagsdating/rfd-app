@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "com.redflags" "\0"
             VALUE "FileDescription", "red_flags" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "red_flags" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.redflags. All rights reserved." "\0"
             VALUE "OriginalFilename", "red_flags.exe" "\0"
             VALUE "ProductName", "red_flags" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

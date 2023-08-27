@@ -7,14 +7,22 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:775764266894:android:0319ebe6a32bfd41b65edf",
+        "mobilesdk_app_id": "1:775764266894:android:7db0d3569fd5b25db65edf",
         "android_client_info": {
-          "package_name": "com.example.red_flags"
+          "package_name": "com.redflags.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "775764266894-o1i3aviremmkmeei0i32tbje5kt73qev.apps.googleusercontent.com",
+          "client_id": "775764266894-tvpg42pqac3a3u427ddmhclptorgbork.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.redflags.app",
+            "certificate_hash": "fbd8a5064d1fb8c05d12adb4e347f4b1fbe5825c"
+          }
+        },
+        {
+          "client_id": "775764266894-n0uumiu8l9ldp01vea7co8gnnn4ej7o5.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,14 +35,14 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "775764266894-o1i3aviremmkmeei0i32tbje5kt73qev.apps.googleusercontent.com",
+              "client_id": "775764266894-n0uumiu8l9ldp01vea7co8gnnn4ej7o5.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "775764266894-bc8e01h2b7qhenjibvpegc587t58gc1s.apps.googleusercontent.com",
+              "client_id": "775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.redFlags.RunnerTests"
+                "bundle_id": "com.redflags.app"
               }
             }
           ]

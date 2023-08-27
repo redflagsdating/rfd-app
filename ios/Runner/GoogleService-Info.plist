@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>775764266894-bntpq6ceg916fnc7hu09kahhsnu6oa4h.apps.googleusercontent.com</string>
+	<string>775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.775764266894-bntpq6ceg916fnc7hu09kahhsnu6oa4h</string>
+	<string>com.googleusercontent.apps.775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>775764266894-tvpg42pqac3a3u427ddmhclptorgbork.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCaIeWtNdZYtR4tVN2a-1GaIJIIIu6UTpA</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.redFlags</string>
+	<string>com.redflags.app</string>
 	<key>PROJECT_ID</key>
 	<string>rf-app-dev-7145f</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:775764266894:ios:d6373bfd8f006350b65edf</string>
+	<string>1:775764266894:ios:f4e7ec7603147392b65edf</string>
 </dict>
 </plist>

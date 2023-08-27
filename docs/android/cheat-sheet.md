@@ -1,6 +1,7 @@
 # Android cheat sheet
 
 - [Change the app icon](#change-the-app-icon)
+- [View & debug shared preferences (local storage)](#view-and-debug-shared-preference)
 
 ## Change the app icon
 
@@ -14,3 +15,9 @@ Locate `android/app/src/main/res` and right click on `res/` folder, then `New > 
 
 <img src="https://developer.android.com/static/codelabs/basic-android-kotlin-compose-training-change-app-icon/img/a02f2b23afa5a9e2_1920.png" width="500" />
 
+## View and debug shared preference
+
+To view or debug local storage data (via `SharedPreferences` library), open **Android Studio** > ***Device Explorer*** > `data/data/com.redflags.app/FlutterSharedPreferences.xml`.
+
+<img src="./device-explorer.png" width="200px" />
+<img src="./shared-preferences.png" width="540px" />

@@ -1,4 +1,4 @@
-package com.example.red_flags
+package com.redflags.app
 
 import io.flutter.embedding.android.FlutterActivity
 

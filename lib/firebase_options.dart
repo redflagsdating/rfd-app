@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB5nIrW_Hq8QoSJtUdTE8CyyLMuVMur71s',
-    appId: '1:775764266894:android:0319ebe6a32bfd41b65edf',
+    appId: '1:775764266894:android:7db0d3569fd5b25db65edf',
     messagingSenderId: '775764266894',
     projectId: 'rf-app-dev-7145f',
     storageBucket: 'rf-app-dev-7145f.appspot.com',
@@ -59,12 +59,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCaIeWtNdZYtR4tVN2a-1GaIJIIIu6UTpA',
-    appId: '1:775764266894:ios:d6373bfd8f006350b65edf',
+    appId: '1:775764266894:ios:f4e7ec7603147392b65edf',
     messagingSenderId: '775764266894',
     projectId: 'rf-app-dev-7145f',
     storageBucket: 'rf-app-dev-7145f.appspot.com',
-    iosClientId:
-        '775764266894-bntpq6ceg916fnc7hu09kahhsnu6oa4h.apps.googleusercontent.com',
-    iosBundleId: 'com.example.redFlags',
+    androidClientId: '775764266894-bir65pi9ii2gbvvgabbo7tf83j979a6b.apps.googleusercontent.com',
+    iosClientId: '775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com',
+    iosBundleId: 'com.redflags.app',
   );
 }

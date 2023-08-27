@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
-import 'services/firebase_options.dart';
+import 'firebase_options.dart';
 
 void main() async {
   // Ensure binding is initialized before runApp() for Firebase.initializeApp()
