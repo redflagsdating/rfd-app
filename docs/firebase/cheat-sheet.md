@@ -12,7 +12,7 @@
 
 > See [Federated identity & social sign-in](https://firebase.google.com/docs/auth/flutter/federated-auth#google) doc for more insight
 
-#### <u>SHA1 key</u>
+#### `SHA1 key`
 
 You need to ensure your machine's **SHA1** key has been configured on Firebase for using Google Sign-In with Android. There are [few different ways](https://developers.google.com/android/guides/client-auth) to get the **SHA1** of your signing certificate and using **Gradle** `signingReport` command is the easiest way for development purpose.
 
@@ -49,7 +49,10 @@ Go to **Firebase** console > ***Project settings*** > ***Add fingerprint*** then
 
 <img src="./firebase-project-settings-android.png" width="800px" />
 
-#### <u>Set up client id</u>
+#### `Set up client id`
+
+You can run `flutterfire configure` command to automatically update all the configurations (see [Sync Firebase configuration](../flutter/cheat-sheet.md#sync-firebase-configuration)) and only follow the below steps to manually check if you have problems to run Google Sign-In on iOS devices.
+
 
 Open `ios/Runner/GoogleService-Info.plist` file and go to [Firebase console](https://console.firebase.google.com/) > ***Project settings*** > ***iOS*** app.
 
@@ -113,3 +116,5 @@ Open `ios/Runner/Info.plist` then copy and paste the below snippet and ensure `G
 </array>
 <!-- End of the Google Sign-in Section -->
 ```
+
+> Check out more details on [google_sign_in iOS integration](https://pub.dev/packages/google_sign_in#ios-integration).

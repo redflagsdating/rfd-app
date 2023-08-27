@@ -20,10 +20,6 @@
             "package_name": "com.redflags.app",
             "certificate_hash": "fbd8a5064d1fb8c05d12adb4e347f4b1fbe5825c"
           }
-        },
-        {
-          "client_id": "775764266894-n0uumiu8l9ldp01vea7co8gnnn4ej7o5.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
@@ -35,7 +31,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "775764266894-n0uumiu8l9ldp01vea7co8gnnn4ej7o5.apps.googleusercontent.com",
+              "client_id": "775764266894-u3ti7m10aa56uc8rnr4egjjku71l7gon.apps.googleusercontent.com",
               "client_type": 3
             },
             {
