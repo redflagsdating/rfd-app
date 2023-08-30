@@ -49,9 +49,10 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.redflags.app"
-        // cloud_firestore plugin requires Android SDK 19 above
+        /// cloud_firestore plugin requires Android SDK 19 above
+        /// flutter_facebook_auth requires Android SDK 21
         minSdkVersion 21
-        targetSdkVersion flutter.targetSdkVersion
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

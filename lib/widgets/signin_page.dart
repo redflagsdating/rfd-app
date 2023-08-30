@@ -24,7 +24,7 @@ class SignInPageState extends State<SignInPage> {
       appBar: PlatformAppBar(
         title: const Text('Sign In Page'),
       ),
-      body: Stack(
+      body: Column(
         children: <Widget>[
           Center(
             child: TextButton(
@@ -33,7 +33,15 @@ class SignInPageState extends State<SignInPage> {
               },
               child: const Text('Sign in with Google'),
             ),
-          )
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                await authProvider.handleSignIn(SignInProvider.facebook);
+              },
+              child: const Text('Sign in with Facebook'),
+            ),
+          ),
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,11 +20,13 @@ enum AuthStatus {
   authenticateCanceled,
 }
 
+///
 class AuthProvider extends ChangeNotifier {
   final FirebaseFirestore firestore;
   final SharedPreferences localStorage;
 
   final gSignIn = GoogleSignIn();
+  final fbSignIn = FacebookAuth.instance;
   final firebaseAuth = FirebaseAuth.instance;
 
   AuthStatus _status = AuthStatus.uninitialized;
@@ -47,9 +50,10 @@ class AuthProvider extends ChangeNotifier {
   Future<UserCredential?> _signInWithGoogle() async {
     GoogleSignInAccount? gUser = await gSignIn.signIn();
 
-    /// Google Sign In abandoned
-    /// TODO: Sign-in page shows proper error msg
+    // Google Sign In abandoned
     if (gUser == null) {
+      // TODO: logger
+
       _status = AuthStatus.authenticateCanceled;
       notifyListeners();
 
@@ -63,11 +67,50 @@ class AuthProvider extends ChangeNotifier {
       idToken: gAuth.idToken,
     );
 
+    // TODO: Handle exception when email address existed but different provider
     return await firebaseAuth.signInWithCredential(credential);
   }
 
   /// Facebook Sign-in
   Future<UserCredential?> _signInWithFacebook() async {
+    final LoginResult fbAuth = await FacebookAuth.instance.login();
+
+    switch (fbAuth.status) {
+      case LoginStatus.cancelled:
+        // TODO: logger
+        // fbAuth.message;
+        _status = AuthStatus.authenticateCanceled;
+        notifyListeners();
+        break;
+
+      case LoginStatus.failed:
+        // TODO: logger
+        // fbAuth.message;
+        _status = AuthStatus.authenticateError;
+        notifyListeners();
+        break;
+
+      case LoginStatus.operationInProgress:
+        // ? Not sure
+        break;
+
+      case LoginStatus.success:
+        final accessToken = fbAuth.accessToken;
+
+        if (accessToken != null) {
+          final OAuthCredential credential =
+              FacebookAuthProvider.credential(accessToken.token);
+
+          // TODO: Handle exception when email address existed but different provider
+          return await firebaseAuth.signInWithCredential(credential);
+        }
+
+        // TODO: logger
+        _status = AuthStatus.authenticateException;
+        notifyListeners();
+        break;
+    }
+
     return null;
   }
 
@@ -162,7 +205,9 @@ class AuthProvider extends ChangeNotifier {
   }
 
   ///
-  void handleException() {
+  Future<void> handleException() async {
+    await localStorage.clear();
+
     _status = AuthStatus.authenticateException;
     notifyListeners();
   }
