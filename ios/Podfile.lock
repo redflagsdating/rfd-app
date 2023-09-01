@@ -645,6 +645,14 @@ PODS:
     - firebase_core
     - Flutter
     - nanopb (< 2.30910.0, >= 2.30908.0)
+  - FBAEMKit (16.1.3):
+    - FBSDKCoreKit_Basics (= 16.1.3)
+  - FBSDKCoreKit (16.1.3):
+    - FBAEMKit (= 16.1.3)
+    - FBSDKCoreKit_Basics (= 16.1.3)
+  - FBSDKCoreKit_Basics (16.1.3)
+  - FBSDKLoginKit (16.1.3):
+    - FBSDKCoreKit (= 16.1.3)
   - Firebase/Auth (10.12.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 10.12.0)
@@ -703,6 +711,11 @@ PODS:
     - FirebaseCoreExtension (~> 10.0)
     - GTMSessionFetcher/Core (< 4.0, >= 2.1)
   - Flutter (1.0.0)
+  - flutter_facebook_auth (6.0.1):
+    - FBSDKLoginKit (~> 16.1.3)
+    - Flutter
+  - flutter_secure_storage (6.0.0):
+    - Flutter
   - google_sign_in_ios (0.0.1):
     - Flutter
     - GoogleSignIn (~> 6.2)
@@ -807,6 +820,8 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
+  - flutter_facebook_auth (from `.symlinks/plugins/flutter_facebook_auth/ios`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - google_sign_in_ios (from `.symlinks/plugins/google_sign_in_ios/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
 
@@ -815,6 +830,10 @@ SPEC REPOS:
     - abseil
     - AppAuth
     - BoringSSL-GRPC
+    - FBAEMKit
+    - FBSDKCoreKit
+    - FBSDKCoreKit_Basics
+    - FBSDKLoginKit
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseAuth
@@ -845,6 +864,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
     :path: Flutter
+  flutter_facebook_auth:
+    :path: ".symlinks/plugins/flutter_facebook_auth/ios"
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
   google_sign_in_ios:
     :path: ".symlinks/plugins/google_sign_in_ios/ios"
   shared_preferences_foundation:
@@ -855,6 +878,10 @@ SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
   cloud_firestore: c556fefce96568e422e453bf9aeda683dd435367
+  FBAEMKit: af2972f39bb0f3f7c45998f435b007833c32ffb2
+  FBSDKCoreKit: 19e2e18b3be578d7a51fed8fdd8c152bef0b9511
+  FBSDKCoreKit_Basics: dd9826ce3c9fd9f8cdf8dbbd0ef0a53e6c0c9e7e
+  FBSDKLoginKit: c395c63a1a6cf4a8a1e6103fd94b8c46329ee81c
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
   firebase_auth: 95f4a6acafa6a7a0d902aa467dd4d7ca336ee4be
   firebase_core: 4a3246a02f828a01c74a2c26427037786d90f17f
@@ -868,6 +895,8 @@ SPEC CHECKSUMS:
   FirebaseFirestore: f94c9541515fa4a49af52269bbc50349009424b4
   FirebaseStorage: 1d7ca8c8953fc61ccacaa7c612696b5402968a0d
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  flutter_facebook_auth: 47c7a8594f2d6864618e30b5a6d59dff0d2e59fe
+  flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
   google_sign_in_ios: 1256ff9d941db546373826966720b0c24804bcdd
   GoogleSignIn: 5651ce3a61e56ca864160e79b484cd9ed3f49b7a
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084

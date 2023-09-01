@@ -11,7 +11,6 @@
 - [Dart](https://dart.dev/)
 - [Firebase](https://firebase.google.com/)
 
-
 ## Folder Structure
 
 ```yml
@@ -20,6 +19,8 @@
     │   ├── main.dart               # Flutter app init
     │   ├── app.dart                # App widget 
     │   ├── models/                 # Data models (Domain layer)
+    │   │   ├── user.dart
+    │   │   └── ...
     │   ├── widgets/                # Flutter widgets (Presentation layer)
     │   │   ├── home_page.dart
     │   │   └── ...
@@ -45,7 +46,7 @@
     └── ...
 ```
 
-Inside the source folder `lib/` follows **Layer-first** structure, see [Feature-first vs Layer-first](https://github.com/bizz84/flutter-tips-and-tricks/blob/main/tips/0039-flutter-project-structure-feature-first-or-layer-first/index.md).
+Inside the source folder `lib/` follows ***Layer-first*** structure, see [Feature-first vs Layer-first](https://github.com/bizz84/flutter-tips-and-tricks/blob/main/tips/0039-flutter-project-structure-feature-first-or-layer-first/index.md).
 
 <img src="https://raw.githubusercontent.com/bizz84/flutter-tips-and-tricks/main/tips/0039-flutter-project-structure-feature-first-or-layer-first/039.1-flutter-project-structure.png" width="500" />
 

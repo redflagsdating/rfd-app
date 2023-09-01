@@ -1,9 +1,15 @@
 # Firebase cheat sheet
 
 - [Authentication](#authentication)
-  - [Google Sign-In](#google-sign-in)
 
 ## Authentication
+
+`AuthProvider` is injected into the context in `lib/app.dart` for using across the entire app, check out `lib/services/auth_provider.dart` for technical details.
+
+In order for `AuthProvider` to work on both Android and iOS, follow the guides below to set up your machine
+
+- [Google Sign-In setup guide](#google-sign-in)
+- [Facebook Sign-In setup guide](#facebook-sign-in)
 
 ### Google Sign-In
 
@@ -118,3 +124,14 @@ Open `ios/Runner/Info.plist` then copy and paste the below snippet and ensure `G
 ```
 
 > Check out more details on [google_sign_in iOS integration](https://pub.dev/packages/google_sign_in#ios-integration).
+
+### Facebook Sign-In
+
+Install the `flutter_facebook_auth` plugin.
+
+```
+flutter pub add flutter_facebook_auth
+```
+
+- [iOS configuration](https://facebook.meedu.app/docs/5.x.x/ios)
+- [Android configuration](https://facebook.meedu.app/docs/5.x.x/android/)
