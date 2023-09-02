@@ -34,13 +34,29 @@ class App extends StatelessWidget {
           return PlatformApp(
             home: ListenableBuilder(
               listenable: authProvider,
-              // TODO: Page transition animation
               builder: (context, __) {
-                if (authProvider.status != AuthStatus.authenticated) {
-                  return const SignInPage();
-                }
+                final isAuthenticated =
+                    authProvider.status == AuthStatus.authenticated;
+                final offset = isAuthenticated
+                    ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
+                    : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
 
-                return const MyHomePage(title: 'Red Flags Dating');
+                return AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  reverseDuration: const Duration(milliseconds: 0),
+                  transitionBuilder: (child, animation) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: SlideTransition(
+                        position: (offset).animate(animation),
+                        child: child,
+                      ),
+                    );
+                  },
+                  child: isAuthenticated
+                      ? const MyHomePage(title: 'Red Flags Dating')
+                      : const SignInPage(),
+                );
               },
             ),
             // Android app
