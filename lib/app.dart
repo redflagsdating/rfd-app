@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/home_page.dart';
 import 'package:red_flags/widgets/signin_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,10 +20,18 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<LoggerProvider>(
+          create: (_) => LoggerProvider(),
+        ),
         ChangeNotifierProvider<AuthProvider>(
-          create: (_) => AuthProvider(
+          create: (context) => AuthProvider(
             localStorage: localStorage,
             firestore: firestore,
+
+            /// Need to set listen to false in order to call Provider.of inside
+            /// create method.
+            /// See https://pub.dev/documentation/provider/latest/provider/Provider/of.html
+            logger: Provider.of<LoggerProvider>(context, listen: false).logger,
           ),
         )
       ],

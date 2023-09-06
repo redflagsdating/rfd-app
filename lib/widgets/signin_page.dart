@@ -29,7 +29,7 @@ class SignInPageState extends State<SignInPage> {
           Center(
             child: TextButton(
               onPressed: () async {
-                await authProvider.handleSignIn(SignInProvider.google);
+                await authProvider.handleSignIn(SocialAuthProvider.google);
               },
               child: const Text('Sign in with Google'),
             ),
@@ -37,7 +37,7 @@ class SignInPageState extends State<SignInPage> {
           Center(
             child: TextButton(
               onPressed: () async {
-                await authProvider.handleSignIn(SignInProvider.facebook);
+                await authProvider.handleSignIn(SocialAuthProvider.facebook);
               },
               child: const Text('Sign in with Facebook'),
             ),
