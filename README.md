@@ -129,6 +129,7 @@ or locate the **VS Code** status bar at the bottom of the window, select a devic
 - [Quick Start](/docs/quick-start.md)
 - Flutter
   - [Cheat sheet](/docs/flutter/cheat-sheet.md)
+  - [Logger](/docs/flutter/logger.md)
 - Android
   - [Cheat sheet](/docs/android/cheat-sheet.md)
 - iOS
