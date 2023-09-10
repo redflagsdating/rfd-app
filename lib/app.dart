@@ -28,7 +28,7 @@ class App extends StatelessWidget {
             localStorage: localStorage,
             firestore: firestore,
 
-            /// Need to set listen to false in order to call Provider.of inside
+            /// Need to set "listen: false" in order to call Provider.of inside
             /// create method.
             /// See https://pub.dev/documentation/provider/latest/provider/Provider/of.html
             logger: Provider.of<LoggerProvider>(context, listen: false).logger,

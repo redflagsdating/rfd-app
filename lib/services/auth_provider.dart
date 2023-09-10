@@ -23,7 +23,6 @@ enum AuthStatus {
   authenticated,
   authenticating,
   authenticateError,
-  authenticateException,
   authenticateCanceled,
 }
 
@@ -37,10 +36,15 @@ class AuthProvider extends ChangeNotifier {
   final fbSignIn = FacebookAuth.instance;
   final firebaseAuth = FirebaseAuth.instance;
 
+  String? _code;
+  String _message = '';
   AuthStatus _status = AuthStatus.uninitialized;
+
+  String? get code => _code;
+  String get message => _message;
   AuthStatus get status => _status;
 
-  // Constructor
+  /// Constructor
   AuthProvider({
     required this.logger,
     required this.firestore,
@@ -66,19 +70,45 @@ class AuthProvider extends ChangeNotifier {
     );
   }
 
-  /// [_signInWithGoogle] Private function to sign in with Google and generate
-  /// credential to sign in Firebase user.
+  /// [_signInWithCredential]
+  /// A simple wrapper of firebase_auth signInWithCredential function to handle
+  /// errors.
+  Future<UserCredential?> _signInWithCredential(
+      AuthCredential credential) async {
+    try {
+      return await firebaseAuth.signInWithCredential(credential);
+    } catch (e) {
+      await _onException(e);
+    }
+
+    return null;
+  }
+
+  /// [_signInWithGoogle]
+  /// Private function to sign in with Google and generate credential to
+  /// sign in Firebase user.
   Future<UserCredential?> _signInWithGoogle() async {
-    GoogleSignInAccount? gUser = await gSignIn.signIn();
+    GoogleSignInAccount? gUser;
 
-    if (gUser == null) {
-      logger.e(
-        '[_signInWithGoogle] Google sign-in return NULL user, authentication cancelled',
-        time: DateTime.now(),
-      );
+    try {
+      gUser = await gSignIn.signIn();
 
-      _status = AuthStatus.authenticateCanceled;
-      notifyListeners();
+      if (gUser == null) {
+        logger.w(
+          '[_signInWithGoogle] Google sign-in is cancelled',
+          time: DateTime.now(),
+        );
+
+        _message = 'You have cancelled sign in with Google.';
+        _status = AuthStatus.authenticateCanceled;
+        notifyListeners();
+
+        return null;
+      }
+    } catch (e) {
+      /// All other exceptions will not be handled except kSignInCanceledError
+      /// such as kNetworkError, kSignInFailedError and kSignInRequiredError.
+      await _onException(e);
 
       return null;
     }
@@ -103,43 +133,38 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
-    // TODO: Handle exception when email address existed but different provider
-    return await firebaseAuth.signInWithCredential(credential);
+    return await _signInWithCredential(credential);
   }
 
-  /// [_signInWithFacebook] Private function to sign in with Facebook and generate
-  /// credential to sign in Firebase user.
+  /// [_signInWithFacebook]
+  /// Private function to sign in with Facebook and generate credential
+  /// to sign in Firebase user.
   Future<UserCredential?> _signInWithFacebook() async {
     final LoginResult fbAuth = await fbSignIn.login();
 
     switch (fbAuth.status) {
       case LoginStatus.cancelled:
-        logger.e(
+        logger.w(
           '[_signInWithFacebook] Facebook login cancelled with message: ${fbAuth.message}',
           time: DateTime.now(),
         );
 
+        _message = 'You have cancelled sign in with Facebook.';
         _status = AuthStatus.authenticateCanceled;
         notifyListeners();
         break;
 
       case LoginStatus.failed:
-        logger.e(
-          '[_signInWithFacebook] Facebook login failed with message: ${fbAuth.message}',
-          time: DateTime.now(),
-        );
-
-        _status = AuthStatus.authenticateError;
-        notifyListeners();
+        await _onException(fbAuth);
         break;
 
       case LoginStatus.operationInProgress:
-        logger.e(
+        logger.d(
           '[_signInWithFacebook] Facebook login operationInProgress with message: ${fbAuth.message}',
           time: DateTime.now(),
         );
 
-        // TODO
+        // TODO: Need to handle it?
         break;
 
       case LoginStatus.success:
@@ -159,8 +184,7 @@ class AuthProvider extends ChangeNotifier {
             time: DateTime.now(),
           );
 
-          // TODO: Handle exception when email address existed but different provider
-          return await firebaseAuth.signInWithCredential(credential);
+          return _signInWithCredential(credential);
         }
 
         logger.e(
@@ -168,7 +192,7 @@ class AuthProvider extends ChangeNotifier {
           time: DateTime.now(),
         );
 
-        _status = AuthStatus.authenticateException;
+        _status = AuthStatus.authenticateError;
         notifyListeners();
         break;
     }
@@ -176,7 +200,32 @@ class AuthProvider extends ChangeNotifier {
     return null;
   }
 
-  /// [handleSignIn] The main sign-in function requires specify auth provider
+  /// [_onException]
+  /// A simple function to update state on exceptions to avoid duplicate code
+  Future<void> _onException(dynamic e) async {
+    logger.e(e, time: DateTime.now());
+
+    _code = e.code;
+    _message = e.message ?? '';
+
+    // An existing account has been signed in with a different auth provider
+    if (_code == 'account-exists-with-different-credential') {
+      final email = (e as FirebaseAuthException).email;
+
+      if (email != null) {
+        final providers = await firebaseAuth.fetchSignInMethodsForEmail(email);
+
+        _message =
+            '$_message We have detected that your last signed in with ${providers.first}.';
+      }
+    }
+
+    _status = AuthStatus.authenticateError;
+    notifyListeners();
+  }
+
+  /// [handleSignIn]
+  /// The main sign-in function requires specify auth provider
   Future<bool> handleSignIn(SocialAuthProvider provider) async {
     late UserModel userModel;
     late UserCredential? credential;
@@ -186,6 +235,8 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
+    _code = null;
+    _message = '';
     _status = AuthStatus.authenticating;
     notifyListeners();
 
@@ -207,13 +258,10 @@ class AuthProvider extends ChangeNotifier {
     );
 
     if (firebaseUser == null) {
-      logger.e(
+      logger.d(
         '[handleSignIn] Firebase UserCredential contains NULL user',
         time: DateTime.now(),
       );
-
-      _status = AuthStatus.authenticateError;
-      notifyListeners();
 
       return false;
     }
@@ -288,20 +336,23 @@ class AuthProvider extends ChangeNotifier {
     return true;
   }
 
-  /// [handleSignOut] The main sign-out function relies on currentUser.providerData
-  /// of Firebase Authentication to invoke corresponding provider's sing-out func.
+  /// [handleSignOut]
+  /// The main sign-out function relies on currentUser.providerData of Firebase
+  /// Authentication to invoke corresponding provider's sing-out func.
   Future<void> handleSignOut() async {
     final providerId = firebaseAuth.currentUser?.providerData[0].providerId;
+
+    /// Update status first to prevent incorrect status when authStateChanges
+    /// is triggered after firebaseAuth.signOut() success.
+    _code = null;
+    _message = '';
+    _status = AuthStatus.uninitialized;
 
     if (providerId != null) {
       logger.d(
         '[handleSignOut] Start sign out $providerId',
         time: DateTime.now(),
       );
-
-      /// Update status first to prevent incorrect status when authStateChanges
-      /// is triggered after firebaseAuth.signOut() success.
-      _status = AuthStatus.uninitialized;
 
       await firebaseAuth.signOut();
 
@@ -334,19 +385,6 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
-    notifyListeners();
-  }
-
-  /// [handleException]
-  Future<void> handleException() async {
-    await localStorage.clear();
-
-    logger.d(
-      '[handleException] Local storage purged',
-      time: DateTime.now(),
-    );
-
-    _status = AuthStatus.authenticateException;
     notifyListeners();
   }
 }
