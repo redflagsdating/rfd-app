@@ -2,6 +2,7 @@
 
 - [Sync Firebase configuration](#sync-firebase-configuration)
 - [Detect build modes](#detect-build-modes)
+- [Logging](./logger.md#logging)
 
 ## Sync Firebase configuration
 
@@ -18,6 +19,7 @@ flutterfire configure
 ```
 
 ## Detect build modes
+
 Similar to `development` or `production` of `NODE_ENV` in `Node.js` world, Flutter ***"foundation"*** package gives us these build mode constants:
 
 - `kDebugMode`
