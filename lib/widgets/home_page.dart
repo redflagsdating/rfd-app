@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 
@@ -18,12 +16,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
-    return PlatformScaffold(
-      cupertino: (_, __) => CupertinoPageScaffoldData(
-          navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.title),
-      )),
-      appBar: PlatformAppBar(
+    return Scaffold(
+      appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.

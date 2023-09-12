@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 
@@ -43,13 +41,15 @@ class SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
-    return PlatformScaffold(
-      cupertino: (_, __) => CupertinoPageScaffoldData(
-          navigationBar: const CupertinoNavigationBar(
-        middle: Text('Sign In Page'),
-      )),
-      appBar: PlatformAppBar(
-        title: const Text('Sign In Page'),
+    return Scaffold(
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: const Text('Sign in page'),
       ),
       body: Column(
         children: <Widget>[
