@@ -16,7 +16,7 @@
 ```yml
     .
     ├── lib                         # Source code folder
-    │   ├── main.dart               # Flutter app init
+    │   ├── main.dart               # Flutter app entry
     │   ├── app.dart                # App widget 
     │   ├── models/                 # Data models (Domain layer)
     │   │   ├── user.dart
@@ -127,12 +127,15 @@ or locate the **VS Code** status bar at the bottom of the window, select a devic
 ## Developer Guide
 
 - [Quick Start](/docs/quick-start.md)
-- Flutter
-  - [Cheat sheet](/docs/flutter/cheat-sheet.md)
-  - [Logger](/docs/flutter/logger.md)
-- Android
-  - [Cheat sheet](/docs/android/cheat-sheet.md)
-- iOS
-  - [Cheat sheet](/docs/ios/cheat-sheet.md)
-- Firebase
+- ***DX*** *(Developer eXperience)*
+- ***Firebase***
   - [Authentication](/docs/firebase/authentication.md)
+  - [Crashlytics](/docs/firebase/crashlytics.md)
+  - [Analytics](/docs/firebase/analytics.md)
+- ***Flutter***
+  - [Cheat sheet](/docs/flutter/cheat-sheet.md)
+  - [Logging](/docs/flutter/logging.md)
+- ***Android***
+  - [Cheat sheet](/docs/android/cheat-sheet.md)
+- ***iOS***
+  - [Cheat sheet](/docs/ios/cheat-sheet.md)

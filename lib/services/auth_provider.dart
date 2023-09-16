@@ -100,9 +100,8 @@ class AuthProvider extends ChangeNotifier {
     try {
       return await firebaseAuth.signInWithCredential(credential);
     } catch (e) {
-      await _onException(e);
+      await _onErrorOrException(e);
     }
-
     return null;
   }
 
@@ -124,7 +123,7 @@ class AuthProvider extends ChangeNotifier {
         );
       }
     } catch (e) {
-      _onException(e);
+      _onErrorOrException(e);
     }
 
     return null;
@@ -150,8 +149,7 @@ class AuthProvider extends ChangeNotifier {
     } catch (e) {
       /// All other exceptions will not be handled except kSignInCanceledError
       /// such as kNetworkError, kSignInFailedError and kSignInRequiredError.
-      await _onException(e);
-
+      await _onErrorOrException(e);
       return null;
     }
 
@@ -191,7 +189,7 @@ class AuthProvider extends ChangeNotifier {
         break;
 
       case LoginStatus.failed:
-        await _onException(fbAuth);
+        await _onErrorOrException(fbAuth);
         break;
 
       case LoginStatus.operationInProgress:
@@ -225,6 +223,7 @@ class AuthProvider extends ChangeNotifier {
           time: DateTime.now(),
         );
 
+        _message = 'Null auth credential from Facebook';
         _status = AuthStatus.authenticateError;
         notifyListeners();
         break;
@@ -236,7 +235,7 @@ class AuthProvider extends ChangeNotifier {
   /// * `logger`
   /// * Handle **FirebaseAuthException** `account-exists-with-different-credential`
   /// * Update error `code`, `message` and `status`
-  Future<void> _onException(dynamic e) async {
+  Future<void> _onErrorOrException(dynamic e) async {
     logger.e(e, time: DateTime.now());
 
     _code = e.code;
@@ -333,7 +332,7 @@ class AuthProvider extends ChangeNotifier {
       //
       await localStorage.setString(UserFields.email.name, email);
     } catch (e) {
-      await _onException(e);
+      await _onErrorOrException(e);
     }
   }
 

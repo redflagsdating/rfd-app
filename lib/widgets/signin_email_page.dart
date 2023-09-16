@@ -85,8 +85,10 @@ class SignInEmailPageState extends State<SignInEmailPage>
           TextButton(
             onPressed: isDisabled
                 ? null
-                : () {
-                    authProvider.sendSignInLinkToEmail(textController.text);
+                : () async {
+                    await authProvider
+                        .sendSignInLinkToEmail(textController.text);
+                    // TODO: show snackbar
                   },
             child: const Text('Continue'),
           ),
