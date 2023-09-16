@@ -2,30 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class HomePageState extends State<HomePage> {
+  late AuthProvider authProvider;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authProvider = Provider.of<AuthProvider>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Stack(
         children: <Widget>[
           Center(

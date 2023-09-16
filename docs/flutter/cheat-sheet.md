@@ -3,6 +3,7 @@
 - [Sync Firebase configuration](#sync-firebase-configuration)
 - [Detect build modes](#detect-build-modes)
 - [Logging](./logger.md#logging)
+- [Access package info](#access-package-info)
 
 ## Sync Firebase configuration
 
@@ -38,4 +39,22 @@ static const level = kDebugMode
           : kProfileMode
               ? Level.fatal
               : Level.off;
+```
+
+## Access package info
+
+Create a `PackageInfo` instance in the `.dart` file
+
+```dart
+final packageInfo = await PackageInfo.fromPlatform();
+```
+
+the `packageInfo` gives you access to **Android** and **iOS** package info
+
+```dart
+packageInfo.appName
+packageInfo.packageName
+packageInfo.buildNumber
+packageInfo.version
+...
 ```

@@ -10,6 +10,14 @@ class SignInPage extends StatefulWidget {
 }
 
 class SignInPageState extends State<SignInPage> {
+  late AuthProvider authProvider;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    authProvider = Provider.of<AuthProvider>(context);
+  }
+
   void _showAuthSnackBar(AuthProvider provider) {
     switch (provider.status) {
       case AuthStatus.authenticateCanceled:
@@ -39,8 +47,6 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    AuthProvider authProvider = Provider.of<AuthProvider>(context);
-
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -52,6 +58,7 @@ class SignInPageState extends State<SignInPage> {
         title: const Text('Sign in page'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Center(
             child: TextButton(
@@ -71,6 +78,14 @@ class SignInPageState extends State<SignInPage> {
                 _showAuthSnackBar(authProvider);
               },
               child: const Text('Sign in with Facebook'),
+            ),
+          ),
+          Center(
+            child: TextButton(
+              onPressed: () async {
+                Navigator.pushNamed(context, '/signin-email');
+              },
+              child: const Text('Sign in with Email'),
             ),
           ),
         ],

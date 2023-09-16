@@ -1,8 +1,9 @@
-# Firebase cheat sheet
+# Firebase Authentication
 
-- [Authentication](#authentication)
+- [AuthProvider](#authprovider)
+- [Link accounts](#link-accounts)
 
-## Authentication
+## AuthProvider
 
 `AuthProvider` is injected into the context in `lib/app.dart` for using across the entire app, check out `lib/services/auth_provider.dart` for technical details.
 
@@ -10,6 +11,7 @@ In order for `AuthProvider` to work on both Android and iOS, follow the guides b
 
 - [Google Sign-In setup guide](#google-sign-in)
 - [Facebook Sign-In setup guide](#facebook-sign-in)
+- [Email Link Sign-In setup guide](#email-link-sign-in)
 
 ### Google Sign-In
 
@@ -129,9 +131,84 @@ Open `ios/Runner/Info.plist` then copy and paste the below snippet and ensure `G
 
 Install the `flutter_facebook_auth` plugin.
 
-```
+```sh
 flutter pub add flutter_facebook_auth
 ```
 
 - [iOS configuration](https://facebook.meedu.app/docs/5.x.x/ios)
 - [Android configuration](https://facebook.meedu.app/docs/5.x.x/android/)
+
+> (***Important***) If the same email address has been signed in with a different identify provider before, **Facebook** will return `LoginStatus.failed` with account already exists reason, vice versa.
+
+> (***Important***) If user has been signed in with **Facebook** before and the **Facebook** account contains a **Gmail** email address, when sign in with the same **Gmail** via email link will [link the accounts](#link-accounts) together. However, when sign in with **Google** will overwrite the account provider because [Google is a trusted provider](https://groups.google.com/g/firebase-talk/c/ms_NVQem_Cw/m/8g7BFk1IAAAJ).
+
+### Email Link Sign-In
+
+Email link sign-in is a ***passwordless*** method by sending an authentication link to email then allow users to click the link to sign in app directly.
+
+It has dependency with Firebase [Dynamic Links](https://firebase.google.com/docs/dynamic-links/flutter/receive) in order to achieve auto sign in flow *click email link -> in-app redirection -> receive link and create user auth*.
+
+> (***Important***) Even though [Dynamic Link is deprecated](https://firebase.google.com/support/dynamic-links-faq) and will shut down on August 25, 2025, [email link authentication will continue to work](https://firebase.google.com/support/dynamic-links-faq#i_only_use_dynamic_links_for_firebase_authentication_will_email_link_authentication_in_firebase_authentication_continue_to_work) as an exclusion.
+
+Setup guides:
+- [Email link auth setup guide](https://firebase.google.com/docs/auth/flutter/email-link-auth)
+- [Flutter receive Dynamic links](https://firebase.google.com/docs/dynamic-links/flutter/receive)
+
+The flow starts with sending the auth link to an email
+
+```dart
+await authProvider.sendSignInLinkToEmail(email)
+```
+
+user then receive an email and click the link inside the email, user will be redirected back to the app. In order to receive the authentication data from the link, the `Widget` needs to extends `WidgetsBindingObserver` class and call `addObserver` in order to notify in `didChangeAppLifecycleState` function.
+
+Inside `didChangeAppLifecycleState` lifecycle function create `FirebaseDynamicLinks` listener to catch the email link from the redirection then call `authProvider.handleSignIn(emailLink)` with the email link string to complete the authentication flow.
+
+```dart
+class SignInEmailPageState extends State<SignInEmailPage>
+    with WidgetsBindingObserver {
+  late AuthProvider authProvider;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    try {
+      //
+      final subscription = FirebaseDynamicLinks.instance.onLink.listen(
+        (event) {
+          if (authProvider.status == AuthStatus.pending) {
+            authProvider.handleSignIn(event.link.toString()).then(
+              (signedIn) {
+                if (signedIn &&
+                    authProvider.status == AuthStatus.authenticated) {
+                  Navigator.popAndPushNamed(context, '/');
+                }
+              },
+            );
+          }
+        },
+      );
+
+      if (authProvider.status == AuthStatus.authenticated) {
+        subscription.cancel();
+      }
+    } catch (e) {
+      //
+    }
+  }
+```
+
+## Link accounts
+
+User account is **unique** and identified by **email address**, so when a user signs in using different identity providers (*Google*, *Facebook* or *Email Link*), the accounts will be linked and merged into one account.
+
+<img src="./link-accounts.png" width="600px" />
+
+For example as below, ralphbliu@gmail.com has been logged in both *Google* and *Email Link*, so the accounts are linked into one with multiple providers.
+
+<img src="./link-accounts-example.png" width="600px" />

@@ -102,8 +102,10 @@
 		"gitDecoration.ignoredResourceForeground": "#696d87"
 	},
 	"cSpell.words": [
+		"autofocus",
 		"Cupertino",
 		"Firestore",
+		"passwordless",
 		"pubspec",
 		"signin",
 		"wireframe"

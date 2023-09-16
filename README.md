@@ -135,4 +135,4 @@ or locate the **VS Code** status bar at the bottom of the window, select a devic
 - iOS
   - [Cheat sheet](/docs/ios/cheat-sheet.md)
 - Firebase
-  - [Cheat sheet](/docs/firebase/cheat-sheet.md)
+  - [Authentication](/docs/firebase/authentication.md)

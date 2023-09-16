@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/home_page.dart';
+import 'package:red_flags/widgets/signin_email_page.dart';
 import 'package:red_flags/widgets/signin_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -39,6 +40,14 @@ class App extends StatelessWidget {
           AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
           return MaterialApp(
+            routes: <String, WidgetBuilder>{
+              '/signin': (context) {
+                return const SignInPage();
+              },
+              '/signin-email': (context) {
+                return const SignInEmailPage();
+              }
+            },
             theme: ThemeData(
               appBarTheme: const AppBarTheme(centerTitle: true),
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade200),
@@ -65,9 +74,8 @@ class App extends StatelessWidget {
                       ),
                     );
                   },
-                  child: isAuthenticated
-                      ? const MyHomePage(title: 'Red Flags Dating')
-                      : const SignInPage(),
+                  child:
+                      isAuthenticated ? const HomePage() : const SignInPage(),
                 );
               },
             ),
