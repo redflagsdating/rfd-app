@@ -1,0 +1,7 @@
+{
+  "send": "Send",
+  "signOut": "Sign out",
+  "@signOut": {
+    "description": "Sign out button text"
+  }
+}

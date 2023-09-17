@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
@@ -53,6 +54,8 @@ class App extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade200),
               useMaterial3: true,
             ),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: const [Locale('en')],
             home: ListenableBuilder(
               listenable: authProvider,
               builder: (context, __) {

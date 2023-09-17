@@ -4,6 +4,7 @@
 - [Detect build modes](#detect-build-modes)
 - [Logging](./logger.md#logging)
 - [Access package info](#access-package-info)
+- [i18n & l10n](#i18n--l10n)
 
 ## Sync Firebase configuration
 
@@ -57,4 +58,67 @@ packageInfo.packageName
 packageInfo.buildNumber
 packageInfo.version
 ...
+```
+
+## i18n & l10n
+
+`l10n.yaml` is the config file
+
+```yaml
+arb-dir: lib/l10n  # App Resource Bundle folder 
+template-arb-file: app_en.arb  # Default language App Resource Bundle file
+output-localization-file: app_localizations.dart  # gen-10n output file
+```
+
+Define `localizationsDelegates` and `supportedLocales` in `app.dart` 
+
+```dart
+return MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: const [Locale('en')],
+```
+
+Localized message in the language App Resource Bundle file, e.g. `app_en.arb`
+
+```json
+{
+  "send": "Send",
+  "signOut": "Sign out",
+  "@signOut": {
+    "description": "Sign out button text"
+  }
+}
+```
+
+Generate l10n files
+
+```sh
+flutter gen-l10n
+```
+
+Use the localized message in Widget
+
+```dart
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+...
+
+@override
+Widget build(BuildContext context) {
+    return Scaffold(
+        body: Stack(
+        children: <Widget>[
+            Center(
+            child: TextButton(
+                onPressed: () async {
+                await authProvider.handleSignOut();
+                },
+                // 
+                child: Text(AppLocalizations.of(context)!.signOut),
+            ),
+            )
+        ],
+        ),
+    );
+}
 ```

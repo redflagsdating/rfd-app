@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 
@@ -28,7 +29,7 @@ class HomePageState extends State<HomePage> {
               onPressed: () async {
                 await authProvider.handleSignOut();
               },
-              child: const Text('Sign out'),
+              child: Text(AppLocalizations.of(context)!.signOut),
             ),
           )
         ],

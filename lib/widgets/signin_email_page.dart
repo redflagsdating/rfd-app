@@ -1,5 +1,6 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 
@@ -90,7 +91,7 @@ class SignInEmailPageState extends State<SignInEmailPage>
                         .sendSignInLinkToEmail(textController.text);
                     // TODO: show snackbar
                   },
-            child: const Text('Continue'),
+            child: Text(AppLocalizations.of(context)!.send),
           ),
         ],
       ),

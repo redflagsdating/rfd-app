@@ -128,13 +128,13 @@ or locate the **VS Code** status bar at the bottom of the window, select a devic
 
 - [Quick Start](/docs/quick-start.md)
 - ***DX*** *(Developer eXperience)*
+- ***Flutter***
+  - [Cheat sheet](/docs/flutter/cheat-sheet.md)
+  - [Logging](/docs/flutter/logging.md)
 - ***Firebase***
   - [Authentication](/docs/firebase/authentication.md)
   - [Crashlytics](/docs/firebase/crashlytics.md)
   - [Analytics](/docs/firebase/analytics.md)
-- ***Flutter***
-  - [Cheat sheet](/docs/flutter/cheat-sheet.md)
-  - [Logging](/docs/flutter/logging.md)
 - ***Android***
   - [Cheat sheet](/docs/android/cheat-sheet.md)
 - ***iOS***
