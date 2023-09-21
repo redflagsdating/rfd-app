@@ -4,9 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
-import 'package:red_flags/widgets/home_page.dart';
-import 'package:red_flags/widgets/signin_email_page.dart';
-import 'package:red_flags/widgets/signin_page.dart';
+import 'package:red_flags/widgets/page_home.dart';
+import 'package:red_flags/widgets/page_signin.dart';
+import 'package:red_flags/widgets/page_signin_email.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatelessWidget {
@@ -43,10 +43,10 @@ class App extends StatelessWidget {
           return MaterialApp(
             routes: <String, WidgetBuilder>{
               '/signin': (context) {
-                return const SignInPage();
+                return const PageSignIn();
               },
               '/signin-email': (context) {
-                return const SignInEmailPage();
+                return const PageSignInEmail();
               }
             },
             theme: ThemeData(
@@ -78,7 +78,7 @@ class App extends StatelessWidget {
                     );
                   },
                   child:
-                      isAuthenticated ? const HomePage() : const SignInPage(),
+                      isAuthenticated ? const PageHome() : const PageSignIn(),
                 );
               },
             ),

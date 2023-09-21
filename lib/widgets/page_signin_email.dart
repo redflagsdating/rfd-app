@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/widgets/mixin_snack_bar.dart';
 
-class SignInEmailPage extends StatefulWidget {
-  const SignInEmailPage({super.key});
+class PageSignInEmail extends StatefulWidget {
+  const PageSignInEmail({super.key});
 
   @override
-  State<SignInEmailPage> createState() => SignInEmailPageState();
+  State<PageSignInEmail> createState() => PageSignInEmailState();
 }
 
-class SignInEmailPageState extends State<SignInEmailPage>
-    with WidgetsBindingObserver {
+class PageSignInEmailState extends State<PageSignInEmail>
+    with MixinSnackBar, WidgetsBindingObserver {
   late AuthProvider authProvider;
   final textController = TextEditingController();
 
@@ -86,10 +87,11 @@ class SignInEmailPageState extends State<SignInEmailPage>
           TextButton(
             onPressed: isDisabled
                 ? null
-                : () async {
-                    await authProvider
-                        .sendSignInLinkToEmail(textController.text);
-                    // TODO: show snackbar
+                : () {
+                    authProvider
+                        .sendSignInLinkToEmail(textController.text)
+                        .whenComplete(() =>
+                            showAuthStatusSnackBar(context, authProvider));
                   },
             child: Text(AppLocalizations.of(context)!.send),
           ),

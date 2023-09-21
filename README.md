@@ -22,15 +22,18 @@
     │   │   ├── user.dart
     │   │   └── ...
     │   ├── widgets/                # Flutter widgets (Presentation layer)
-    │   │   ├── home_page.dart
+    │   │   ├── page_home.dart
+    │   │   ├── page_signin.dart
+    │   │   ├── mixin_snackbar.dart
     │   │   └── ...
     │   ├── services/               # (Application layer)
-    │   │   ├── auth_provider.dart
+    │   │   ├── provider_auth.dart
+    │   │   ├── provider_logger.dart
     │   │   └── ...       
     │   └── ...        
     │         
     ├── test                        # Widget tests
-    │   ├── widget_test.dart       
+    │   ├── test_widget.dart       
     │   └── ... 
     │                
     ├── docs                        # Developer guide

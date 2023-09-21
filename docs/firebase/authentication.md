@@ -165,7 +165,7 @@ user then receive an email and click the link inside the email, user will be red
 Inside `didChangeAppLifecycleState` lifecycle function create `FirebaseDynamicLinks` listener to catch the email link from the redirection then call `authProvider.handleSignIn(emailLink)` with the email link string to complete the authentication flow.
 
 ```dart
-class SignInEmailPageState extends State<SignInEmailPage>
+class PageSignInEmailState extends State<PageSignInEmail>
     with WidgetsBindingObserver {
   late AuthProvider authProvider;
 

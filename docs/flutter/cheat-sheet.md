@@ -5,6 +5,7 @@
 - [Logging](./logger.md#logging)
 - [Access package info](#access-package-info)
 - [i18n & l10n](#i18n--l10n)
+- [Show SnackBar](#show-snackbar)
 
 ## Sync Firebase configuration
 
@@ -113,12 +114,42 @@ Widget build(BuildContext context) {
                 onPressed: () async {
                 await authProvider.handleSignOut();
                 },
-                // 
+                // Access l10n message
                 child: Text(AppLocalizations.of(context)!.signOut),
             ),
             )
         ],
         ),
     );
+}
+```
+
+## Show SnackBar
+
+`MixinSnackBar` is a wrapper of `SnackBar` that provides styled ***info, warning, error*** and ***success*** levels of SnackBar and show correspondent levels of SnackBar base on `AuthStatus`.
+
+```dart
+import 'package:red_flags/widgets/mixin_snack_bar.dart';
+
+class PageSignInState extends State<PageSignIn> with MixinSnackBar {
+    ...
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+        appBar: ...,
+        body: TextButton(
+            onPressed: isDisabled
+                ? null
+                : () {
+                    // Show SnackBar base on AuthStatus
+                    authProvider
+                        .sendSignInLinkToEmail(textController.text)
+                        .whenComplete(() =>
+                            showAuthStatusSnackBar(context, authProvider));
+                },
+            child: Text(AppLocalizations.of(context)!.send),
+        ),
+        );
+    }
 }
 ```
