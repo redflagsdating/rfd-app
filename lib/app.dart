@@ -6,7 +6,6 @@ import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/page_home.dart';
 import 'package:red_flags/widgets/page_signin.dart';
-import 'package:red_flags/widgets/page_signin_email.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatelessWidget {
@@ -44,9 +43,6 @@ class App extends StatelessWidget {
             routes: <String, WidgetBuilder>{
               '/signin': (context) {
                 return const PageSignIn();
-              },
-              '/signin-email': (context) {
-                return const PageSignInEmail();
               }
             },
             theme: ThemeData(

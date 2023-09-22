@@ -14,6 +14,8 @@ mixin MixinSnackBar {
 
     switch (type) {
       case SnackBarType.error:
+        color = null;
+        backgroundColor = null;
         duration = const Duration(seconds: 8);
         break;
 
