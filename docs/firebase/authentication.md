@@ -153,6 +153,7 @@ It has dependency with Firebase [Dynamic Links](https://firebase.google.com/docs
 Setup guides:
 - [Email link auth setup guide](https://firebase.google.com/docs/auth/flutter/email-link-auth)
 - [Flutter receive Dynamic links](https://firebase.google.com/docs/dynamic-links/flutter/receive)
+- [Apple platforms setup](#apple-platforms-setup)
 
 The flow starts with sending the auth link to an email
 
@@ -202,6 +203,27 @@ class PageSignInEmailState extends State<PageSignInEmail>
     }
   }
 ```
+
+#### Apple platforms setup
+
+##### Firebase Project Settings
+
+Apple platforms requires additional setup for **Dynamic Links** works according to [the official setup guide](https://firebase.google.com/docs/dynamic-links/flutter/receive#apple_platforms). You will need to have ***App ID*** and ***Team ID*** from **Apple Store Connect** to set up your iOS in ***Firebase > Project Settings***, so follow the steps below to get it.
+
+<img src="./ios-project-settings.png" width="500px" />
+
+1. Login [Apple Developer](https://developer.apple.com/)
+2. Create a new [identifier](https://developer.apple.com/account/resources/identifiers) in type **App IDs** and enable ***Associated Domains*** capability.
+3. You should see the ***Team ID*** from ***App ID Prefix*** field
+4. Create a new [device](https://developer.apple.com/account/resources/devices/list) associated with your real device's **Device ID (UDID)**. [How to find your iPhone UUID via USB on Finder](https://medium.com/@igor_marques/how-to-find-an-iphones-udid-2d157f1cf2b9)
+5. Create a new [profile](https://developer.apple.com/account/resources/profiles/list) with type ***iOS App Development*** and associated it with the identifier you created in step #2
+6. Create a new [certificate](https://developer.apple.com/account/resources/certificates/list) to authorize your local developing app
+7. Create a new [app](https://appstoreconnect.apple.com/apps) via **Apple Store Connect** and associate the bundle ID with the identifier you created in step #2. Once the app is created you should be able to get the ***App ID*** from the browser URL. (e.g. `6467196763` in https://appstoreconnect.apple.com/apps/6467196763/appstore/ios/version/inflight)
+8. Go to ***Firebase Console > Project Settings*** then paste the ***App ID*** and ***Team ID*** into ***App Store ID*** and ***Team ID*** respectively.
+
+##### iOS Xcode settings
+
+Follow **Step 4** in [Receive Firebase Dynamic Links in a Flutter app](https://firebase.google.com/docs/dynamic-links/flutter/receive#apple_platforms).
 
 ## Link accounts
 
