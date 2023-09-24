@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "launch_x1_white_logo_transparent_background copy.png",
+      "filename" : "icon-167.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "launch_x2_white_logo_transparent_background copy.png",
+      "filename" : "icon-256.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "launch_x3_white_logo_transparent_background copy.png",
+      "filename" : "icon-512.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

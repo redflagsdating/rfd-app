@@ -5,7 +5,7 @@
 
 ## Change the app icon and launch screen
 
-1. Use [appiconmaker](https://appiconmaker.co/) or [Icon Set Creator](https://stackoverflow.com/questions/43928702/how-to-change-the-application-launcher-icon-on-flutter) to generate all versions of icon from the source image.
+1. Use [appiconmaker](https://appiconmaker.co/) or [Icon Set Creator](https://stackoverflow.com/questions/43928702/how-to-change-the-application-launcher-icon-on-flutter) to generate all versions of icon from the source image. For non-square image asset, use [Icon Slayer](https://www.gieson.com/Library/projects/utilities/icon_slayer/) instead with **SVG** file.
 
 2. Open the repo folder in **Xcode**, then go to `Runner > Asset`
 
