@@ -42,3 +42,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Xcode build time copy the file from ios/config/dev/ or ios/config/prod/
+/ios/firebase_app_id_file.json

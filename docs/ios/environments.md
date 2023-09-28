@@ -54,3 +54,10 @@ project 'Runner', {
 **Xcode** default reads `ios/Runner/Info.plist`, so need to manually set the it to read different files based on configuration's flavor.
 
 <img src="./xcode-info-plist.png" width="600px" />
+
+
+## `firebase_app_id_file.json` and `GooogleService-Info.plist`
+
+A customized build script is added under ***Build Phases*** via **VS Code** to copy these two files during build time accordingly bases on the flavor.
+
+<img src="./xcode-build-phase-copy-files.png" width="600px" />
