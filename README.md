@@ -15,37 +15,43 @@
 
 ```yml
     .
-    ├── lib                         # Source code folder
-    │   ├── main.dart               # Flutter app entry
-    │   ├── app.dart                # App widget 
-    │   ├── models/                 # Data models (Domain layer)
+    ├── lib/                               # Source code folder
+    │   ├── main_dev.dart                 # Flutter DEV target
+    │   ├── main_prod.dart                # Flutter PROD target
+    │   ├── firebase_options_dev.dart     # Firebase DEV config
+    │   ├── firebase_options_prod.dart    # Firebase PROD config
+    │   ├── app.dart                      # App widget 
+    │   ├── models/                       # Data models (Domain layer)
     │   │   ├── user.dart
     │   │   └── ...
-    │   ├── widgets/                # Flutter widgets (Presentation layer)
+    │   ├── widgets/                      # Flutter widgets (Presentation layer)
     │   │   ├── page_home.dart
     │   │   ├── page_signin.dart
     │   │   ├── mixin_snackbar.dart
     │   │   └── ...
-    │   ├── services/               # (Application layer)
-    │   │   ├── provider_auth.dart
-    │   │   ├── provider_logger.dart
+    │   ├── services/                     # (Application layer)
+    │   │   ├── auth_provider.dart
+    │   │   ├── logger_provider.dart
     │   │   └── ...       
     │   └── ...        
     │         
-    ├── test                        # Widget tests
+    ├── test/                              # Widget tests
     │   ├── test_widget.dart       
     │   └── ... 
     │                
-    ├── docs                        # Developer guide
-    │   ├── quick-start.md                 
+    ├── docs/                              # Documentation
+    │   ├── flutter/   
+    │   ├── firebase/     
+    │   ├── ios/     
+    │   ├── android/                  
     │   └── ... 
     │  
-    ├── pubspec.lock                # Flutter/Dart package dependency lock file
-    ├── pubspec.yaml                # Flutter/Dart package dependency file
-    ├── ios                         # iOS Xcode project
-    ├── android                     # Android Studio project
-    ├── .vscode                     # VS Code workspace settings 
-    ├── .githooks                   # Hoist .git/hooks folder for source control             
+    ├── pubspec.lock                      # Flutter/Dart package dependency lock file
+    ├── pubspec.yaml                      # Flutter/Dart package dependency file
+    ├── ios                               # iOS Xcode project
+    ├── android                           # Android Studio project
+    ├── .vscode                           # VS Code workspace settings 
+    ├── .githooks                         # Hoist .git/hooks folder for source control             
     └── ...
 ```
 
@@ -55,12 +61,11 @@ Inside the source folder `lib/` follows ***Layer-first*** structure, see [Featur
 
 ## Getting Started
 
-### Install
+- [Install](#install)
+- [Setup](#setup)
+- [Run](#run)
 
-- [git CLI](#git-cli)
-- [VS Code](#vs-code)
-- [Flutter](#flutter)
-- [Firebase CLI](#firebase-cli)
+### Install
 
 #### git CLI
 
@@ -113,32 +118,72 @@ git config --global user.email john@redflagsdating.com
 
 ### Run
 
-By default, **Flutter** reads `lib/main.dart` to run the app, you can either run via **terminal** at the root level
+**Three** ways to launch the app locally:
+
+1. VS Code
+2. Terminal
+3. Xcode/Android Studio
+
+Note that `dev` and `prod` are two separated **Firebase** environments with different [flavor](https://docs.flutter.dev/deployment/flavors#what-are-flavors) settings, ensure you launch the right ***flavor*** with the corresponding ***target*** for different purposes.
+
+#### via **VS Code**
+
+Locate the **VS Code** status bar at the bottom right and select a device (*iOS or Android*) from the ***Device Selector*** area (see [Run the app](https://docs.flutter.dev/get-started/test-drive)) then click ***Run and Debug*** > select the build flavor > ***Run***. 
+
+<img src="./docs/vscode-run-debug.png" width="300" />
+
+> You can connect your **iOS/Android** devices via USB and it should show up on your **VS Code** available devices.
+
+> You also have both **iOS** and **Android** simulators on your **VS Code** available devices if you have followed the [the Flutter official guide](https://docs.flutter.dev/get-started/install).
+
+#### via **Terminal**
+
+For day-to-day development, run `dev` in **Debug** mode
 
 ```bash
-flutter run
+flutter run --flavor dev --target lib/main_dev.dart
 ```
 
-or locate the **VS Code** status bar at the bottom of the window, select a device from the ***Device Selector*** area (see [Run the app](https://docs.flutter.dev/get-started/test-drive) section with a screenshot) open `lib/main.dart` in you **VS Code**, click the menu `Run > Start Debugging`.
+`dev` in other modes
 
-> Run via command line without specifying device will default use the first **Available Device**. [How to switch Flutter devices](https://dartcode.org/docs/quickly-switching-between-flutter-devices/)
+```bash
+flutter run --flavor dev --target lib/main_dev.dart --profile
+flutter run --flavor dev --target lib/main_dev.dart --release
+```
 
-> You should have both **iOS** and **Android** simulators on your **VS Code** available devices if you have followed the [the Flutter official guide](https://docs.flutter.dev/get-started/install).
+vice versa for `prod`
 
-> You can also connect your **iOS/Android** devices via USB and it should show up on your **VS Code** available devices.
+```bash
+flutter run --flavor prod --target lib/main_prod.dart
+...
+```
+
+#### via Xcode/Android Studio
+
+For **Xcode**, click the current scheme icon then select either `dev` or `prod` scheme then ***Product > Run***.
+
+<img src="./docs/xcode-run.png" width="300" />
+
+For **Android Studio**, click ***Build Variants*** at the bottom-left panel > select the variant of `app` from the dropdown > ***Run***.
+
+<img src="./docs/android-studio-run.png" width="300" />
 
 ## Developer Guide
 
-- [Quick Start](/docs/quick-start.md)
 - ***DX*** *(Developer eXperience)*
 - ***Flutter***
   - [Cheat sheet](/docs/flutter/cheat-sheet.md)
+  - [Environments](/docs/flutter/environments.md)
   - [Logging](/docs/flutter/logging.md)
 - ***Firebase***
+  - [Cheat sheet](/docs/firebase/cheat-sheet.md)
+  - [Environments](/docs/firebase/environments.md)
   - [Authentication](/docs/firebase/authentication.md)
   - [Crashlytics](/docs/firebase/crashlytics.md)
   - [Analytics](/docs/firebase/analytics.md)
 - ***Android***
   - [Cheat sheet](/docs/android/cheat-sheet.md)
+  - [Environments](/docs/android/environments.md)
 - ***iOS***
   - [Cheat sheet](/docs/ios/cheat-sheet.md)
+  - [Environments](/docs/ios/environments.md)

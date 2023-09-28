@@ -17,7 +17,7 @@ Locate `android/app/src/main/res` and right click on `res/` folder, then `New > 
 
 ## View and debug shared preference
 
-To view or debug local storage data (via `SharedPreferences` library), open **Android Studio** > ***Device Explorer*** > `data/data/com.redflags.app/FlutterSharedPreferences.xml`.
+To view or debug local storage data (via `SharedPreferences` library), open **Android Studio** > ***Device Explorer*** > `data/data/com.redflags.app.dev/FlutterSharedPreferences.xml`.
 
 <img src="./device-explorer.png" width="200px" />
 <img src="./shared-preferences.png" width="540px" />

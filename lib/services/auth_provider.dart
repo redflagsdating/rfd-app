@@ -338,8 +338,8 @@ class AuthProvider extends ChangeNotifier {
 
   /// Sign-in handler function requires 'input' to indicate login methods,
   /// 'input' can be either：
-  /// * SocialAuthProvider
-  /// * String - Sign-in link in the email from sendSignInLinkToEmail()
+  /// * `SocialAuthProvider`
+  /// * String - Sign-in link in the email from `sendSignInLinkToEmail()`
   Future<bool> handleSignIn(dynamic input) async {
     late UserModel userModel;
     late UserCredential? credential;
@@ -430,8 +430,14 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
-    _status = AuthStatus.authenticated;
-    notifyListeners();
+    /// Delay changing status to allow callers to do tear down after the Future
+    /// return before notifying updated status globally. E.g. page_signin.dart
+    /// need to close dialog and navigate to home page after email link signed
+    /// in and this has to be executed before the widget is removed from the tree.
+    Timer(const Duration(seconds: 1), () {
+      _status = AuthStatus.authenticated;
+      notifyListeners();
+    });
 
     return true;
   }

@@ -1,6 +1,6 @@
 # Crashlytics
 
-If you know **Sentry** then you know what **Crashlytics** does. It is initialized in `lib/main.dart` to report uncaught sync/async exceptions in production builds.
+If you know **Sentry** then you know what **Crashlytics** does. It is initialized in `lib/main_dev.dart` and `lib/main_prod.dart` to report uncaught sync/async exceptions in ***Release*** build mode.
 
 ```dart
 ///** Firebase Crashlytics init */

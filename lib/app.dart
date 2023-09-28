@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
@@ -39,44 +40,47 @@ class App extends StatelessWidget {
         builder: (context) {
           AuthProvider authProvider = Provider.of<AuthProvider>(context);
 
-          return MaterialApp(
-            routes: <String, WidgetBuilder>{
-              '/signin': (context) {
-                return const PageSignIn();
-              }
-            },
-            theme: ThemeData(
-              appBarTheme: const AppBarTheme(centerTitle: true),
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.red.shade200),
-              useMaterial3: true,
-            ),
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: const [Locale('en')],
-            home: ListenableBuilder(
-              listenable: authProvider,
-              builder: (context, __) {
-                final isAuthenticated =
-                    authProvider.status == AuthStatus.authenticated;
-                final offset = isAuthenticated
-                    ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
-                    : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
-
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  reverseDuration: const Duration(milliseconds: 0),
-                  transitionBuilder: (child, animation) {
-                    return FadeTransition(
-                      opacity: animation,
-                      child: SlideTransition(
-                        position: (offset).animate(animation),
-                        child: child,
-                      ),
-                    );
-                  },
-                  child:
-                      isAuthenticated ? const PageHome() : const PageSignIn(),
-                );
+          return FlavorBanner(
+            child: MaterialApp(
+              routes: <String, WidgetBuilder>{
+                '/signin': (context) {
+                  return const PageSignIn();
+                }
               },
+              theme: ThemeData(
+                appBarTheme: const AppBarTheme(centerTitle: true),
+                colorScheme:
+                    ColorScheme.fromSeed(seedColor: Colors.red.shade200),
+                useMaterial3: true,
+              ),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: const [Locale('en')],
+              home: ListenableBuilder(
+                listenable: authProvider,
+                builder: (context, __) {
+                  final isAuthenticated =
+                      authProvider.status == AuthStatus.authenticated;
+                  final offset = isAuthenticated
+                      ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
+                      : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
+
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    reverseDuration: const Duration(milliseconds: 0),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: (offset).animate(animation),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child:
+                        isAuthenticated ? const PageHome() : const PageSignIn(),
+                  );
+                },
+              ),
             ),
           );
         },

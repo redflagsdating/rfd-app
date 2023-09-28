@@ -14,7 +14,7 @@ import 'package:flutter/foundation.dart'
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
-class DefaultFirebaseOptions {
+class FirebaseOptionsProd {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
@@ -50,23 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB5nIrW_Hq8QoSJtUdTE8CyyLMuVMur71s',
-    appId: '1:775764266894:android:7db0d3569fd5b25db65edf',
-    messagingSenderId: '775764266894',
-    projectId: 'rf-app-dev-7145f',
-    storageBucket: 'rf-app-dev-7145f.appspot.com',
+    apiKey: 'AIzaSyBlfN0uc2AIJY1r2_dMDQFUFClSIa8zcKY',
+    appId: '1:409120994021:android:6b448efc06fc23d1b25a0c',
+    messagingSenderId: '409120994021',
+    projectId: 'rfd-app-prod-1fdad',
+    storageBucket: 'rfd-app-prod-1fdad.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCaIeWtNdZYtR4tVN2a-1GaIJIIIu6UTpA',
-    appId: '1:775764266894:ios:f4e7ec7603147392b65edf',
-    messagingSenderId: '775764266894',
-    projectId: 'rf-app-dev-7145f',
-    storageBucket: 'rf-app-dev-7145f.appspot.com',
-    androidClientId:
-        '775764266894-tvpg42pqac3a3u427ddmhclptorgbork.apps.googleusercontent.com',
-    iosClientId:
-        '775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com',
+    apiKey: 'AIzaSyA_nTYOPEdm22L-LgZsm1Dtir-tDHlfYwk',
+    appId: '1:409120994021:ios:b097d1901c121e90b25a0c',
+    messagingSenderId: '409120994021',
+    projectId: 'rfd-app-prod-1fdad',
+    storageBucket: 'rfd-app-prod-1fdad.appspot.com',
     iosBundleId: 'com.redflags.app',
   );
 }

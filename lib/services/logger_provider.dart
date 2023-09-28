@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:logger/logger.dart';
 
 /// [LoggerProvider]
@@ -19,5 +20,7 @@ class LoggerProvider {
       level: level,
       printer: PrettyPrinter(),
     );
+
+    _logger.d("Flavor profile: ${FlavorConfig.instance.variables["longName"]}");
   }
 }

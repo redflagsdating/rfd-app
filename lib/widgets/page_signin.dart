@@ -32,15 +32,15 @@ class PageSignInState extends State<PageSignIn>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     try {
-      //
       final subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) {
           if (authProvider.status == AuthStatus.pending) {
             authProvider.handleSignIn(event.link.toString()).then(
               (signedIn) {
-                if (signedIn &&
-                    authProvider.status == AuthStatus.authenticated) {
-                  Navigator.popAndPushNamed(context, '/');
+                if (signedIn) {
+                  // The logic relies on Timer() delay of AuthStatus change
+                  Navigator.popUntil(context, (route) => route.isFirst);
+                  Navigator.pushNamed(context, '/');
                 }
               },
             );
@@ -107,40 +107,40 @@ class PageSignInState extends State<PageSignIn>
               onPressed: () => showDialog(
                 context: context,
                 builder: (context) => Dialog.fullscreen(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      children: <Widget>[
-                        const Align(
-                          alignment: Alignment.topLeft,
-                          child: CloseButton(),
+                  child: Column(
+                    children: <Widget>[
+                      const Align(
+                        alignment: Alignment.topLeft,
+                        child: CloseButton(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 40,
+                          top: 200,
+                          left: 24,
+                          right: 24,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 40, top: 200),
-                          child: TextField(
-                            readOnly: isDisabled,
-                            controller: textController,
-                            decoration: const InputDecoration(
-                              border: UnderlineInputBorder(),
-                              labelText: 'Email address',
-                            ),
+                        child: TextField(
+                          readOnly: isDisabled,
+                          controller: textController,
+                          decoration: const InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Email address',
                           ),
                         ),
-                        TextButton(
-                          onPressed: isDisabled
-                              ? null
-                              : () {
-                                  authProvider
-                                      .sendSignInLinkToEmail(
-                                          textController.text)
-                                      .whenComplete(() =>
-                                          showAuthStatusSnackBar(
-                                              context, authProvider));
-                                },
-                          child: Text(AppLocalizations.of(context)!.send),
-                        ),
-                      ],
-                    ),
+                      ),
+                      TextButton(
+                        onPressed: isDisabled
+                            ? null
+                            : () {
+                                authProvider
+                                    .sendSignInLinkToEmail(textController.text)
+                                    .whenComplete(() => showAuthStatusSnackBar(
+                                        context, authProvider));
+                              },
+                        child: Text(AppLocalizations.of(context)!.send),
+                      ),
+                    ],
                   ),
                 ),
               ),

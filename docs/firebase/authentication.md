@@ -73,17 +73,17 @@ Ensure `GOOGLE_APP_ID` and `BUNDLE_ID` in the `GoogleService-Info.plist` are mat
 <dict>
 ...
 <key>BUNDLE_ID</key>
-<string>com.redflags.app</string>
+<string>com.redflags.app.dev</string>
 ...
 <key>GOOGLE_APP_ID</key>
-<string>1:775764266894:ios:f4e7ec7603147392b65edf</string>
+<string>1:775764266894:ios:263869f4f788811db65edf</string>
 </dict>
 </plist>
 ```
 
 <img src="./firebase-project-settings-ios.png" width="800px" />
 
-Go to [GCP console](https://console.cloud.google.com/) > ***API and services*** > ***Credentials*** > ***OAuth 2.0 Client IDs*** > `iOS client for com.redflags.app (auto created by Google Service)`.
+Go to [GCP console](https://console.cloud.google.com/) > ***API and services*** > ***Credentials*** > ***OAuth 2.0 Client IDs*** > `iOS client for com.redflags.app.dev (auto created by Google Service)`.
 
 <img src="./gcp-oauth-client-ids.png" width="600px" />
 

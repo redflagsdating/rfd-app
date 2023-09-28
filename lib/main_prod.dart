@@ -1,11 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
-import 'firebase_options.dart';
+import 'firebase_options_prod.dart';
 
 void main() async {
   ///** Flutter ensure binding  */
@@ -13,12 +14,7 @@ void main() async {
   /// executed before runApp()
   WidgetsFlutterBinding.ensureInitialized();
 
-  ///** Firebase init */
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  ///** Firebase Crashlytics init */
+  //** Firebase Crashlytics init for release mode only */
   if (kReleaseMode) {
     final crashlytics = FirebaseCrashlytics.instance;
 
@@ -32,10 +28,25 @@ void main() async {
     };
   }
 
-  ///** Persistent storage init */
+  //** Firebase init */
+  await Firebase.initializeApp(
+    // Unique name is required to avoid using "Default" and clash with dev
+    name: 'rfd-firebase-prod',
+    options: FirebaseOptionsProd.currentPlatform,
+  );
+
+  //** Persistent storage init */
   /// a.k.a localStorage in JS world.
   /// (NSUserDefaults on iOS and macOS, SharedPreferences on Android, etc.)
+  SharedPreferences.setPrefix("red.flags.");
   SharedPreferences localStorage = await SharedPreferences.getInstance();
+
+  //** Flutter flavors */
+  FlavorConfig(
+    variables: {
+      "longName": "Production",
+    },
+  );
 
   runApp(App(localStorage: localStorage));
 }

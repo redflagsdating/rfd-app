@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "409120994021",
+    "project_id": "rfd-app-prod-1fdad",
+    "storage_bucket": "rfd-app-prod-1fdad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409120994021:android:1462336e4c1b726eb25a0c",
+        "android_client_info": {
+          "package_name": "com.redflags.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlfN0uc2AIJY1r2_dMDQFUFClSIa8zcKY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

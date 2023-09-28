@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Red Flags</string>
+    <!-- TODO: Separate dev/prod Facebook App -->
     <string name="facebook_app_id">255952837340203</string>
     <string name="fb_login_protocol_scheme">fb255952837340203</string>
     <string name="facebook_client_token">e393bca70fa3829bbe4ed3b942d29ac7</string>

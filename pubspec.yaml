@@ -1,5 +1,5 @@
 name: red_flags
-description: A new Flutter project.
+description: Red Flags Dating app.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -50,6 +50,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  flutter_flavor: ^3.1.3
 
 dev_dependencies:
   flutter_test:

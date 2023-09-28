@@ -31,7 +31,19 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     namespace "com.redflags.app"
-    compileSdkVersion flutter.compileSdkVersion
+    flavorDimensions += "env"
+    productFlavors {
+        dev {
+            dimension "env"
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "Red Flags Dev"
+        }
+        prod {
+            dimension "env"
+            resValue "string", "app_name", "Red Flags"
+        }
+    }
+
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -48,12 +60,12 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.redflags.app"
         /// cloud_firestore plugin requires Android SDK 19 above
         /// flutter_facebook_auth requires Android SDK 21
         minSdkVersion 21
         targetSdkVersion 33
+        compileSdk flutter.compileSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
