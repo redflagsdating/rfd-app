@@ -5,16 +5,35 @@ Android built-in support product flavor setting, so simply add `flavorDimensions
 ```gradle
 android {
     ...
+    signingConfigs {
+        debug {
+            storeFile file('/Users/brianliu/.android/debug.keystore')
+        }
+        release {
+        storeFile file('/Users/brianliu/.android/upload-keystore.jks')
+            keyAlias 'upload'
+            storePassword '2agijrdl'
+            keyPassword '2agijrdl'
+        }
+    }
     flavorDimensions += "env"
     productFlavors {
         dev {
             dimension "env"
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "Red Flags Dev"
+            resValue "string", "facebook_app_id", "6720461168002075"
+            resValue "string", "facebook_client_token", "e352f70134fd3a3ecff44f34d4593862"
+            resValue "string", "fb_login_protocol_scheme", "fb6720461168002075"
+            signingConfig signingConfigs.debug
         }
         prod {
             dimension "env"
             resValue "string", "app_name", "Red Flags"
+            resValue "string", "facebook_app_id", "255952837340203"
+            resValue "string", "facebook_client_token", "e393bca70fa3829bbe4ed3b942d29ac7"
+            resValue "string", "fb_login_protocol_scheme", "fb255952837340203"
+            signingConfig signingConfigs.release
         }
     }
     ...

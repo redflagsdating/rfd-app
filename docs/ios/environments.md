@@ -61,3 +61,23 @@ project 'Runner', {
 A customized build script is added under ***Build Phases*** via **VS Code** to copy these two files during build time accordingly bases on the flavor.
 
 <img src="./xcode-build-phase-copy-files.png" width="600px" />
+
+## Add `FLUTTER_ROOT` and `FLUTTER_TARGET`
+
+Add `FLUTTER_ROOT` at ***User-Defined*** section in ***Build Settings*** and the value from the command `which flutter` in terminal.
+
+```sh
+which flutter
+/usr/local/share/flutter/bin/flutter
+```
+
+this ensures the below script in the ***Build Phases*** can run correctly
+
+```sh
+/bin/sh "$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh" build
+```
+
+Also, add `FLUTTER_TARGET` at ***User-Defined*** section in ***Build Settings*** and point to `lib/main_dev.dart` and `lib/main_prod.dart` accordingly by configurations.
+
+
+<img src="./xcode-user-defined.png" width="800px" />

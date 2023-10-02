@@ -16,7 +16,7 @@ then
 flutterfire configure
 ```
 
-select `rfd-app-dev` to sync `dev` environment and `rfd-app-prod` for `prod` environment. 
+select `rfd-app-dev` to sync `dev` environment and `rfd-app-prod` for `prod` environment
 
 ```bash
 ? Select a Firebase project to configure your Flutter application with ›                                                                                        
@@ -24,3 +24,5 @@ select `rfd-app-dev` to sync `dev` environment and `rfd-app-prod` for `prod` env
   rfd-app-prod-1fdad (rfd-app-prod)                             
   <create a new project>  
 ```
+
+copy the the generated files to the its corresponding path for `dev` or `prod`, see [Environments](./environments.md).

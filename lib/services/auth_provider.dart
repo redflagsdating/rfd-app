@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -41,8 +42,10 @@ class AuthProvider extends ChangeNotifier {
   final gSignIn = GoogleSignIn();
   final fbSignIn = FacebookAuth.instance;
   final firebaseAuth = FirebaseAuth.instance;
-  // TODO: Update production dynamic link domain
-  final dynamicLinkDomain = kDebugMode ? 'redflagsdating.page.link' : '';
+  final dynamicLinkDomain =
+      FlavorConfig.instance.variables["longName"] == "Development"
+          ? 'redflagsdev.page.link'
+          : 'redflagsprod.page.link';
 
   String? _code;
   String _message = '';

@@ -29,7 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb255952837340203</string>
+				<string>fb6720461168002075</string>
 				<string>com.googleusercontent.apps.775764266894-13qbr357ueqb9kmntphvh66r9rec467q</string>
 			</array>
 		</dict>
@@ -47,11 +47,11 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FacebookAppID</key>
-	<string>255952837340203</string>
+	<string>6720461168002075</string>
 	<key>FacebookClientToken</key>
-	<string>e393bca70fa3829bbe4ed3b942d29ac7</string>
+	<string>e352f70134fd3a3ecff44f34d4593862</string>
 	<key>FacebookDisplayName</key>
-	<string>Red Flags Dating</string>
+	<string>Red Flags Dating (Dev)</string>
 	<key>GIDClientID</key>
 	<string>775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -84,7 +84,7 @@
 	<false/>
 	<key>FirebaseDynamicLinksCustomDomains</key>
 	<array>
-		<string>https://redflagsdating.page.link/XktS</string>
+		<string>https://redflagsdev.page.link/iDzQ</string>
 	</array>
 </dict>
 </plist>

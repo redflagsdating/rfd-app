@@ -1,4 +1,14 @@
-# Red Flags Dating App
+<a href="https://www.redflagsdating.com/">
+  <h1 align="center">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="docs/redflags-180.png">
+      <img alt="Red Flags" src="docs/redflags-180.png">
+    </picture>
+    <div>
+      Red Flags Dating App
+    </div>
+  </h1>
+</a>
 
 - [Technologies](#technology)
 - [Folder Structure](#folder-structure)

@@ -4,7 +4,8 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:redflagsdating.page.link</string>
+		<string>applinks:redflagsdev.page.link</string>
+		<string>applinks:redflagsprod.page.link</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array/>

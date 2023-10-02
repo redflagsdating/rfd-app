@@ -36,7 +36,7 @@ Manually type in command `gradlew signingReport` then press *Enter* then you sho
 
 <img src="./gradlew-cmd.png" width="800px" />
 
-Find the ***debug*** variant and copy the **SHA1**
+Find ***Any*** **Config: debug** and copy the **SHA1** for the `rfd-app-dev` Firebase project
 
 ```sh
 Starting Gradle Daemon...
@@ -53,6 +53,19 @@ SHA-256: A4:B4:54:21:51:31:0A:E5:EC:36:27:95:1F:6D:CF:A1:9A:DB:9E:BF:32:BD:C4:A4
 Valid until: Saturday, 26 July 2053
 ```
 
+and ***Any*** **Config: release** then copy the **SHA1** for the `rfd-app-prod` Firebase project
+
+```sh
+Variant: prodRelease
+Config: release
+Store: /Users/brianliu/.android/upload-keystore.jks
+Alias: upload
+MD5: 8F:04:51:16:DB:85:91:E7:E5:6A:39:39:E1:2E:55:E3
+SHA1: 3B:11:2F:4B:B7:0B:D5:6F:18:63:3F:89:55:63:61:18:A4:3A:DB:E8
+SHA-256: 46:FC:C7:77:7B:41:48:26:64:70:7F:B6:C1:5B:F8:4A:77:10:1A:21:09:D6:57:31:53:54:E2:34:9F:E2:4B:CE
+Valid until: Thursday, 24 September 2048
+```
+
 Go to **Firebase** console > ***Project settings*** > ***Add fingerprint*** then paste the **SHA1** key then save.
 
 <img src="./firebase-project-settings-android.png" width="800px" />
@@ -62,7 +75,7 @@ Go to **Firebase** console > ***Project settings*** > ***Add fingerprint*** then
 You can run `flutterfire configure` command to automatically update all the configurations (see [Sync Firebase configuration](../flutter/cheat-sheet.md#sync-firebase-configuration)) and only follow the below steps to manually check if you have problems to run Google Sign-In on iOS devices.
 
 
-Open `ios/Runner/GoogleService-Info.plist` file and go to [Firebase console](https://console.firebase.google.com/) > ***Project settings*** > ***iOS*** app.
+Open `ios/config/dev/GoogleService-Info.plist` or `ios/config/prod/GoogleService-Info.plist` file and go to [Firebase console](https://console.firebase.google.com/) > ***Project settings*** > ***iOS*** app.
 
 Ensure `GOOGLE_APP_ID` and `BUNDLE_ID` in the `GoogleService-Info.plist` are matched with the `App ID` and `Bundle ID` respectively.
 
@@ -105,7 +118,7 @@ Ensure `CLIENT_ID` and `REVERSED_CLIENT_ID` in the `GoogleService-Info.plist` ar
 
 <img src="./gcp-oauth-ios-client-ids.png" width="600px" />
 
-Open `ios/Runner/Info.plist` then copy and paste the below snippet and ensure `GIDClientID` and `CFBundleURLSchemes` are matched with the `Client ID` and `iOS URL scheme` respectively.
+Open `ios/Runner/Info-dev.plist` or `ios/Runner/Info-prod.plist` then copy and paste the below snippet and ensure `GIDClientID` and `CFBundleURLSchemes` are matched with the `Client ID` and `iOS URL scheme` respectively.
 
 ```xml
 <!-- Google Sign-in Section -->

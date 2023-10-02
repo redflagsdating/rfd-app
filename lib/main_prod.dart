@@ -14,6 +14,13 @@ void main() async {
   /// executed before runApp()
   WidgetsFlutterBinding.ensureInitialized();
 
+  //** Firebase init */
+  await Firebase.initializeApp(
+    // Unique name is required to avoid using "Default" and clash with dev
+    name: 'rfd-firebase-prod',
+    options: FirebaseOptionsProd.currentPlatform,
+  );
+
   //** Firebase Crashlytics init for release mode only */
   if (kReleaseMode) {
     final crashlytics = FirebaseCrashlytics.instance;
@@ -27,13 +34,6 @@ void main() async {
       return true;
     };
   }
-
-  //** Firebase init */
-  await Firebase.initializeApp(
-    // Unique name is required to avoid using "Default" and clash with dev
-    name: 'rfd-firebase-prod',
-    options: FirebaseOptionsProd.currentPlatform,
-  );
 
   //** Persistent storage init */
   /// a.k.a localStorage in JS world.

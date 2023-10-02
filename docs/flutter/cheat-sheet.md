@@ -1,15 +1,24 @@
 # Flutter cheat sheet
 
-- [Detect build modes](#detect-build-modes)
+- [Detect build flavor/mode](#detect-build-flavormode)
 - [Access package info](#access-package-info)
 - [i18n & l10n](#i18n--l10n)
 - [Show SnackBar](#show-snackbar)
 - [Rename package name](#rename-package-name)
 - [Logging](./logger.md#logging)
 
-## Detect build modes
+## Detect build flavor/mode
 
-Similar to `development` or `production` of `NODE_ENV` in `Node.js` world, Flutter ***"foundation"*** package gives us these build mode constants:
+There are [two Firebase projects](/docs/firebase/environments.md), `rfd-app-dev` and `rfd-app-prod`, for `dev` and `prod` flavors respectively. Use `FlavorConfig` in the dart files to retrieve flavor's variables if you need conditional logic for two different flavors.
+
+```dart
+import 'package:flutter_flavor/flutter_flavor.dart';
+...
+
+FlavorConfig.instance.variables["longName"] == "Development" // 'Development' or 'Production'
+```
+
+Flutter ***"foundation"*** package gives us these build mode constants:
 
 - `kDebugMode`
 - `kReleaseMode`
@@ -142,21 +151,18 @@ class PageSignInState extends State<PageSignIn> with MixinSnackBar {
 
 ## Rename package name
 
-Follow the steps to rename app package name (or bundle ID) if only if it is needed.
+Follow the steps to rename app package name (or bundle ID) iff it is needed.
 
 1. Run `change_app_package_name` command to rename
 
-```
+```bash
 flutter pub run change_app_package_name:main com.redflags.app.dev
 ```
-2. Go to **Firebase** console > ***Project settings*** > ***General*** > ***Your apps*** > ***Add app*** for both **iOS** and **Android** with the new package name. (e.g. `com.redfalgs.app.new`) Then copy the App settings over from the existing apps and remove the old apps.
-3. Download `google-services.json` then update `android/app/google-services.json`.
-4. Download `GoogleService-Info.plist` then update `iso/Runner/GoogleService-Info.plist`.
-5. Run `flutterfire configure` to update `firebase_options.dart`.
+
+2. Go to **Firebase** console > ***Project settings*** > ***General*** > ***Your apps*** > ***Add app*** for both **iOS** and **Android** with the new package name. (e.g. `com.redfalgs.app.xxx`) Then copy the App settings over from the existing apps and remove the old apps.
+3. Download `google-services.json` then update `android/app/src/dev/google-services.json` **OR** `android/app/src/prod/google-services.json` accordingly depends on the **Firebase** project belongs to.
+4. Download `GoogleService-Info.plist` then update `ios/config/dev/GoogleService-Info.plist` **OR** `ios/config/prod/GoogleService-Info.plist` accordingly.
+5. Run `flutterfire configure` to generate `lib/firebase_options.dart` then copy to `lib/firebase_options_dev.dart` **OR** `lib/firebase_options_prod.dart` accordingly.
 6. [Update Google OAuth Web Client ID and secret](/docs/firebase/authentication.md#set-up-client-id).
-7. Update `CFBundleURLSchemes` in `ios/Runner/Info.plist` Google Sign-In for **iOS**.
+7. Update `CFBundleURLSchemes` in `ios/config/Info-dev.plist` **OR** `ios/config/Info-prod.plist` Google Sign-In for **iOS**.
 8. Search the old package name in **VSCode** under `lib/` to rename the reset of it.
-
-## Dev/Prod environments
-
-FlavorConfig

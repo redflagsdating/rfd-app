@@ -51,7 +51,7 @@ class FirebaseOptionsProd {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBlfN0uc2AIJY1r2_dMDQFUFClSIa8zcKY',
-    appId: '1:409120994021:android:6b448efc06fc23d1b25a0c',
+    appId: '1:409120994021:android:1462336e4c1b726eb25a0c',
     messagingSenderId: '409120994021',
     projectId: 'rfd-app-prod-1fdad',
     storageBucket: 'rfd-app-prod-1fdad.appspot.com',
@@ -59,10 +59,14 @@ class FirebaseOptionsProd {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyA_nTYOPEdm22L-LgZsm1Dtir-tDHlfYwk',
-    appId: '1:409120994021:ios:b097d1901c121e90b25a0c',
+    appId: '1:409120994021:ios:e377d0c5298f975db25a0c',
     messagingSenderId: '409120994021',
     projectId: 'rfd-app-prod-1fdad',
     storageBucket: 'rfd-app-prod-1fdad.appspot.com',
+    androidClientId:
+        '409120994021-fg81jk7ln7llfo2kiga8agdreu25j4r0.apps.googleusercontent.com',
+    iosClientId:
+        '409120994021-re50ugfvjqvrgnehkpq6pbbnamfglr2r.apps.googleusercontent.com',
     iosBundleId: 'com.redflags.app',
   );
 }

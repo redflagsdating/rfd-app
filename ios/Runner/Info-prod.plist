@@ -30,7 +30,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>fb255952837340203</string>
-				<string>com.googleusercontent.apps.775764266894-13qbr357ueqb9kmntphvh66r9rec467q</string>
+				<string>com.googleusercontent.apps.409120994021-re50ugfvjqvrgnehkpq6pbbnamfglr2r</string>
 			</array>
 		</dict>
 		<dict>
@@ -53,7 +53,7 @@
 	<key>FacebookDisplayName</key>
 	<string>Red Flags Dating</string>
 	<key>GIDClientID</key>
-	<string>775764266894-5j0h326ek4l17u6pp9k1kn1vgov4dfsp.apps.googleusercontent.com</string>
+	<string>409120994021-re50ugfvjqvrgnehkpq6pbbnamfglr2r.apps.googleusercontent.com</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>fbapi</string>
@@ -84,7 +84,7 @@
 	<false/>
 	<key>FirebaseDynamicLinksCustomDomains</key>
 	<array>
-		<string>https://redflagsdating.page.link/XktS</string>
+		<string>https://redflagsprod.page.link/naxz</string>
 	</array>
 </dict>
 </plist>
