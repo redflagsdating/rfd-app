@@ -8,6 +8,7 @@
         "naumovs.color-highlight",
         "davidanson.vscode-markdownlint",
         "usernamehw.errorlens",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "localizely.flutter-intl"
     ]
 }

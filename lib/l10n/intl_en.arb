@@ -1,0 +1,17 @@
+{
+  "send": "Send",
+  "email": "Email",
+  "signOut": "Sign out",
+  "termOfService": "Terms of Service",
+  "privacyPolicy": "Privacy Policy",
+  "pageSignInTagLine": "Real talk. Real connection",
+  "pageSignInWithBtn": "Continue with {provider}",
+  "@pageSignInWithBtn": {
+    "description": "Sign-in page button label",
+    "provider": {
+      "type": "String",
+      "example": "Google"
+    }
+  },
+  "pageSignInFooter": "By registering, you agree to our"
+}
