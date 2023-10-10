@@ -2,8 +2,11 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/logger_provider.dart';
+import 'package:red_flags/widgets/dialog_signin_email.dart';
 import 'package:red_flags/widgets/mixin_snack_bar.dart';
 
 class PageSignIn extends StatefulWidget {
@@ -15,8 +18,8 @@ class PageSignIn extends StatefulWidget {
 
 class PageSignInState extends State<PageSignIn>
     with MixinSnackBar, WidgetsBindingObserver {
+  late Logger logger;
   late AuthProvider authProvider;
-  final textController = TextEditingController();
 
   @override
   void initState() {
@@ -27,6 +30,7 @@ class PageSignInState extends State<PageSignIn>
   @override
   void didChangeDependencies() {
     authProvider = Provider.of<AuthProvider>(context);
+    logger = Provider.of<LoggerProvider>(context).logger;
     super.didChangeDependencies();
   }
 
@@ -40,8 +44,8 @@ class PageSignInState extends State<PageSignIn>
               (signedIn) {
                 if (signedIn) {
                   // The logic relies on Timer() delay of AuthStatus change
-                  Navigator.popUntil(context, (route) => route.isFirst);
-                  Navigator.pushNamed(context, '/');
+                  // Navigator.popUntil(context, (route) => route.isFirst);
+                  // Navigator.pushNamed(context, '/');
                 }
               },
             );
@@ -53,35 +57,21 @@ class PageSignInState extends State<PageSignIn>
         subscription.cancel();
       }
     } catch (e) {
-      // TODO
+      logger.e(e, time: DateTime.now());
     }
   }
 
   @override
-  void dispose() {
-    textController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     final l10n = AppLocalizations.of(context);
-    final textTheme = Theme.of(context).textTheme.apply(
+    final graphicText = Theme.of(context).textTheme.apply(
           displayColor: Colors.white,
           bodyColor: Colors.white,
         );
-    final isDisabled = [AuthStatus.pending, AuthStatus.authenticating]
-        .contains(authProvider.status);
 
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.only(
-          bottom: 48,
-          top: 140,
-          left: 24,
-          right: 24,
-        ),
-        width: double.infinity,
+        padding: const EdgeInsets.all(24),
         decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/signin-background.jpg"),
@@ -90,129 +80,100 @@ class PageSignInState extends State<PageSignIn>
         ),
         child: Column(
           children: <Widget>[
-            Image.asset(
-              "assets/rf-logo-white.png",
-              width: 160,
-            ),
-            const SizedBox(height: 30),
             Expanded(
-              child: Text(
-                l10n!.pageSignInTagLine,
-                style: textTheme.headlineSmall,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    "assets/rf-logo-white.png",
+                    width: 160,
+                  ),
+                  const SizedBox(height: 30),
+                  Text(
+                    l10n!.pgSignInTagLine,
+                    style: graphicText.headlineSmall,
+                  ),
+                ],
               ),
             ),
             FilledButton(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
               onPressed: () {
                 authProvider
                     .handleSignIn(SocialAuthProvider.google)
                     .whenComplete(
                         () => showAuthStatusSnackBar(context, authProvider));
               },
-              child: SizedBox(
-                width: double.infinity,
-                child: Text(
-                  l10n.pageSignInWithBtn("Google"),
-                  textAlign: TextAlign.center,
-                ),
+              child: Text(
+                l10n.pgSignInWithBtn("Google"),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 8),
             FilledButton(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
               onPressed: () {
                 authProvider
                     .handleSignIn(SocialAuthProvider.facebook)
                     .whenComplete(
                         () => showAuthStatusSnackBar(context, authProvider));
               },
-              child: SizedBox(
-                width: double.infinity,
-                child: Text(
-                  l10n.pageSignInWithBtn("Facebook"),
-                  textAlign: TextAlign.center,
-                ),
+              child: Text(
+                l10n.pgSignInWithBtn("Facebook"),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 8),
             FilledButton(
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
               onPressed: () => showDialog(
                 context: context,
-                builder: (context) => Dialog.fullscreen(
-                  child: Column(
-                    children: <Widget>[
-                      const Align(
-                        alignment: Alignment.topLeft,
-                        child: CloseButton(),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          bottom: 40,
-                          top: 200,
-                          left: 24,
-                          right: 24,
-                        ),
-                        child: TextField(
-                          readOnly: isDisabled,
-                          controller: textController,
-                          decoration: InputDecoration(
-                            border: const UnderlineInputBorder(),
-                            labelText: l10n.email,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: isDisabled
-                            ? null
-                            : () {
-                                authProvider
-                                    .sendSignInLinkToEmail(textController.text)
-                                    .whenComplete(() => showAuthStatusSnackBar(
-                                        context, authProvider));
-                              },
-                        child: Text(AppLocalizations.of(context)!.send),
-                      ),
-                    ],
-                  ),
-                ),
+                builder: (context) => const DialogSigninEmail(),
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: Text(
-                  l10n.pageSignInWithBtn(l10n.email),
-                  textAlign: TextAlign.center,
-                ),
+              child: Text(
+                l10n.pgSignInWithBtn(l10n.email),
+                textAlign: TextAlign.center,
               ),
             ),
             const SizedBox(height: 32),
             Text.rich(
               textAlign: TextAlign.center,
               TextSpan(
-                style: textTheme.labelLarge,
-                text: l10n.pageSignInFooter,
+                style: graphicText.bodyMedium,
+                text: l10n.pgSignInFooter,
                 children: [
                   const TextSpan(text: ' '),
                   TextSpan(
-                      text: l10n.termOfService,
-                      style: const TextStyle(fontWeight: FontWeight.w800),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          // TODO
-                          showInfoSnackBar(
-                            context,
-                            "TODO: Open Terms of Service agreement",
-                          );
-                        }),
+                    text: l10n.termOfService,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO
+                        showInfoSnackBar(
+                          context,
+                          "TODO: Open Terms of Service agreement",
+                        );
+                      },
+                  ),
                   const TextSpan(text: ' & '),
                   TextSpan(
-                      text: l10n.privacyPolicy,
-                      style: const TextStyle(fontWeight: FontWeight.w800),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          // TODO
-                          showInfoSnackBar(
-                            context,
-                            "TODO: Open Privacy policy",
-                          );
-                        }),
+                    text: l10n.privacyPolicy,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO
+                        showInfoSnackBar(
+                          context,
+                          "TODO: Open Privacy policy",
+                        );
+                      },
+                  ),
                 ],
               ),
             ),

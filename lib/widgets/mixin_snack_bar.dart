@@ -12,6 +12,7 @@ mixin MixinSnackBar {
     late Color? backgroundColor;
     var duration = const Duration(seconds: 3);
 
+    // TODO
     switch (type) {
       case SnackBarType.error:
         color = null;
@@ -29,7 +30,6 @@ mixin MixinSnackBar {
       SnackBar(
         duration: duration,
         behavior: SnackBarBehavior.floating,
-        // TODO
         closeIconColor: color,
         backgroundColor: backgroundColor,
         shape: RoundedRectangleBorder(
@@ -38,12 +38,6 @@ mixin MixinSnackBar {
         content: Text(
           message,
           style: TextStyle(color: color),
-        ),
-        action: SnackBarAction(
-          label: 'Action',
-          onPressed: () {
-            // Code to execute.
-          },
         ),
       ),
     );

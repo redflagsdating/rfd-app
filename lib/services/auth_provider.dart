@@ -42,10 +42,7 @@ class AuthProvider extends ChangeNotifier {
   final gSignIn = GoogleSignIn();
   final fbSignIn = FacebookAuth.instance;
   final firebaseAuth = FirebaseAuth.instance;
-  final dynamicLinkDomain =
-      FlavorConfig.instance.variables["longName"] == "Development"
-          ? 'redflagsdev.page.link'
-          : 'redflagsprod.page.link';
+  final isDev = FlavorConfig.instance.variables["longName"] == "Development";
 
   String? _code;
   String _message = '';
@@ -311,12 +308,13 @@ class AuthProvider extends ChangeNotifier {
 
   ///
   Future<void> sendSignInLinkToEmail(String email) async {
-    _status = AuthStatus.pending;
+    _status = AuthStatus.authenticating;
     notifyListeners();
 
     final packageInfo = await PackageInfo.fromPlatform();
-    // TODO: Update production url path
-    final url = 'https://$dynamicLinkDomain/${kDebugMode ? 'XktS' : ''}';
+    final dynamicLinkDomain =
+        isDev ? 'redflagsdev.page.link' : 'redflagsprod.page.link';
+    final url = 'https://$dynamicLinkDomain/${isDev ? 'iDzQ' : 'naxz'}';
 
     logger.d('Dynamic link url: $url', time: DateTime.now());
 
@@ -331,9 +329,10 @@ class AuthProvider extends ChangeNotifier {
           dynamicLinkDomain: dynamicLinkDomain,
         ),
       );
-
-      //
       await localStorage.setString(UserFields.email.name, email);
+
+      _status = AuthStatus.pending;
+      notifyListeners();
     } catch (e) {
       await _onErrorOrException(e);
     }
@@ -433,14 +432,8 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
-    /// Delay changing status to allow callers to do tear down after the Future
-    /// return before notifying updated status globally. E.g. page_signin.dart
-    /// need to close dialog and navigate to home page after email link signed
-    /// in and this has to be executed before the widget is removed from the tree.
-    Timer(const Duration(seconds: 1), () {
-      _status = AuthStatus.authenticated;
-      notifyListeners();
-    });
+    _status = AuthStatus.authenticated;
+    notifyListeners();
 
     return true;
   }

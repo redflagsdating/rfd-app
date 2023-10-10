@@ -54,7 +54,6 @@ class App extends StatelessWidget {
                   bodyMedium: TextStyle(fontFamily: 'LeagueSpartan'),
                   bodySmall: TextStyle(fontFamily: 'LeagueSpartan'),
                 ),
-                // primarySwatch: Colors.,
                 colorScheme: const ColorScheme(
                   brightness: Brightness.light,
                   primary: Color.fromRGBO(255, 0, 73, 1.0),
@@ -71,10 +70,12 @@ class App extends StatelessWidget {
                   onError: Colors.white,
                   background: Colors.white,
                   onBackground: Colors.black,
-                  surface: Color.fromRGBO(255, 189, 228, 1.0),
+                  surface: Color.fromRGBO(179, 234, 255, 1.0),
                   onSurface: Color.fromRGBO(27, 20, 100, 1.0),
                 ),
-                buttonTheme: const ButtonThemeData(),
+                iconTheme: const IconThemeData(
+                  color: Color.fromRGBO(27, 20, 100, 1.0),
+                ),
                 useMaterial3: true,
               ),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
