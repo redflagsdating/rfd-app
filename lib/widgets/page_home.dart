@@ -7,10 +7,10 @@ class PageHome extends StatefulWidget {
   const PageHome({super.key});
 
   @override
-  State<PageHome> createState() => PageHomeState();
+  State<PageHome> createState() => _PageHomeState();
 }
 
-class PageHomeState extends State<PageHome> {
+class _PageHomeState extends State<PageHome> {
   late AuthProvider authProvider;
 
   @override

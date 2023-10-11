@@ -6,6 +6,7 @@
 - [Show SnackBar](#show-snackbar)
 - [Rename package name](#rename-package-name)
 - [Logging](./logger.md#logging)
+- [Add assets (images/fonts)](#add-assets)
 
 ## Detect build flavor/mode
 
@@ -121,32 +122,8 @@ Widget build(BuildContext context) {
 
 ## Show SnackBar
 
-`MixinSnackBar` is a wrapper of `SnackBar` that provides styled ***info, warning, error*** and ***success*** levels of SnackBar and show correspondent levels of SnackBar base on `AuthStatus`.
-
 ```dart
-import 'package:red_flags/widgets/mixin_snack_bar.dart';
-
-class PageSignInState extends State<PageSignIn> with MixinSnackBar {
-    ...
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
-        appBar: ...,
-        body: TextButton(
-            onPressed: isDisabled
-                ? null
-                : () {
-                    // Show SnackBar base on AuthStatus
-                    authProvider
-                        .sendSignInLinkToEmail(textController.text)
-                        .whenComplete(() =>
-                            showAuthStatusSnackBar(context, authProvider));
-                },
-            child: Text(AppLocalizations.of(context)!.send),
-        ),
-        );
-    }
-}
+TODO
 ```
 
 ## Rename package name
@@ -166,3 +143,34 @@ flutter pub run change_app_package_name:main com.redflags.app.dev
 6. [Update Google OAuth Web Client ID and secret](/docs/firebase/authentication.md#set-up-client-id).
 7. Update `CFBundleURLSchemes` in `ios/config/Info-dev.plist` **OR** `ios/config/Info-prod.plist` Google Sign-In for **iOS**.
 8. Search the old package name in **VSCode** under `lib/` to rename the reset of it.
+
+
+## Add assets
+
+Specify file paths of **image** and **fonts** in `pubspec.yaml`
+
+```yaml
+flutter:
+  assets:
+    - assets/signin-bg.jpg
+    - assets/signin-splash-bg.jpg
+    ...
+  fonts:
+    - family: Nunito
+      fonts:
+        - asset: fonts/Nunito-ExtraLight.ttf
+          weight: 200
+          ...
+```
+
+then load the image asset using `AssetImage` or `Image.asset`
+
+```dart
+children: <Widget>[
+    Image.asset(
+        "assets/rf-logo-white.png",
+        width: 160,
+    ),
+    ...
+],
+```

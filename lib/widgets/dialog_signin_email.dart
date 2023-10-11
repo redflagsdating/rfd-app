@@ -1,19 +1,17 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
-import 'package:red_flags/widgets/mixin_snack_bar.dart';
 
 class DialogSigninEmail extends StatefulWidget {
-  const DialogSigninEmail({super.key});
+  const DialogSigninEmail({super.key, required this.authProvider});
+  final AuthProvider authProvider;
 
   @override
-  State<DialogSigninEmail> createState() => DialogSigninEmailState();
+  State<DialogSigninEmail> createState() => _DialogSigninEmailState();
 }
 
-class DialogSigninEmailState extends State<DialogSigninEmail>
-    with MixinSnackBar {
+class _DialogSigninEmailState extends State<DialogSigninEmail> {
   final _emailForm = GlobalKey<FormState>();
   final _textCtrl = TextEditingController();
 
@@ -26,8 +24,7 @@ class DialogSigninEmailState extends State<DialogSigninEmail>
   @override
   Widget build(context) {
     final l10n = AppLocalizations.of(context);
-    final authProvider = Provider.of<AuthProvider>(context);
-    final enabled = authProvider.status != AuthStatus.authenticating;
+    final enabled = widget.authProvider.status != AuthStatus.initializing;
 
     return Dialog(
       insetPadding: const EdgeInsets.symmetric(horizontal: 24),
@@ -81,15 +78,31 @@ class DialogSigninEmailState extends State<DialogSigninEmail>
                     ? null
                     : () {
                         if (_emailForm.currentState!.validate()) {
-                          final email = _textCtrl.text;
-
-                          authProvider
-                              .sendSignInLinkToEmail(email)
+                          widget.authProvider
+                              .sendSignInLinkToEmail(_textCtrl.text)
                               .whenComplete(
                             () {
-                              showSuccessSnackBar(
-                                  context, l10n.pgSignInEmailSent(email));
-                              Navigator.pop(context);
+                              if (widget.authProvider.status ==
+                                  AuthStatus.pending) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: const Duration(seconds: 8),
+                                    action: SnackBarAction(
+                                      label: 'Resend',
+                                      onPressed: () {
+                                        if (enabled) {
+                                          widget.authProvider
+                                              .sendSignInLinkToEmail(
+                                                  _textCtrl.text);
+                                        }
+                                      },
+                                    ),
+                                    content: Text(l10n.pgSignInEmailSent),
+                                  ),
+                                );
+
+                                Navigator.pop(context);
+                              }
                             },
                           );
                         }

@@ -9,6 +9,7 @@
         "davidanson.vscode-markdownlint",
         "usernamehw.errorlens",
         "streetsidesoftware.code-spell-checker",
-        "localizely.flutter-intl"
+        "localizely.flutter-intl",
+        "alexisvt.flutter-snippets"
     ]
 }

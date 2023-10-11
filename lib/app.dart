@@ -7,6 +7,7 @@ import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/page_home.dart';
 import 'package:red_flags/widgets/page_signin.dart';
+import 'package:red_flags/widgets/page_signin_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatelessWidget {
@@ -38,21 +39,32 @@ class App extends StatelessWidget {
       // Automatically switch to material or cupertino base on the platform
       child: Builder(
         builder: (context) {
-          AuthProvider authProvider = Provider.of<AuthProvider>(context);
+          final logger = Provider.of<LoggerProvider>(context).logger;
+          final authProvider = Provider.of<AuthProvider>(context);
 
           return FlavorBanner(
             child: MaterialApp(
-              routes: <String, WidgetBuilder>{
-                '/signin': (context) {
-                  return const PageSignIn();
-                }
-              },
+              // routes: <String, WidgetBuilder>{1
+              //   '/signin': (context) {
+              //     return const PageSignIn();
+              //   },
+              //   '/signin-splash': (context) {
+              //     return const PageSignInSplash();
+              //   }
+              // },
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: const TextTheme(
                   bodyLarge: TextStyle(fontFamily: 'LeagueSpartan'),
                   bodyMedium: TextStyle(fontFamily: 'LeagueSpartan'),
                   bodySmall: TextStyle(fontFamily: 'LeagueSpartan'),
+                ),
+                snackBarTheme: SnackBarThemeData(
+                  actionTextColor: const Color.fromRGBO(255, 189, 228, 1.0),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                  ),
                 ),
                 colorScheme: const ColorScheme(
                   brightness: Brightness.light,
@@ -70,8 +82,8 @@ class App extends StatelessWidget {
                   onError: Colors.white,
                   background: Colors.white,
                   onBackground: Colors.black,
-                  surface: Color.fromRGBO(179, 234, 255, 1.0),
-                  onSurface: Color.fromRGBO(27, 20, 100, 1.0),
+                  surface: Colors.white,
+                  onSurface: Color.fromRGBO(50, 47, 53, 1.0),
                 ),
                 iconTheme: const IconThemeData(
                   color: Color.fromRGBO(27, 20, 100, 1.0),
@@ -85,7 +97,9 @@ class App extends StatelessWidget {
                 builder: (context, __) {
                   final isAuthenticated =
                       authProvider.status == AuthStatus.authenticated;
-                  final offset = isAuthenticated
+                  final isAuthenticating =
+                      authProvider.status == AuthStatus.authenticating;
+                  final offset = isAuthenticated || isAuthenticating
                       ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
                       : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
 
@@ -93,16 +107,19 @@ class App extends StatelessWidget {
                     duration: const Duration(milliseconds: 200),
                     reverseDuration: const Duration(milliseconds: 0),
                     transitionBuilder: (child, animation) {
-                      return FadeTransition(
-                        opacity: animation,
-                        child: SlideTransition(
-                          position: (offset).animate(animation),
-                          child: child,
-                        ),
+                      return SlideTransition(
+                        position: animation.drive(offset),
+                        child: child,
                       );
                     },
-                    child:
-                        isAuthenticated ? const PageHome() : const PageSignIn(),
+                    child: isAuthenticated
+                        ? const PageHome()
+                        : isAuthenticating
+                            ? PageSignInSplash(authProvider: authProvider)
+                            : PageSignIn(
+                                logger: logger,
+                                authProvider: authProvider,
+                              ),
                   );
                 },
               ),

@@ -110,6 +110,7 @@
 		"passwordless",
 		"pubspec",
 		"signin",
+		"Tmpl",
 		"wireframe"
 	]
 }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -26,6 +27,7 @@ enum SocialAuthProvider {
 enum AuthStatus {
   pending,
   uninitialized,
+  initializing,
   authenticated,
   authenticating,
   authenticateError,
@@ -113,6 +115,9 @@ class AuthProvider extends ChangeNotifier {
   /// **SharedPreferences** and call `FirebaseAuth.instance.signInWithEmailLink`
   /// along with the `emailLink` to get `UserCredential`.
   Future<UserCredential?> _signInWithEmailLink(String emailLink) async {
+    _status = AuthStatus.authenticating;
+    notifyListeners();
+
     try {
       final email = localStorage.getString(UserFields.email.name);
 
@@ -170,6 +175,9 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
+    _status = AuthStatus.authenticating;
+    notifyListeners();
+
     return await _signInWithCredential(credential);
   }
 
@@ -214,6 +222,9 @@ class AuthProvider extends ChangeNotifier {
             'Successfully create credential from Facebook accessToken',
             time: DateTime.now(),
           );
+
+          _status = AuthStatus.authenticating;
+          notifyListeners();
 
           return _signInWithCredential(credential);
         }
@@ -308,7 +319,7 @@ class AuthProvider extends ChangeNotifier {
 
   ///
   Future<void> sendSignInLinkToEmail(String email) async {
-    _status = AuthStatus.authenticating;
+    _status = AuthStatus.initializing;
     notifyListeners();
 
     final packageInfo = await PackageInfo.fromPlatform();
@@ -357,10 +368,8 @@ class AuthProvider extends ChangeNotifier {
     _code = null;
     _message = '';
 
-    if (_status != AuthStatus.authenticating) {
-      _status = AuthStatus.authenticating;
-      notifyListeners();
-    }
+    _status = AuthStatus.initializing;
+    notifyListeners();
 
     if (providerId == SocialAuthProvider.google.providerId) {
       credential = await _signInWithGoogle();

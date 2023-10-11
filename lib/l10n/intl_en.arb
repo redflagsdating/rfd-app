@@ -19,6 +19,6 @@
   "pgSignInEmailSendBtn": "Send sign in link",
   "pgSignInEmailEmpty": "Email address cannot be empty",
   "pgSignInEmailInvalid": "Email address is invalid",
-  "pgSignInEmailSent": "We have sent an email to {email} contains a sign-in link. After receive the email follow the link provided to continue sign in.",
+  "pgSignInEmailSent": "We have sent an email with sign-in link. Didn't receive the link?",
   "pgSignInFooter": "By registering, you agree to our"
 }
