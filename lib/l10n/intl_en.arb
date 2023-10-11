@@ -1,5 +1,6 @@
 {
   "sent": "Sent",
+  "and": "and",
   "email": "Email",
   "signOut": "Sign out",
   "termOfService": "Terms of Service",
@@ -13,10 +14,9 @@
       "example": "Google"
     }
   },
-  "pgSignInEmailTitle": "Receive an email link",
-  "pgSignInEmailSubTitle": "to continue sign in",
+  "pgSignInEmailTitle": "Receive a link in the email to continue sign in",
   "pgSignInEmailLabel": "Your email",
-  "pgSignInEmailSendBtn": "Send sign in link",
+  "pgSignInEmailSendBtn": "Send sign-in link",
   "pgSignInEmailEmpty": "Email address cannot be empty",
   "pgSignInEmailInvalid": "Email address is invalid",
   "pgSignInEmailSent": "We have sent an email with sign-in link. Didn't receive the link?",

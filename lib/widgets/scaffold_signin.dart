@@ -30,6 +30,7 @@ Scaffold scaffoldSignIn(
   final graphicText = Theme.of(context).textTheme.apply(
         displayColor: Colors.white,
         bodyColor: Colors.white,
+        fontFamily: 'Nunito',
       );
 
   return Scaffold(
@@ -60,31 +61,34 @@ Scaffold scaffoldSignIn(
             ),
           ),
           body,
-          Text.rich(
-            textAlign: TextAlign.center,
-            TextSpan(
-              style: graphicText.bodyMedium,
-              text: l10n.pgSignInFooter,
-              children: [
-                const TextSpan(text: ' '),
-                TextSpan(
-                  text: l10n.termOfService,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // TODO: Open terms and services page
-                    },
-                ),
-                const TextSpan(text: ' & '),
-                TextSpan(
-                  text: l10n.privacyPolicy,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // TODO: Open privacy policy page
-                    },
-                ),
-              ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Text.rich(
+              textAlign: TextAlign.center,
+              TextSpan(
+                style: graphicText.bodySmall,
+                text: l10n.pgSignInFooter,
+                children: [
+                  const TextSpan(text: ' '),
+                  TextSpan(
+                    text: l10n.termOfService,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO: Open terms and services page
+                      },
+                  ),
+                  TextSpan(text: ' ${l10n.and} '),
+                  TextSpan(
+                    text: l10n.privacyPolicy,
+                    style: const TextStyle(fontWeight: FontWeight.w800),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // TODO: Open privacy policy page
+                      },
+                  ),
+                ],
+              ),
             ),
           ),
         ],

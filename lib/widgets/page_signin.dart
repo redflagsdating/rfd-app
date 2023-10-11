@@ -33,6 +33,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       final subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) {
           if (widget.authProvider.status == AuthStatus.pending) {
+            Navigator.pop(context);
             widget.authProvider.handleSignIn(event.link.toString());
           }
         },
@@ -51,43 +52,19 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
     final l10n = AppLocalizations.of(context);
 
     return scaffoldSignIn(
-        context,
-        const AssetImage("assets/signin-bg.jpg"),
-        Column(
-          children: <Widget>[
-            FilledButton(
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              onPressed: () {
-                widget.authProvider
-                    .handleSignIn(SocialAuthProvider.google)
-                    .whenComplete(
-                  () {
-                    if (widget.authProvider.message.isNotEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(widget.authProvider.message),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-              child: Text(
-                l10n!.pgSignInWithBtn("Google"),
-                textAlign: TextAlign.center,
-              ),
+      context,
+      const AssetImage("assets/signin-bg.jpg"),
+      Column(
+        children: <Widget>[
+          FilledButton(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
             ),
-            const SizedBox(height: 8),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              onPressed: () {
-                widget.authProvider
-                    .handleSignIn(SocialAuthProvider.facebook)
-                    .whenComplete(() {
+            onPressed: () {
+              widget.authProvider
+                  .handleSignIn(SocialAuthProvider.google)
+                  .whenComplete(
+                () {
                   if (widget.authProvider.message.isNotEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -95,30 +72,57 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
                       ),
                     );
                   }
-                });
-              },
-              child: Text(
-                l10n.pgSignInWithBtn("Facebook"),
-                textAlign: TextAlign.center,
-              ),
+                },
+              );
+            },
+            child: Text(
+              l10n!.pgSignInWithBtn("Google"),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
-            FilledButton(
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              onPressed: () => showDialog(
-                context: context,
-                builder: (context) =>
-                    DialogSigninEmail(authProvider: widget.authProvider),
-              ),
-              child: Text(
-                l10n.pgSignInWithBtn(l10n.email),
-                textAlign: TextAlign.center,
-              ),
+          ),
+          const SizedBox(height: 8),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
             ),
-            const SizedBox(height: 32),
-          ],
-        ));
+            onPressed: () {
+              widget.authProvider
+                  .handleSignIn(SocialAuthProvider.facebook)
+                  .whenComplete(
+                () {
+                  if (widget.authProvider.message.isNotEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(widget.authProvider.message),
+                      ),
+                    );
+                  }
+                },
+              );
+            },
+            child: Text(
+              l10n.pgSignInWithBtn("Facebook"),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 8),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+            ),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) =>
+                  DialogSigninEmail(authProvider: widget.authProvider),
+            ),
+            child: Text(
+              l10n.pgSignInWithBtn(l10n.email),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
   }
 }

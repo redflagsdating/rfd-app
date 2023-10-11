@@ -55,11 +55,32 @@ class App extends StatelessWidget {
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: const TextTheme(
-                  bodyLarge: TextStyle(fontFamily: 'LeagueSpartan'),
-                  bodyMedium: TextStyle(fontFamily: 'LeagueSpartan'),
-                  bodySmall: TextStyle(fontFamily: 'LeagueSpartan'),
+                  headlineMedium: TextStyle(fontWeight: FontWeight.w600),
+                  headlineSmall: TextStyle(fontWeight: FontWeight.w600),
+                  titleLarge: TextStyle(fontWeight: FontWeight.w500),
+                  titleMedium: TextStyle(fontWeight: FontWeight.w700),
+                  titleSmall: TextStyle(fontWeight: FontWeight.w700),
+                  labelLarge: TextStyle(fontWeight: FontWeight.w700),
+                  labelMedium: TextStyle(fontWeight: FontWeight.w700),
+                  labelSmall: TextStyle(fontWeight: FontWeight.w700),
+                  bodyLarge: TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'LeagueSpartan',
+                  ),
+                  bodyMedium: TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'LeagueSpartan',
+                  ),
+                  bodySmall: TextStyle(
+                    fontSize: 14,
+                    fontFamily: 'LeagueSpartan',
+                  ),
                 ),
                 snackBarTheme: SnackBarThemeData(
+                  contentTextStyle: const TextStyle(
+                    fontFamily: "Roboto",
+                    color: Color.fromRGBO(245, 239, 247, 1.0),
+                  ),
                   actionTextColor: const Color.fromRGBO(255, 189, 228, 1.0),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
@@ -81,7 +102,7 @@ class App extends StatelessWidget {
                   error: Color.fromRGBO(175, 16, 0, 1.0),
                   onError: Colors.white,
                   background: Colors.white,
-                  onBackground: Colors.black,
+                  onBackground: Color.fromRGBO(50, 47, 53, 1.0),
                   surface: Colors.white,
                   onSurface: Color.fromRGBO(50, 47, 53, 1.0),
                 ),
