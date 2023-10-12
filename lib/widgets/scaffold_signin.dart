@@ -35,6 +35,7 @@ Scaffold scaffoldSignIn(
 
   return Scaffold(
     body: Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -61,8 +62,8 @@ Scaffold scaffoldSignIn(
             ),
           ),
           body,
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          SizedBox(
+            width: 320,
             child: Text.rich(
               textAlign: TextAlign.center,
               TextSpan(
