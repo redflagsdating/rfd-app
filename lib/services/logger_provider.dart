@@ -4,18 +4,22 @@ import 'package:logger/logger.dart';
 
 /// [LoggerProvider]
 class LoggerProvider {
+  final bool? silent;
+
   late Logger _logger;
   Logger get logger => _logger;
 
-  static const level = kDebugMode
-      ? Level.debug
-      : kReleaseMode
-          ? Level.error
-          : kProfileMode
-              ? Level.fatal
-              : Level.off;
+  LoggerProvider({this.silent}) {
+    final level = silent == true
+        ? Level.off
+        : kDebugMode
+            ? Level.debug
+            : kReleaseMode
+                ? Level.error
+                : kProfileMode
+                    ? Level.fatal
+                    : Level.off;
 
-  LoggerProvider() {
     _logger = Logger(
       level: level,
       printer: PrettyPrinter(),

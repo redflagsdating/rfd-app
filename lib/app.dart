@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
@@ -28,6 +31,9 @@ class App extends StatelessWidget {
           create: (context) => AuthProvider(
             localStorage: localStorage,
             firestore: firestore,
+            gSignIn: GoogleSignIn(),
+            fbSignIn: FacebookAuth.instance,
+            firebaseAuth: FirebaseAuth.instance,
 
             /// Need to set "listen: false" in order to call Provider.of inside
             /// create method.

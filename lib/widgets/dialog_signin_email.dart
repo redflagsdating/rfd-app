@@ -34,7 +34,10 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                const Align(alignment: Alignment.topLeft, child: CloseButton()),
+                const Align(
+                  alignment: Alignment.topLeft,
+                  child: CloseButton(key: Key("dialog_email_signin_close")),
+                ),
                 const SizedBox(height: 40),
                 Form(
                   key: _emailForm,
@@ -44,11 +47,13 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
+                          key: const Key("dialog_email_signin_title"),
                           l10n!.pgSignInEmailTitle,
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         const SizedBox(height: 38),
                         TextFormField(
+                          key: const Key("dialog_email_signin_input"),
                           enabled: enabled,
                           controller: _textCtrl,
                           decoration: InputDecoration(
@@ -70,6 +75,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                         ),
                         const SizedBox(height: 30),
                         FilledButton(
+                          key: const Key("dialog_email_signin_send"),
                           onPressed: !enabled
                               ? null
                               : () {

@@ -57,6 +57,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       Column(
         children: <Widget>[
           FilledButton(
+            key: const Key("page_signin_google"),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
@@ -82,6 +83,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
           ),
           const SizedBox(height: 8),
           FilledButton(
+            key: const Key("page_signin_facebook"),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
@@ -107,6 +109,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
           ),
           const SizedBox(height: 8),
           FilledButton(
+            key: const Key("page_signin_email"),
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),

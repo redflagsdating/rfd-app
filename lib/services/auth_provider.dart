@@ -38,12 +38,12 @@ enum AuthStatus {
 /// e.g. `AuthProvider authProvider = Provider.of<AuthProvider>(context);`
 class AuthProvider extends ChangeNotifier {
   final Logger logger;
+  final GoogleSignIn gSignIn;
+  final FacebookAuth? fbSignIn;
+  final FirebaseAuth firebaseAuth;
   final FirebaseFirestore firestore;
   final SharedPreferences localStorage;
 
-  final gSignIn = GoogleSignIn();
-  final fbSignIn = FacebookAuth.instance;
-  final firebaseAuth = FirebaseAuth.instance;
   final isDev = FlavorConfig.instance.variables["longName"] == "Development";
 
   String? _code;
@@ -58,8 +58,13 @@ class AuthProvider extends ChangeNotifier {
   /// Constructor
   AuthProvider({
     required this.logger,
+    required this.gSignIn,
     required this.firestore,
+    required this.firebaseAuth,
     required this.localStorage,
+
+    // Optional mainly for testing
+    this.fbSignIn,
   }) {
     _authSubscription = firebaseAuth.authStateChanges().listen(
       (user) {
@@ -182,7 +187,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<UserCredential?> _signInWithFacebook() async {
-    final LoginResult fbAuth = await fbSignIn.login();
+    final LoginResult fbAuth = await fbSignIn!.login();
 
     switch (fbAuth.status) {
       case LoginStatus.cancelled:
@@ -280,11 +285,11 @@ class AuthProvider extends ChangeNotifier {
     }
 
     final gSignedIn = await gSignIn.isSignedIn();
-    final fbSignedIn = (await fbSignIn.accessToken) != null;
+    final fbSignedIn = (await fbSignIn!.accessToken) != null;
 
     // Check assessToken to prevent exception from getUserData
     final fbUserData =
-        fbSignedIn ? await fbSignIn.getUserData(fields: 'email') : null;
+        fbSignedIn ? await fbSignIn!.getUserData(fields: 'email') : null;
 
     logger.d(
       'gSignedIn: $gSignedIn, fbSignedIn: $fbSignedIn, fbUserEmail: ${fbUserData?['email']}',
@@ -470,7 +475,7 @@ class AuthProvider extends ChangeNotifier {
 
         logger.d('Google signed out successfully', time: DateTime.now());
       } else if (providerId == SocialAuthProvider.facebook.providerId) {
-        await fbSignIn.logOut();
+        await fbSignIn!.logOut();
 
         logger.d('Facebook logged out successfully', time: DateTime.now());
       }
