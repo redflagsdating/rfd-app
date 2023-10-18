@@ -10,6 +10,7 @@
         "usernamehw.errorlens",
         "streetsidesoftware.code-spell-checker",
         "localizely.flutter-intl",
-        "alexisvt.flutter-snippets"
+        "alexisvt.flutter-snippets",
+        "ryanluker.vscode-coverage-gutters"
     ]
 }

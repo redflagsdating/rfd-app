@@ -184,6 +184,7 @@ For **Android Studio**, click ***Build Variants*** at the bottom-left panel > se
 - ***Flutter***
   - [Cheat sheet](/docs/flutter/cheat-sheet.md)
   - [Environments](/docs/flutter/environments.md)
+  - [Testing](/docs/flutter/testing.md)
   - [Logging](/docs/flutter/logging.md)
 - ***Firebase***
   - [Cheat sheet](/docs/firebase/cheat-sheet.md)
