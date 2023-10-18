@@ -92,7 +92,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                                               duration:
                                                   const Duration(seconds: 8),
                                               action: SnackBarAction(
-                                                label: 'Resend',
+                                                label: l10n.resend,
                                                 onPressed: () {
                                                   if (enabled) {
                                                     widget.authProvider
