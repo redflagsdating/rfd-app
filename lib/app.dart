@@ -6,8 +6,10 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/color_schemes.g.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
+import 'package:red_flags/typograph_theme.g.dart';
 import 'package:red_flags/widgets/page_home.dart';
 import 'package:red_flags/widgets/page_signin.dart';
 import 'package:red_flags/widgets/page_signin_splash.dart';
@@ -60,61 +62,17 @@ class App extends StatelessWidget {
               // },
               theme: ThemeData(
                 fontFamily: 'Nunito',
-                textTheme: const TextTheme(
-                  headlineMedium: TextStyle(fontWeight: FontWeight.w600),
-                  headlineSmall: TextStyle(fontWeight: FontWeight.w600),
-                  titleLarge: TextStyle(fontWeight: FontWeight.w500),
-                  titleMedium: TextStyle(fontWeight: FontWeight.w700),
-                  titleSmall: TextStyle(fontWeight: FontWeight.w700),
-                  labelLarge: TextStyle(fontWeight: FontWeight.w700),
-                  labelMedium: TextStyle(fontWeight: FontWeight.w700),
-                  labelSmall: TextStyle(fontWeight: FontWeight.w700),
-                  bodyLarge: TextStyle(
-                    fontSize: 18,
-                    fontFamily: 'LeagueSpartan',
-                  ),
-                  bodyMedium: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'LeagueSpartan',
-                  ),
-                  bodySmall: TextStyle(
-                    fontSize: 14,
-                    fontFamily: 'LeagueSpartan',
-                  ),
-                ),
+                textTheme: typographyTheme,
                 snackBarTheme: SnackBarThemeData(
                   contentTextStyle: const TextStyle(
                     fontFamily: "Roboto",
-                    color: Color.fromRGBO(245, 239, 247, 1.0),
                   ),
-                  actionTextColor: const Color.fromRGBO(255, 189, 228, 1.0),
                   behavior: SnackBarBehavior.floating,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                 ),
-                colorScheme: const ColorScheme(
-                  brightness: Brightness.light,
-                  primary: Color.fromRGBO(255, 0, 73, 1.0),
-                  onPrimary: Colors.white,
-                  primaryContainer: Color.fromRGBO(255, 189, 228, 1.0),
-                  onPrimaryContainer: Color.fromRGBO(27, 20, 100, 1.0),
-                  secondary: Color.fromRGBO(255, 189, 228, 1.0),
-                  onSecondary: Colors.white,
-                  secondaryContainer: Color.fromRGBO(255, 189, 228, 1.0),
-                  onSecondaryContainer: Color.fromRGBO(27, 20, 100, 1.0),
-                  tertiaryContainer: Color.fromRGBO(179, 234, 255, 1.0),
-                  onTertiaryContainer: Color.fromRGBO(27, 20, 100, 1.0),
-                  error: Color.fromRGBO(175, 16, 0, 1.0),
-                  onError: Colors.white,
-                  background: Colors.white,
-                  onBackground: Color.fromRGBO(50, 47, 53, 1.0),
-                  surface: Colors.white,
-                  onSurface: Color.fromRGBO(50, 47, 53, 1.0),
-                ),
-                iconTheme: const IconThemeData(
-                  color: Color.fromRGBO(27, 20, 100, 1.0),
-                ),
+                colorScheme: lightColorScheme,
                 useMaterial3: true,
               ),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
