@@ -2,29 +2,49 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/dialog_signin_email.dart';
+import 'package:red_flags/widgets/page_signin_intro.dart';
 import 'package:red_flags/widgets/scaffold_signin.dart';
 
 class PageSignIn extends StatefulWidget {
-  const PageSignIn({
-    super.key,
-    required this.authProvider,
-    required this.logger,
-  });
+  final bool? skipIntro;
 
-  final AuthProvider authProvider;
-  final Logger logger;
+  const PageSignIn({super.key, this.skipIntro});
 
   @override
   State<PageSignIn> createState() => _PageSignInState();
 }
 
 class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
+  late Logger logger;
+  late AuthProvider authProvider;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // Navigate to first time PageIntro
+    if (!(widget.skipIntro ?? false)) {
+      // Workaround using Navigator inside initState()
+      Future.microtask(
+        () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const PageSignInIntro(),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    logger = Provider.of<LoggerProvider>(context).logger;
+    authProvider = Provider.of<AuthProvider>(context);
   }
 
   @override
@@ -32,18 +52,18 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
     try {
       final subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) {
-          if (widget.authProvider.status == AuthStatus.pending) {
+          if (authProvider.status == AuthStatus.pending) {
             Navigator.pop(context);
-            widget.authProvider.handleSignIn(event.link.toString());
+            authProvider.handleSignIn(event.link.toString());
           }
         },
       );
 
-      if (widget.authProvider.status == AuthStatus.authenticated) {
+      if (authProvider.status == AuthStatus.authenticated) {
         subscription.cancel();
       }
     } catch (e) {
-      widget.logger.e(e, time: DateTime.now());
+      logger.e(e, time: DateTime.now());
     }
   }
 
@@ -62,14 +82,12 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
               minimumSize: const Size.fromHeight(40),
             ),
             onPressed: () {
-              widget.authProvider
-                  .handleSignIn(SocialAuthProvider.google)
-                  .whenComplete(
+              authProvider.handleSignIn(SocialAuthProvider.google).whenComplete(
                 () {
-                  if (widget.authProvider.message.isNotEmpty) {
+                  if (authProvider.message.isNotEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(widget.authProvider.message),
+                        content: Text(authProvider.message),
                       ),
                     );
                   }
@@ -88,14 +106,14 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
               minimumSize: const Size.fromHeight(40),
             ),
             onPressed: () {
-              widget.authProvider
+              authProvider
                   .handleSignIn(SocialAuthProvider.facebook)
                   .whenComplete(
                 () {
-                  if (widget.authProvider.message.isNotEmpty) {
+                  if (authProvider.message.isNotEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(widget.authProvider.message),
+                        content: Text(authProvider.message),
                       ),
                     );
                   }
@@ -116,7 +134,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
             onPressed: () => showDialog(
               context: context,
               builder: (context) =>
-                  DialogSigninEmail(authProvider: widget.authProvider),
+                  DialogSigninEmail(authProvider: authProvider),
             ),
             child: Text(
               l10n.pgSignInWithBtn(l10n.email),

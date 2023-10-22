@@ -55,6 +55,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                         TextFormField(
                           key: const Key("dialog_email_signin_input"),
                           enabled: enabled,
+                          autofocus: true,
                           controller: _textCtrl,
                           decoration: InputDecoration(
                             border: const UnderlineInputBorder(),

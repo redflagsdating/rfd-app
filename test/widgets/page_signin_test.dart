@@ -59,10 +59,10 @@ void main() {
 
   setUp(() async {
     // Create a new root widget for each test
-    widget = MaterialApp(
+    widget = const MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: const [Locale('en')],
-      home: PageSignIn(logger: logger, authProvider: authProvider),
+      supportedLocales: [Locale('en')],
+      home: PageSignIn(),
     );
   });
 

@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +10,10 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/color_schemes.g.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
-import 'package:red_flags/typograph_theme.g.dart';
+import 'package:red_flags/typography_theme.g.dart';
 import 'package:red_flags/widgets/page_home.dart';
 import 'package:red_flags/widgets/page_signin.dart';
+import 'package:red_flags/widgets/page_signin_intro.dart';
 import 'package:red_flags/widgets/page_signin_splash.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -26,6 +28,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        Provider<SharedPreferences>(create: (_) => localStorage),
         Provider<LoggerProvider>(
           create: (_) => LoggerProvider(),
         ),
@@ -47,19 +50,10 @@ class App extends StatelessWidget {
       // Automatically switch to material or cupertino base on the platform
       child: Builder(
         builder: (context) {
-          final logger = Provider.of<LoggerProvider>(context).logger;
           final authProvider = Provider.of<AuthProvider>(context);
 
           return FlavorBanner(
             child: MaterialApp(
-              // routes: <String, WidgetBuilder>{1
-              //   '/signin': (context) {
-              //     return const PageSignIn();
-              //   },
-              //   '/signin-splash': (context) {
-              //     return const PageSignInSplash();
-              //   }
-              // },
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: typographyTheme,
@@ -74,6 +68,14 @@ class App extends StatelessWidget {
                 ),
                 colorScheme: lightColorScheme,
                 useMaterial3: true,
+                pageTransitionsTheme: const PageTransitionsTheme(builders: {
+                  TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+                    transitionType: SharedAxisTransitionType.horizontal,
+                  ),
+                  TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+                    transitionType: SharedAxisTransitionType.horizontal,
+                  ),
+                }),
               ),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: const [Locale('en')],
@@ -84,12 +86,14 @@ class App extends StatelessWidget {
                       authProvider.status == AuthStatus.authenticated;
                   final isAuthenticating =
                       authProvider.status == AuthStatus.authenticating;
+                  final skipIntro =
+                      localStorage.getBool(sharedPrefKey) ?? false;
                   final offset = isAuthenticated || isAuthenticating
                       ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
                       : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
 
                   return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 200),
+                    duration: const Duration(milliseconds: 300),
                     reverseDuration: const Duration(milliseconds: 0),
                     transitionBuilder: (child, animation) {
                       return SlideTransition(
@@ -101,10 +105,7 @@ class App extends StatelessWidget {
                         ? const PageHome()
                         : isAuthenticating
                             ? PageSignInSplash(authProvider: authProvider)
-                            : PageSignIn(
-                                logger: logger,
-                                authProvider: authProvider,
-                              ),
+                            : PageSignIn(skipIntro: skipIntro),
                   );
                 },
               ),

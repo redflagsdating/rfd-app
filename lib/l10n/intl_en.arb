@@ -1,6 +1,7 @@
 {
   "sent": "Sent",
   "and": "and",
+  "skip": "Skip",
   "resend": "Resend",
   "email": "Email",
   "signOut": "Sign out",
@@ -21,5 +22,11 @@
   "pgSignInEmailEmpty": "Email address cannot be empty",
   "pgSignInEmailInvalid": "Email address is invalid",
   "pgSignInEmailSent": "We have sent an email with sign-in link. Didn't receive the link?",
-  "pgSignInFooter": "By registering, you agree to our"
+  "pgSignInFooter": "By registering, you agree to our",
+  "pgIntroHeadline1": "Limited Daily Profiles",
+  "pgIntroBody1": "Explore three profiles each day. No more fatigue from unlimited profiles and swiping - slow down to grow meaningful connections",
+  "pgIntroHeadline2": "Red Flags",
+  "pgIntroBody2": "Share the good and not-so-good on your profile to find others who accept the real you. Why pretend to be anyone but yourself?",
+  "pgIntroHeadline3": "Real Talk",
+  "pgIntroBody3": "No more stressing about conversation starters. With our ‘Question of the Day’, you can focus on being your real self and getting to know the other person"
 }

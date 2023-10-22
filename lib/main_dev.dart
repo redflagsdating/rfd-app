@@ -39,7 +39,7 @@ void main() async {
   ///** Persistent storage init */
   /// a.k.a localStorage in JS world.
   /// (NSUserDefaults on iOS and macOS, SharedPreferences on Android, etc.)
-  SharedPreferences.setPrefix("red.flags.dev");
+  SharedPreferences.setPrefix("red.flags.dev.");
   SharedPreferences localStorage = await SharedPreferences.getInstance();
 
   //** Flutter flavors */

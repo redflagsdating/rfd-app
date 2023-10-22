@@ -101,6 +101,14 @@ class AuthProvider extends ChangeNotifier {
     super.dispose();
   }
 
+  /// Clear localStorage after logout
+  Future<void> localStorageClear() async {
+    await localStorage.remove(UserFields.uid.name);
+    await localStorage.remove(UserFields.photoUrl.name);
+    await localStorage.remove(UserFields.phoneNumber.name);
+    await localStorage.remove(UserFields.displayName.name);
+  }
+
   /// A simple wrapper of `FirebaseAuth.instance.signInWithCredential` to handle errors.
   Future<UserCredential?> _signInWithCredential(
       AuthCredential credential) async {
@@ -481,7 +489,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
 
-    await localStorage.clear();
+    await localStorageClear();
 
     logger.d('Local storage purged', time: DateTime.now());
 
