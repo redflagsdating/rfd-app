@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
-import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
@@ -24,45 +24,58 @@ void main() {
   const dialogSendKey = Key("dialog_email_signin_send");
 
   late AuthProvider authProvider;
-  late Logger logger;
+  late LoggerProvider loggerProvider;
   late AppLocalizations l10n;
   late Widget widget;
+  late SharedPreferences localStorage;
   late FakeFirebaseFirestore firestore;
   late MockFirebaseAuth firebaseAuth;
 
   setUpAll(
     () async {
       l10n = await AppLocalizations.delegate.load(const Locale("en"));
-
-      SharedPreferences.setMockInitialValues({});
-      SharedPreferences.setPrefix("red.flags.dev");
-
-      firestore = FakeFirebaseFirestore();
-      logger = LoggerProvider(silent: true).logger;
-      firebaseAuth = MockFirebaseAuth(
-        mockUser: MockUser(
-          email: "test@email.com",
-          displayName: "Test User",
-          uid: "ecd5e6e2-58af-4f54-8084-98e9974969ba",
-        ),
-      );
-
-      authProvider = AuthProvider(
-        gSignIn: MockGoogleSignIn(),
-        firebaseAuth: firebaseAuth,
-        logger: logger,
-        firestore: firestore,
-        localStorage: await SharedPreferences.getInstance(),
-      );
     },
   );
 
   setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setPrefix("red.flags.dev");
+
+    localStorage = await SharedPreferences.getInstance();
+    firestore = FakeFirebaseFirestore();
+    loggerProvider = LoggerProvider(silent: true);
+    firebaseAuth = MockFirebaseAuth(
+      mockUser: MockUser(
+        email: "test@email.com",
+        displayName: "Test User",
+        uid: "ecd5e6e2-58af-4f54-8084-98e9974969ba",
+      ),
+    );
+
+    authProvider = AuthProvider(
+      gSignIn: MockGoogleSignIn(),
+      firebaseAuth: firebaseAuth,
+      logger: loggerProvider.logger,
+      firestore: firestore,
+      localStorage: localStorage,
+    );
+
     // Create a new root widget for each test
-    widget = const MaterialApp(
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: [Locale('en')],
-      home: PageSignIn(),
+    widget = MultiProvider(
+      providers: [
+        Provider<SharedPreferences>(create: (_) => localStorage),
+        Provider<LoggerProvider>(
+          create: (_) => loggerProvider,
+        ),
+        ChangeNotifierProvider<AuthProvider>(
+          create: (_) => authProvider,
+        ),
+      ],
+      child: const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: [Locale('en')],
+        home: PageSignIn(skipIntro: true),
+      ),
     );
   });
 
