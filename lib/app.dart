@@ -82,28 +82,22 @@ class App extends StatelessWidget {
               home: ListenableBuilder(
                 listenable: authProvider,
                 builder: (context, __) {
-                  final isAuthenticated =
-                      authProvider.status == AuthStatus.authenticated;
-                  final isAuthenticating =
-                      authProvider.status == AuthStatus.authenticating;
                   final skipIntro =
                       localStorage.getBool(sharedPrefKey) ?? false;
-                  final offset = isAuthenticated || isAuthenticating
-                      ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
-                      : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
 
-                  return AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    reverseDuration: const Duration(milliseconds: 0),
-                    transitionBuilder: (child, animation) {
-                      return SlideTransition(
-                        position: animation.drive(offset),
+                  return PageTransitionSwitcher(
+                    reverse: true,
+                    transitionBuilder: (child, animation, secondaryAnimation) {
+                      return SharedAxisTransition(
+                        animation: animation,
+                        secondaryAnimation: secondaryAnimation,
+                        transitionType: SharedAxisTransitionType.horizontal,
                         child: child,
                       );
                     },
-                    child: isAuthenticated
+                    child: authProvider.status == AuthStatus.authenticated
                         ? const PageHome()
-                        : isAuthenticating
+                        : authProvider.status == AuthStatus.authenticating
                             ? PageSignInSplash(authProvider: authProvider)
                             : PageSignIn(skipIntro: skipIntro),
                   );

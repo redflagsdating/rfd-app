@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,15 +17,10 @@ class PageSignInIntro extends StatefulWidget {
 
 class _PageSignInIntroState extends State<PageSignInIntro> {
   int _step = 0;
-  Tween<Offset> _offset = Tween(begin: const Offset(1, 0.0), end: Offset.zero);
 
   void _nextStep([int? step]) {
     setState(() {
       final nextValue = step ?? _step + 1;
-
-      _offset = nextValue > _step
-          ? Tween(begin: const Offset(1, 0.0), end: Offset.zero)
-          : Tween(begin: const Offset(-1, 0.0), end: Offset.zero);
 
       if (nextValue < maxSteps) {
         _step = nextValue;
@@ -61,12 +57,13 @@ class _PageSignInIntroState extends State<PageSignInIntro> {
         padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 36),
         child: Column(
           children: [
-            AnimatedSwitcher(
-              reverseDuration: const Duration(seconds: 0),
-              duration: const Duration(milliseconds: 300),
-              transitionBuilder: (child, animation) {
-                return SlideTransition(
-                  position: animation.drive(_offset),
+            const Spacer(),
+            PageTransitionSwitcher(
+              transitionBuilder: (child, animation, secondaryAnimation) {
+                return SharedAxisTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.horizontal,
                   child: child,
                 );
               },

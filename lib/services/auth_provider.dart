@@ -158,7 +158,6 @@ class AuthProvider extends ChangeNotifier {
       if (gUser == null) {
         logger.w('Google sign-in is cancelled', time: DateTime.now());
 
-        _message = 'You have cancelled sign in with Google.';
         _status = AuthStatus.authenticateCanceled;
         notifyListeners();
 
@@ -204,7 +203,6 @@ class AuthProvider extends ChangeNotifier {
           time: DateTime.now(),
         );
 
-        _message = 'You have cancelled sign in with Facebook.';
         _status = AuthStatus.authenticateCanceled;
         notifyListeners();
         break;

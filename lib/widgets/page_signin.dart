@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,8 +33,17 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       // Workaround using Navigator inside initState()
       Future.microtask(
         () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => const PageSignInIntro(),
+          PageRouteBuilder(
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              return FadeThroughTransition(
+                animation: animation,
+                secondaryAnimation: secondaryAnimation,
+                child: child,
+              );
+            },
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const PageSignInIntro(),
           ),
         ),
       );
@@ -131,10 +141,18 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
-            onPressed: () => showDialog(
+            onPressed: () => showGeneralDialog(
               context: context,
-              builder: (context) =>
+              pageBuilder: (context, animation, secondaryAnimation) =>
                   DialogSigninEmail(authProvider: authProvider),
+              transitionBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeThroughTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  child: child,
+                );
+              },
             ),
             child: Text(
               l10n.pgSignInWithBtn(l10n.email),
