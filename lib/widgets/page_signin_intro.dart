@@ -1,8 +1,8 @@
-import 'package:animations/animations.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const maxSteps = 3;
@@ -25,11 +25,7 @@ class _PageSignInIntroState extends State<PageSignInIntro> {
       if (nextValue < maxSteps) {
         _step = nextValue;
       } else {
-        Provider.of<SharedPreferences>(context, listen: false).setBool(
-          sharedPrefKey,
-          true,
-        );
-
+        context.read<SharedPreferences>().setBool(sharedPrefKey, true);
         Navigator.of(context).pop();
       }
     });
@@ -58,15 +54,7 @@ class _PageSignInIntroState extends State<PageSignInIntro> {
         child: Column(
           children: [
             const Spacer(),
-            PageTransitionSwitcher(
-              transitionBuilder: (child, animation, secondaryAnimation) {
-                return SharedAxisTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  transitionType: SharedAxisTransitionType.horizontal,
-                  child: child,
-                );
-              },
+            PageSlideTransitionSwitcher(
               child: Column(
                 key: ValueKey(_step),
                 children: [
@@ -115,8 +103,6 @@ class _PageSignInIntroState extends State<PageSignInIntro> {
                 const Spacer(),
                 FloatingActionButton(
                   shape: const CircleBorder(),
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: colorScheme.onPrimary,
                   onPressed: _nextStep,
                   child: const Icon(Icons.arrow_forward_ios_rounded),
                 ),

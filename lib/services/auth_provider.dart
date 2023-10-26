@@ -9,7 +9,7 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:red_flags/models/user.dart';
+import 'package:red_flags/models/user.dart' show UserModel, UserFields;
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// * Use `SocialAuthProvider.google` as an general identifier.
@@ -41,7 +41,7 @@ class AuthProvider extends ChangeNotifier {
   final GoogleSignIn gSignIn;
   final FacebookAuth? fbSignIn;
   final FirebaseAuth firebaseAuth;
-  final FirebaseFirestore firestore;
+  final CollectionReference<UserModel> users;
   final SharedPreferences localStorage;
 
   final isDev = FlavorConfig.instance.variables["longName"] == "Development";
@@ -59,7 +59,7 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider({
     required this.logger,
     required this.gSignIn,
-    required this.firestore,
+    required this.users,
     required this.firebaseAuth,
     required this.localStorage,
 
@@ -283,45 +283,64 @@ class AuthProvider extends ChangeNotifier {
   /// in **SharedPreferences** and `SocialAuthProvider` status
   Future<bool> isSignedIn() async {
     final email = localStorage.getString(UserFields.email.name);
+    final providerData = firebaseAuth.currentUser?.providerData;
 
-    if (email == null) {
-      logger.d('Email is NULL in SharedPreferences', time: DateTime.now());
+    if (email == null || providerData == null) {
+      logger.d('email: $email, providerData: $providerData',
+          time: DateTime.now());
 
       return false;
     }
 
-    final gSignedIn = await gSignIn.isSignedIn();
-    final fbSignedIn = (await fbSignIn!.accessToken) != null;
+    _status = AuthStatus.authenticating;
+    notifyListeners();
 
-    // Check assessToken to prevent exception from getUserData
-    final fbUserData =
-        fbSignedIn ? await fbSignIn!.getUserData(fields: 'email') : null;
+    UserInfo? userInfo;
 
-    logger.d(
-      'gSignedIn: $gSignedIn, fbSignedIn: $fbSignedIn, fbUserEmail: ${fbUserData?['email']}',
-      time: DateTime.now(),
-    );
-    final providerData = firebaseAuth.currentUser?.providerData;
-    final userInfo = providerData?.firstWhere(
-      (element) {
-        if (element.email != email) {
-          return false;
-        }
+    // Use for-in to iterate to allow `await` condition and break loop
+    for (int i = 0; i < providerData.length; i++) {
+      final element = providerData[i];
 
+      if (element.email == email) {
+        // Google Sign-in status
         if (element.providerId == SocialAuthProvider.google.providerId) {
-          return gSignedIn;
+          final gSignedIn = await gSignIn.isSignedIn();
+
+          logger.d('gSignedIn: $gSignedIn', time: DateTime.now());
+
+          if (gSignedIn) {
+            userInfo = element;
+            break;
+          }
         }
 
+        // Facebook Sign-in status
         if (element.providerId == SocialAuthProvider.facebook.providerId) {
-          return fbSignedIn && fbUserData?['email'] == email;
+          final fbSignedIn = (await fbSignIn!.accessToken) != null;
+          final fbUserData =
+              fbSignedIn ? await fbSignIn!.getUserData(fields: 'email') : null;
+
+          logger.d(
+            'fbSignedIn: $fbSignedIn, fbUserEmail: ${fbUserData?['email']}',
+            time: DateTime.now(),
+          );
+
+          if (fbSignedIn && fbUserData?['email'] == email) {
+            userInfo = element;
+            break;
+          }
         }
 
-        return element.providerId == SocialAuthProvider.email.providerId;
-      },
-    );
+        // Email link sign-in
+        if (element.providerId == SocialAuthProvider.email.providerId) {
+          userInfo = element;
+          break;
+        }
+      }
+    }
 
     logger.d(
-      'Signed-in with "${userInfo?.providerId}" of ${providerData?.length} providers',
+      'Signed-in with "${userInfo?.providerId}" of ${providerData.length} providers',
       time: DateTime.now(),
     );
 
@@ -403,49 +422,56 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
 
+    await localStorage.setString(
+      "providerId",
+      providerId ?? SocialAuthProvider.email.providerId,
+    );
+
     // Check the user existence in Firestore
-    final QuerySnapshot result = await firestore
-        .collection(UserModel.collection)
+    final user = await users
         .where(UserFields.uid.name, isEqualTo: firebaseUser.uid)
         .get();
-    final List<DocumentSnapshot> documents = result.docs;
 
     logger.d('Successfully query user in Firestore', time: DateTime.now());
 
-    if (documents.isEmpty) {
-      // New user
-      logger.d('New user sing in', time: DateTime.now());
+    if (user.docs.isEmpty) {
+      logger.d('New user logged in', time: DateTime.now());
 
-      userModel = UserModel.fromUser(firebaseUser);
-      logger.d('Converted Firebase User to UserModel', time: DateTime.now());
+      userModel = UserModel(
+        uid: firebaseUser.uid,
+        email: firebaseUser.email ?? "",
+        createdAt: DateTime.now(),
+        photoUrl: firebaseUser.photoURL,
+        displayName: firebaseUser.displayName,
+        phoneNumber: firebaseUser.phoneNumber,
+        onboarding: false,
+        verified: false,
+        verifySubmitted: false,
+      );
 
-      firestore
-          .collection(UserModel.collection)
-          .doc(firebaseUser.uid)
-          .set(userModel.toJSON());
+      users.doc(firebaseUser.uid).set(userModel);
 
       logger.d('Saved user data to Firestore', time: DateTime.now());
     } else {
-      // Existing user
-      logger.d('Existing signed up user', time: DateTime.now());
+      logger.d('Existing user logged in', time: DateTime.now());
 
-      DocumentSnapshot docSnapshot = documents[0];
-      userModel = UserModel.fromDocument(docSnapshot);
-
-      logger.d(
-        'Converted DocumentSnapshot into UserModel',
-        time: DateTime.now(),
-      );
+      userModel = user.docs.first.data();
     }
 
     // Save user data in the local storage
     await localStorage.setString(UserFields.uid.name, userModel.uid);
     await localStorage.setString(UserFields.email.name, userModel.email);
-    await localStorage.setString(UserFields.photoUrl.name, userModel.photoUrl);
     await localStorage.setString(
-        UserFields.phoneNumber.name, userModel.phoneNumber);
+        UserFields.photoUrl.name, userModel.photoUrl ?? "");
     await localStorage.setString(
-        UserFields.displayName.name, userModel.displayName);
+        UserFields.firstName.name, userModel.firstName ?? "");
+    await localStorage.setString(
+        UserFields.lastName.name, userModel.lastName ?? "");
+    await localStorage.setString(
+        UserFields.displayName.name, userModel.displayName ?? "");
+    await localStorage.setBool(
+        UserFields.onboarding.name, userModel.onboarding);
+    await localStorage.setBool(UserFields.verified.name, userModel.verified);
 
     logger.d(
       'Successfully write the user (${userModel.email}) into local storage',

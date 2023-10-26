@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/dialog_signin_email.dart';
+import 'package:red_flags/widgets/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/page_signin_intro.dart';
 import 'package:red_flags/widgets/scaffold_signin.dart';
 
@@ -33,17 +34,10 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       // Workaround using Navigator inside initState()
       Future.microtask(
         () => Navigator.of(context).push(
-          PageRouteBuilder(
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeThroughTransition(
-                animation: animation,
-                secondaryAnimation: secondaryAnimation,
-                child: child,
-              );
-            },
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const PageSignInIntro(),
+          PageFadeRouteBuilder(
+            page: Builder(
+              builder: (context) => const PageSignInIntro(),
+            ),
           ),
         ),
       );

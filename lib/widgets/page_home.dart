@@ -16,24 +16,16 @@ class _PageHomeState extends State<PageHome> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    authProvider = Provider.of<AuthProvider>(context);
+    authProvider = context.read<AuthProvider>();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Center(
-            child: TextButton(
-              onPressed: () async {
-                await authProvider.handleSignOut();
-              },
-              child: Text(AppLocalizations.of(context)!.signOut),
-            ),
-          )
-        ],
-      ),
+    return FilledButton(
+      onPressed: () async {
+        await authProvider.handleSignOut();
+      },
+      child: Text(AppLocalizations.of(context)!.signOut),
     );
   }
 }

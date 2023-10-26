@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
+import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/dialog_signin_email.dart';
@@ -26,7 +27,12 @@ void main() {
       gSignIn: MockGoogleSignIn(),
       firebaseAuth: MockFirebaseAuth(),
       logger: LoggerProvider(silent: true).logger,
-      firestore: FakeFirebaseFirestore(),
+      users:
+          FakeFirebaseFirestore().collection('users').withConverter<UserModel>(
+                fromFirestore: (snapshots, _) =>
+                    UserModel.fromJson(snapshots.data()!),
+                toFirestore: (user, _) => user.toJson(),
+              ),
       localStorage: await SharedPreferences.getInstance(),
     );
 

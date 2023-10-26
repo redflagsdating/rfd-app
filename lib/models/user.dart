@@ -1,71 +1,109 @@
-import 'package:cloud_firestore/cloud_firestore.dart' show DocumentSnapshot;
-import 'package:firebase_auth/firebase_auth.dart' show User;
+import 'package:cloud_firestore/cloud_firestore.dart'
+    show Timestamp, FirebaseFirestore;
+import 'package:flutter/material.dart';
 
 enum UserFields {
   uid,
   email,
-  displayName,
-  photoUrl,
   createdAt,
+  photoUrl,
+  firstName,
+  lastName,
+  displayName,
+  dob,
+  gender,
+  genderFor,
+  reside,
   phoneNumber,
+  onboarding,
+  verified,
+  verifySubmitted,
 }
 
 ///
+@immutable
 class UserModel {
-  // Firestore Database collection name
-  static const collection = 'users';
-
-  final String uid;
-  final String email;
-  final String createdAt;
-  final String photoUrl;
-  final String phoneNumber;
-  final String displayName;
-
   const UserModel({
     required this.uid,
     required this.email,
     required this.createdAt,
-    required this.photoUrl,
-    required this.phoneNumber,
-    required this.displayName,
+    required this.onboarding,
+    required this.verified,
+    required this.verifySubmitted,
+    this.photoUrl,
+    this.firstName,
+    this.lastName,
+    this.displayName,
+    this.dob,
+    this.gender,
+    this.genderFor,
+    this.reside,
+    this.phoneNumber,
   });
 
-  ///
-  Map<String, String> toJSON() {
+  final String uid;
+  final String email;
+  final DateTime createdAt;
+  final bool onboarding;
+  final bool verified;
+  final bool verifySubmitted;
+  final String? photoUrl;
+  final String? firstName;
+  final String? lastName;
+  final String? displayName;
+  final DateTime? dob;
+  final String? gender;
+  final String? genderFor;
+  final String? reside;
+  final String? phoneNumber;
+
+//
+  Map<String, dynamic> toJson() {
     return {
       UserFields.uid.name: uid,
       UserFields.email.name: email,
       UserFields.createdAt.name: createdAt,
+      UserFields.onboarding.name: onboarding,
+      UserFields.verified.name: verified,
+      UserFields.verifySubmitted.name: verifySubmitted,
       UserFields.photoUrl.name: photoUrl,
-      UserFields.phoneNumber.name: phoneNumber,
+      UserFields.firstName.name: firstName,
+      UserFields.lastName.name: lastName,
       UserFields.displayName.name: displayName,
+      UserFields.dob.name: dob,
+      UserFields.gender.name: gender,
+      UserFields.genderFor.name: genderFor,
+      UserFields.reside.name: reside,
+      UserFields.phoneNumber.name: phoneNumber,
     };
   }
 
-  /// Covert Firebase User into UserModel
-  factory UserModel.fromUser(User? firebaseUser) {
-    return UserModel(
-      uid: firebaseUser?.uid ?? '',
-      email: firebaseUser?.email ?? '',
-      createdAt: firebaseUser?.uid != null
-          ? DateTime.now().millisecondsSinceEpoch.toString()
-          : '',
-      photoUrl: firebaseUser?.photoURL ?? '',
-      phoneNumber: firebaseUser?.phoneNumber ?? '',
-      displayName: firebaseUser?.displayName ?? '',
-    );
-  }
-
-  /// Convert DocumentSnapshot from Firestore query result to UserModel
-  factory UserModel.fromDocument(DocumentSnapshot? doc) {
-    return UserModel(
-      uid: doc?.get(UserFields.uid.name) ?? '',
-      email: doc?.get(UserFields.email.name) ?? '',
-      createdAt: doc?.get(UserFields.createdAt.name) ?? '',
-      photoUrl: doc?.get(UserFields.photoUrl.name) ?? '',
-      phoneNumber: doc?.get(UserFields.phoneNumber.name) ?? '',
-      displayName: doc?.get(UserFields.displayName.name) ?? '',
-    );
-  }
+//
+  UserModel.fromJson(Map<String, dynamic> json)
+      : this(
+          uid: json[UserFields.uid.name]!,
+          email: json[UserFields.email.name]!,
+          createdAt: (json[UserFields.createdAt.name]! as Timestamp).toDate(),
+          onboarding: json[UserFields.onboarding.name]!,
+          verified: json[UserFields.verified.name]!,
+          verifySubmitted: json[UserFields.verifySubmitted.name]!,
+          photoUrl: json[UserFields.photoUrl.name],
+          firstName: json[UserFields.firstName.name],
+          lastName: json[UserFields.lastName.name],
+          displayName: json[UserFields.displayName.name],
+          dob: json[UserFields.dob.name] is Timestamp
+              ? json[UserFields.dob.name].toDate()
+              : null,
+          gender: json[UserFields.gender.name],
+          genderFor: json[UserFields.genderFor.name],
+          reside: json[UserFields.reside.name],
+          phoneNumber: json[UserFields.phoneNumber.name],
+        );
 }
+
+final usersRef = FirebaseFirestore.instance
+    .collection('users')
+    .withConverter<UserModel>(
+      fromFirestore: (snapshots, _) => UserModel.fromJson(snapshots.data()!),
+      toFirestore: (user, _) => user.toJson(),
+    );

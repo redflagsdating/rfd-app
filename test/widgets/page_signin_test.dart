@@ -7,7 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/models/user.dart';
+import 'package:red_flags/models/user.dart' show UserModel, UserFields;
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/page_signin.dart';
@@ -28,8 +28,8 @@ void main() {
   late AppLocalizations l10n;
   late Widget widget;
   late SharedPreferences localStorage;
-  late FakeFirebaseFirestore firestore;
   late MockFirebaseAuth firebaseAuth;
+  late CollectionReference<UserModel> fakeUsersRef;
 
   setUpAll(
     () async {
@@ -42,8 +42,13 @@ void main() {
     SharedPreferences.setPrefix("red.flags.dev");
 
     localStorage = await SharedPreferences.getInstance();
-    firestore = FakeFirebaseFirestore();
     loggerProvider = LoggerProvider(silent: true);
+    fakeUsersRef =
+        FakeFirebaseFirestore().collection('users').withConverter<UserModel>(
+              fromFirestore: (snapshots, _) =>
+                  UserModel.fromJson(snapshots.data()!),
+              toFirestore: (user, _) => user.toJson(),
+            );
     firebaseAuth = MockFirebaseAuth(
       mockUser: MockUser(
         email: "test@email.com",
@@ -56,7 +61,7 @@ void main() {
       gSignIn: MockGoogleSignIn(),
       firebaseAuth: firebaseAuth,
       logger: loggerProvider.logger,
-      firestore: firestore,
+      users: fakeUsersRef,
       localStorage: localStorage,
     );
 
@@ -96,14 +101,11 @@ void main() {
     expect(authProvider.status == AuthStatus.authenticated, isTrue);
 
     // Ensure user data is created in the Firestore
-    final QuerySnapshot result = await firestore
-        .collection(UserModel.collection)
+    final result = await fakeUsersRef
         .where(UserFields.email.name, isEqualTo: 'test@email.com')
         .get();
-    final List<DocumentSnapshot> documents = result.docs;
-    expect(documents.isNotEmpty, isTrue);
 
-    final userModel = UserModel.fromDocument(documents[0]);
+    final userModel = result.docs.first.data();
     expect(userModel.displayName == 'Test User', isTrue);
     expect(userModel.uid == 'ecd5e6e2-58af-4f54-8084-98e9974969ba', isTrue);
     expect(userModel.photoUrl, isNotNull);

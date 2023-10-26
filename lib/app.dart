@@ -1,5 +1,4 @@
 import 'package:animations/animations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -8,21 +7,22 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/color_schemes.g.dart';
+import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/typography_theme.g.dart';
+import 'package:red_flags/widgets/onboarding/page_onboard_home.dart';
 import 'package:red_flags/widgets/page_home.dart';
 import 'package:red_flags/widgets/page_signin.dart';
 import 'package:red_flags/widgets/page_signin_intro.dart';
 import 'package:red_flags/widgets/page_signin_splash.dart';
+import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatelessWidget {
   final SharedPreferences localStorage;
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  // final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
-  App({super.key, required this.localStorage});
+  const App({super.key, required this.localStorage});
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +35,11 @@ class App extends StatelessWidget {
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(
             localStorage: localStorage,
-            firestore: firestore,
+            users: usersRef,
             gSignIn: GoogleSignIn(),
             fbSignIn: FacebookAuth.instance,
             firebaseAuth: FirebaseAuth.instance,
-
-            /// Need to set "listen: false" in order to call Provider.of inside
-            /// create method.
-            /// See https://pub.dev/documentation/provider/latest/provider/Provider/of.html
-            logger: Provider.of<LoggerProvider>(context, listen: false).logger,
+            logger: context.read<LoggerProvider>().logger,
           ),
         )
       ],
@@ -68,14 +64,16 @@ class App extends StatelessWidget {
                 ),
                 colorScheme: lightColorScheme,
                 useMaterial3: true,
-                pageTransitionsTheme: const PageTransitionsTheme(builders: {
-                  TargetPlatform.android: SharedAxisPageTransitionsBuilder(
-                    transitionType: SharedAxisTransitionType.horizontal,
-                  ),
-                  TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
-                    transitionType: SharedAxisTransitionType.horizontal,
-                  ),
-                }),
+                pageTransitionsTheme: const PageTransitionsTheme(
+                  builders: {
+                    TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+                      transitionType: SharedAxisTransitionType.horizontal,
+                    ),
+                    TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
+                      transitionType: SharedAxisTransitionType.horizontal,
+                    ),
+                  },
+                ),
               ),
               localizationsDelegates: AppLocalizations.localizationsDelegates,
               supportedLocales: const [Locale('en')],
@@ -84,19 +82,15 @@ class App extends StatelessWidget {
                 builder: (context, __) {
                   final skipIntro =
                       localStorage.getBool(sharedPrefKey) ?? false;
+                  final isOnboard =
+                      localStorage.getBool(UserFields.onboarding.name) ?? false;
 
-                  return PageTransitionSwitcher(
+                  return PageSlideTransitionSwitcher(
                     reverse: true,
-                    transitionBuilder: (child, animation, secondaryAnimation) {
-                      return SharedAxisTransition(
-                        animation: animation,
-                        secondaryAnimation: secondaryAnimation,
-                        transitionType: SharedAxisTransitionType.horizontal,
-                        child: child,
-                      );
-                    },
                     child: authProvider.status == AuthStatus.authenticated
-                        ? const PageHome()
+                        ? (isOnboard
+                            ? const PageHome()
+                            : const PageOnboardHome())
                         : authProvider.status == AuthStatus.authenticating
                             ? PageSignInSplash(authProvider: authProvider)
                             : PageSignIn(skipIntro: skipIntro),
