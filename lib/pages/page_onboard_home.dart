@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
+import 'package:red_flags/pages/page_onboard_verification.dart';
 import 'package:red_flags/widgets/onboarding/page_onboard_splash.dart';
-import 'package:red_flags/widgets/onboarding/page_onboard_verification.dart';
 import 'package:red_flags/widgets/page_fade_route_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

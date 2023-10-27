@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
+import 'package:red_flags/pages/page_home.dart';
 import 'package:red_flags/widgets/onboarding/onboard_app_bar.dart';
 import 'package:red_flags/widgets/onboarding/onboard_verification_display_name.dart';
 import 'package:red_flags/widgets/onboarding/onboard_verification_full_name.dart';
@@ -75,19 +76,23 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
 
     return Scaffold(
       appBar: OnboardAppBar(
-        theme: theme,
-        step: _step,
-        maxSteps: maxSteps,
-        onBack: isLoading
-            ? null
-            : () {
-                if (_step == 0) {
-                  Navigator.of(context).pop();
-                } else if (_step > 0) {
-                  _nextStep(true);
-                }
-              },
-      ),
+          theme: theme,
+          step: _step,
+          maxSteps: maxSteps,
+          onBack: isLoading
+              ? null
+              : () {
+                  if (_step == 0) {
+                    Navigator.of(context).pop();
+                  } else if (_step > 0) {
+                    _nextStep(true);
+                  }
+                },
+          onSkip: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const PageHome()),
+            );
+          }),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         onPressed: isLoading

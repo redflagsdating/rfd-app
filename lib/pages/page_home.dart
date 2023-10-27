@@ -21,11 +21,20 @@ class _PageHomeState extends State<PageHome> {
 
   @override
   Widget build(BuildContext context) {
-    return FilledButton(
-      onPressed: () async {
-        await authProvider.handleSignOut();
-      },
-      child: Text(AppLocalizations.of(context)!.signOut),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FilledButton(
+          onPressed: () {
+            authProvider.handleSignOut().then(
+              (value) {
+                Navigator.of(context).pushReplacementNamed("/");
+              },
+            );
+          },
+          child: Text(AppLocalizations.of(context)!.signOut),
+        )
+      ],
     );
   }
 }

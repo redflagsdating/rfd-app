@@ -20,7 +20,6 @@ enum SocialAuthProvider {
   facebook('facebook.com');
 
   final String providerId;
-
   const SocialAuthProvider(this.providerId);
 }
 
@@ -37,25 +36,8 @@ enum AuthStatus {
 /// AuthProvider can be retrieved anywhere if you have access to the `context`
 /// e.g. `AuthProvider authProvider = Provider.of<AuthProvider>(context);`
 class AuthProvider extends ChangeNotifier {
-  final Logger logger;
-  final GoogleSignIn gSignIn;
-  final FacebookAuth? fbSignIn;
-  final FirebaseAuth firebaseAuth;
-  final CollectionReference<UserModel> users;
-  final SharedPreferences localStorage;
-
-  final isDev = FlavorConfig.instance.variables["longName"] == "Development";
-
-  String? _code;
-  String _message = '';
-  AuthStatus _status = AuthStatus.uninitialized;
-  late StreamSubscription _authSubscription;
-
-  String? get code => _code;
-  String get message => _message;
-  AuthStatus get status => _status;
-
-  /// Constructor
+  // Required parameters for testability in order to init instance externally
+  // so we can init mock/fake instance for testing.
   AuthProvider({
     required this.logger,
     required this.gSignIn,
@@ -63,7 +45,7 @@ class AuthProvider extends ChangeNotifier {
     required this.firebaseAuth,
     required this.localStorage,
 
-    // Optional mainly for testing
+    // Optional due to no mock/fake flutter_facebook_auth
     this.fbSignIn,
   }) {
     _authSubscription = firebaseAuth.authStateChanges().listen(
@@ -94,6 +76,24 @@ class AuthProvider extends ChangeNotifier {
       },
     );
   }
+
+  final Logger logger;
+  final GoogleSignIn gSignIn;
+  final FacebookAuth? fbSignIn;
+  final FirebaseAuth firebaseAuth;
+  final CollectionReference<UserModel> users;
+  final SharedPreferences localStorage;
+
+  final isDev = FlavorConfig.instance.variables["longName"] == "Development";
+
+  String? _code;
+  String _message = '';
+  AuthStatus _status = AuthStatus.uninitialized;
+  late StreamSubscription _authSubscription;
+
+  String? get code => _code;
+  String get message => _message;
+  AuthStatus get status => _status;
 
   @override
   void dispose() {

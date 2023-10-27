@@ -6,16 +6,16 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/color_schemes.g.dart';
 import 'package:red_flags/models/user.dart';
+import 'package:red_flags/pages/page_home.dart';
+import 'package:red_flags/pages/page_onboard_home.dart';
+import 'package:red_flags/pages/page_signin.dart';
+import 'package:red_flags/pages/page_signin_intro.dart';
+import 'package:red_flags/pages/page_signin_splash.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
-import 'package:red_flags/typography_theme.g.dart';
-import 'package:red_flags/widgets/onboarding/page_onboard_home.dart';
-import 'package:red_flags/widgets/page_home.dart';
-import 'package:red_flags/widgets/page_signin.dart';
-import 'package:red_flags/widgets/page_signin_intro.dart';
-import 'package:red_flags/widgets/page_signin_splash.dart';
+import 'package:red_flags/theme/color_schemes.g.dart';
+import 'package:red_flags/theme/typography_theme.g.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -80,20 +80,23 @@ class App extends StatelessWidget {
               home: ListenableBuilder(
                 listenable: authProvider,
                 builder: (context, __) {
-                  final skipIntro =
-                      localStorage.getBool(sharedPrefKey) ?? false;
+                  final showIntro =
+                      !(localStorage.getBool(sharedPrefKey) ?? false);
                   final isOnboard =
                       localStorage.getBool(UserFields.onboarding.name) ?? false;
 
                   return PageSlideTransitionSwitcher(
-                    reverse: true,
+                    reverse: authProvider.status != AuthStatus.authenticated &&
+                            authProvider.status != AuthStatus.authenticating
+                        ? true
+                        : false,
                     child: authProvider.status == AuthStatus.authenticated
                         ? (isOnboard
                             ? const PageHome()
                             : const PageOnboardHome())
                         : authProvider.status == AuthStatus.authenticating
                             ? PageSignInSplash(authProvider: authProvider)
-                            : PageSignIn(skipIntro: skipIntro),
+                            : PageSignIn(showIntro: showIntro),
                   );
                 },
               ),

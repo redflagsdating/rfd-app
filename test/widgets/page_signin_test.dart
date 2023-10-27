@@ -8,9 +8,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart' show UserModel, UserFields;
+import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
-import 'package:red_flags/widgets/page_signin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -79,7 +79,7 @@ void main() {
       child: const MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: [Locale('en')],
-        home: PageSignIn(skipIntro: true),
+        home: PageSignIn(),
       ),
     );
   });

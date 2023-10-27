@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/widgets/dialog_signin_email.dart';
 import 'package:red_flags/widgets/page_fade_route_builder.dart';
-import 'package:red_flags/widgets/page_signin_intro.dart';
 import 'package:red_flags/widgets/scaffold_signin.dart';
 
 class PageSignIn extends StatefulWidget {
-  final bool? skipIntro;
+  final bool? showIntro;
 
-  const PageSignIn({super.key, this.skipIntro});
+  const PageSignIn({super.key, this.showIntro});
 
   @override
   State<PageSignIn> createState() => _PageSignInState();
@@ -30,7 +30,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     // Navigate to first time PageIntro
-    if (!(widget.skipIntro ?? false)) {
+    if (widget.showIntro == true) {
       // Workaround using Navigator inside initState()
       Future.microtask(
         () => Navigator.of(context).push(
