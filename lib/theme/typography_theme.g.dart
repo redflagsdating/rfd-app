@@ -11,14 +11,14 @@ const typographyTheme = TextTheme(
   labelSmall: TextStyle(fontWeight: FontWeight.w700),
   bodyLarge: TextStyle(
     fontSize: 18,
-    fontFamily: 'LeagueSpartan',
+    // fontFamily: 'LeagueSpartan',
   ),
   bodyMedium: TextStyle(
     fontSize: 16,
-    fontFamily: 'LeagueSpartan',
+    // fontFamily: 'LeagueSpartan',
   ),
   bodySmall: TextStyle(
     fontSize: 14,
-    fontFamily: 'LeagueSpartan',
+    // fontFamily: 'LeagueSpartan',
   ),
 );
