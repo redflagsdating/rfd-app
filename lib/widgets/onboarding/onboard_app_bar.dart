@@ -16,6 +16,7 @@ class OnboardAppBar extends AppBar {
     this.onBack,
     this.onSkip,
   }) : super(
+            backgroundColor: theme.colorScheme.background,
             centerTitle: true,
             leading: IconButton(
                 onPressed: onBack,

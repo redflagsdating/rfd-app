@@ -12,10 +12,6 @@ const maxSteps = 3;
 
 /// Onboarding stage 1 Account verification Scaffold
 class PageOnboardVerification extends StatefulWidget {
-  final int initStep;
-  final String? initFirstName;
-  final String? initLastName;
-  final String? initDisplayName;
   const PageOnboardVerification({
     super.key,
     required this.initStep,
@@ -23,6 +19,11 @@ class PageOnboardVerification extends StatefulWidget {
     this.initLastName,
     this.initDisplayName,
   });
+
+  final int initStep;
+  final String? initFirstName;
+  final String? initLastName;
+  final String? initDisplayName;
 
   @override
   State<PageOnboardVerification> createState() =>
@@ -45,12 +46,12 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
     });
   }
 
-  void _nextStep([bool? reverse]) {
+  void _nextStep([bool? back]) {
     setState(() {
-      if (reverse == true && _step > 0) {
+      if (back == true && _step > 0) {
         _reverse = true;
         _step--;
-      } else if (reverse != true && _step < maxSteps) {
+      } else if (back != true && _step < maxSteps) {
         _reverse = false;
         _step++;
       }
@@ -109,12 +110,15 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
                 _setLoading(true);
 
                 final uid = FirebaseAuth.instance.currentUser!.uid;
-                final firstName =
-                    localStorage.getString(UserFields.firstName.name);
-                final lastName =
-                    localStorage.getString(UserFields.lastName.name);
-                final displayName =
-                    localStorage.getString(UserFields.displayName.name);
+                final firstName = localStorage.getString(
+                  UserFields.firstName.name,
+                );
+                final lastName = localStorage.getString(
+                  UserFields.lastName.name,
+                );
+                final displayName = localStorage.getString(
+                  UserFields.displayName.name,
+                );
 
                 switch (_step) {
                   case 0:
@@ -135,6 +139,7 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
                       });
                     }
                     break;
+
                   case 1:
                     if (displayName != _displayNameCtrl.text) {
                       localStorage.setString(
@@ -147,7 +152,10 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
                       });
                     }
                     break;
-                  default:
+
+                  case 2:
+                    // TODO
+                    break;
                 }
 
                 _setLoading(false);

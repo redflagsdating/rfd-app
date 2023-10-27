@@ -90,15 +90,15 @@ class App extends StatelessWidget {
                       localStorage.getBool(UserFields.onboarding.name) ?? false;
 
                   return PageSlideTransitionSwitcher(
-                    reverse: authProvider.status != AuthStatus.authenticated &&
-                            authProvider.status != AuthStatus.authenticating
+                    reverse: !authProvider.isAuthenticated() &&
+                            !authProvider.isAuthenticating()
                         ? true
                         : false,
-                    child: authProvider.status == AuthStatus.authenticated
+                    child: authProvider.isAuthenticated()
                         ? (isOnboard
                             ? const PageHome()
                             : const PageOnboardHome())
-                        : authProvider.status == AuthStatus.authenticating
+                        : authProvider.isAuthenticating()
                             ? PageSignInSplash(authProvider: authProvider)
                             : PageSignIn(showIntro: showIntro),
                   );

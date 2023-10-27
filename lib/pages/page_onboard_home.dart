@@ -34,18 +34,19 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
     final firstName = localStorage.getString(UserFields.firstName.name);
     final lastName = localStorage.getString(UserFields.lastName.name);
     final displayName = localStorage.getString(UserFields.displayName.name);
-    final verifySubmitted =
-        localStorage.getBool(UserFields.verifySubmitted.name);
+    final verifySubmitted = localStorage.getBool(
+      UserFields.verifySubmitted.name,
+    );
 
-    final verifyStep1 = firstName == "" || lastName == "";
-    final verifyStep2 = displayName == "";
-    final verifyStep3 = verifySubmitted != true;
+    final step1 = firstName == "" || lastName == "";
+    final step2 = displayName == "";
+    final step3 = verifySubmitted != true;
 
     ///** Onboarding stage 1 - Account verification
-    /// - First/Last name
-    /// - Preferred (display) name
-    /// - ID verification (KYC)
-    if (verifyStep1 || verifyStep2 || verifyStep3) {
+    /// Step 1 - First/Last name
+    /// Step 2 - Preferred (display) name
+    /// Step 3 - ID verification (KYC)
+    if (step1 || step2 || step3) {
       Navigator.of(context).pushReplacement(
         PageFadeRouteBuilder(
           transitionDuration: const Duration(seconds: 1),
@@ -60,11 +61,11 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
                       initFirstName: firstName,
                       initLastName: lastName,
                       initDisplayName: displayName,
-                      initStep: verifyStep1
+                      initStep: step1
                           ? 0
-                          : verifyStep2
+                          : step2
                               ? 1
-                              : verifyStep3
+                              : step3
                                   ? 2
                                   : maxSteps,
                     ),

@@ -195,11 +195,11 @@ class PageSignInEmailState extends State<PageSignInEmail>
       //
       final subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) {
-          if (authProvider.status == AuthStatus.pending) {
+          if (authProvider.isPending()) {
             authProvider.handleSignIn(event.link.toString()).then(
               (signedIn) {
                 if (signedIn &&
-                    authProvider.status == AuthStatus.authenticated) {
+                    authProvider.isAuthenticated()) {
                   Navigator.popAndPushNamed(context, '/');
                 }
               },
@@ -208,7 +208,7 @@ class PageSignInEmailState extends State<PageSignInEmail>
         },
       );
 
-      if (authProvider.status == AuthStatus.authenticated) {
+      if (authProvider.isAuthenticated()) {
         subscription.cancel();
       }
     } catch (e) {

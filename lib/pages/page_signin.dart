@@ -56,14 +56,14 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
     try {
       final subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) {
-          if (authProvider.status == AuthStatus.pending) {
+          if (authProvider.isPending()) {
             Navigator.pop(context);
             authProvider.handleSignIn(event.link.toString());
           }
         },
       );
 
-      if (authProvider.status == AuthStatus.authenticated) {
+      if (authProvider.isAuthenticated()) {
         subscription.cancel();
       }
     } catch (e) {

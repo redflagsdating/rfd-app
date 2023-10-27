@@ -45,8 +45,9 @@ class _OnboardVerificationFullNameState
           Text(l10n.pgOnboardFullNameBody),
           const SizedBox(height: 48),
           TextFormField(
-            enabled: isEnabled,
+            maxLength: 50,
             autofocus: true,
+            enabled: isEnabled,
             controller: widget.firstNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
@@ -63,6 +64,7 @@ class _OnboardVerificationFullNameState
           ),
           const SizedBox(height: 24),
           TextFormField(
+            maxLength: 50,
             enabled: isEnabled,
             controller: widget.lastNameCtrl,
             decoration: InputDecoration(

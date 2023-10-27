@@ -41,8 +41,9 @@ class _OnboardVerificationDisplayNameState
           Text(l10n.pgOnboardDisplayNameBody),
           const SizedBox(height: 48),
           TextFormField(
-            enabled: widget.enabled != false,
+            maxLength: 50,
             autofocus: true,
+            enabled: widget.enabled != false,
             controller: widget.displayNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),

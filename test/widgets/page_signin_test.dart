@@ -98,7 +98,7 @@ void main() {
 
     await tester.tap(find.byKey(gKey));
     await tester.pump(const Duration(milliseconds: 100));
-    expect(authProvider.status == AuthStatus.authenticated, isTrue);
+    expect(authProvider.isAuthenticated(), isTrue);
 
     // Ensure user data is created in the Firestore
     final result = await fakeUsersRef
@@ -149,7 +149,7 @@ void main() {
     await tester.enterText(find.byKey(dialogInputKey), 'example@email.com');
     await tester.tap(find.byKey(dialogSendKey));
     await tester.pump(const Duration(milliseconds: 100));
-    expect(authProvider.status == AuthStatus.pending, isTrue);
+    expect(authProvider.isPending(), isTrue);
     // TODO: Found 2 widgets but should be one
     expect(find.text(l10n.pgSignInEmailSent), findsWidgets);
 

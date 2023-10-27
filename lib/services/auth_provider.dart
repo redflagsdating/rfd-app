@@ -101,6 +101,34 @@ class AuthProvider extends ChangeNotifier {
     super.dispose();
   }
 
+  bool isUninitialized() {
+    return _status == AuthStatus.uninitialized;
+  }
+
+  bool isInitializing() {
+    return _status == AuthStatus.initializing;
+  }
+
+  bool isPending() {
+    return _status == AuthStatus.pending;
+  }
+
+  bool isAuthenticated() {
+    return _status == AuthStatus.authenticated;
+  }
+
+  bool isAuthenticating() {
+    return _status == AuthStatus.authenticating;
+  }
+
+  bool isAuthCanceled() {
+    return _status == AuthStatus.authenticateCanceled;
+  }
+
+  bool isAuthError() {
+    return _status == AuthStatus.authenticateError;
+  }
+
   /// Clear localStorage after logout
   Future<void> localStorageClear() async {
     await localStorage.remove(UserFields.uid.name);
