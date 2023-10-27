@@ -26,11 +26,7 @@ class _PageHomeState extends State<PageHome> {
       children: [
         FilledButton(
           onPressed: () {
-            authProvider.handleSignOut().then(
-              (value) {
-                Navigator.of(context).pushReplacementNamed("/");
-              },
-            );
+            authProvider.handleSignOut();
           },
           child: Text(AppLocalizations.of(context)!.signOut),
         )

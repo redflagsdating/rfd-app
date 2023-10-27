@@ -75,10 +75,9 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
   Widget build(context) {
     final l10n = AppLocalizations.of(context);
 
-    return scaffoldSignIn(
-      context,
-      const AssetImage("assets/signin-bg.jpg"),
-      Column(
+    return ScaffoldSignIn(
+      decoration: const AssetImage("assets/signin-bg.jpg"),
+      content: Column(
         children: <Widget>[
           FilledButton(
             key: const Key("page_signin_google"),

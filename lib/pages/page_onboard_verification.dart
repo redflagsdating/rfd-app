@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
-import 'package:red_flags/pages/page_home.dart';
 import 'package:red_flags/widgets/onboarding/onboard_app_bar.dart';
 import 'package:red_flags/widgets/onboarding/onboard_verification_display_name.dart';
 import 'package:red_flags/widgets/onboarding/onboard_verification_full_name.dart';
@@ -89,9 +88,14 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
                   }
                 },
           onSkip: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const PageHome()),
-            );
+            localStorage
+                .setBool(
+                  UserFields.onboarding.name,
+                  true,
+                )
+                .then(
+                  (value) => Navigator.of(context).pushReplacementNamed("/"),
+                );
           }),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),

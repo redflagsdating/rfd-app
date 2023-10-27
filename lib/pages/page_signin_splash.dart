@@ -56,10 +56,9 @@ class _PageSignInSplashState extends State<PageSignInSplash>
 
   @override
   Widget build(context) {
-    return scaffoldSignIn(
-      context,
-      const AssetImage("assets/signin-splash-bg.jpg"),
-      const Padding(
+    return ScaffoldSignIn(
+      decoration: const AssetImage("assets/signin-splash-bg.jpg"),
+      content: const Padding(
         padding: EdgeInsets.symmetric(vertical: 32),
         child: CircularProgressIndicator(
           strokeCap: StrokeCap.round,

@@ -53,6 +53,10 @@ class App extends StatelessWidget {
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: typographyTheme,
+                floatingActionButtonTheme: FloatingActionButtonThemeData(
+                  foregroundColor: lightColorScheme.onPrimary,
+                  backgroundColor: lightColorScheme.primary,
+                ),
                 snackBarTheme: SnackBarThemeData(
                   contentTextStyle: const TextStyle(
                     fontFamily: "Roboto",
