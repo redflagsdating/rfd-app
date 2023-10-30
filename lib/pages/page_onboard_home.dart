@@ -76,7 +76,9 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
               ? 0
               : profileStep2
                   ? 1
-                  : 2,
+                  : profileStep3
+                      ? 2
+                      : 3,
         ),
       );
     }

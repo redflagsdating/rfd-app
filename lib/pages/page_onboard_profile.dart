@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:red_flags/mixins/mixin_local_storage.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
+import 'package:red_flags/widgets/onboarding/profile_birthday.dart';
 import 'package:red_flags/widgets/onboarding/profile_gender.dart';
 import 'package:red_flags/widgets/onboarding/scaffold_onboard.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
@@ -28,6 +30,8 @@ class PageOnboardProfile extends StatefulWidget {
 
 class _PageOnboardProfileState extends State<PageOnboardProfile>
     with MixinOnboardState, MixinLocalStorage {
+  final _birthdayCtrl = TextEditingController();
+
   void _next() {
     if (step < maxSteps - 1) {
       next();
@@ -45,6 +49,12 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
   @override
   void didChangeDependencies() {
     step = widget.initStep;
+
+    final dob = getDob();
+
+    if (dob != null) {
+      _birthdayCtrl.text = DateFormat.yMd().format(dob);
+    }
 
     super.didChangeDependencies();
   }
@@ -86,6 +96,7 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
               setSubmitting(true);
 
               final uid = getUserId();
+              final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
 
               if (step == 0) {
                 await usersRef
@@ -95,6 +106,9 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
                 await usersRef
                     .doc(uid)
                     .update({UserFields.genderFor.name: genderFor});
+              } else if (step == 2 && !dob.isAtSameMomentAs(getDob()!)) {
+                await setDob(dob);
+                await usersRef.doc(uid).update({UserFields.dob.name: dob});
               }
 
               setSubmitting(false);
@@ -114,7 +128,12 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
                       enabled: !submitting,
                       genderFor: true,
                     )
-                  : const Text("TODO"),
+                  : step == 2
+                      ? ProfileBirthday(
+                          enabled: !submitting,
+                          birthdayCtrl: _birthdayCtrl,
+                        )
+                      : const Text("TODO"),
         ),
       ),
     );

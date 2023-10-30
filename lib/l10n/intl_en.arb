@@ -21,6 +21,7 @@
   "fieldLastNameErrorText": "Last name cannot be empty",
   "fieldDisplayNameLabel": "Your preferred name",
   "fieldDisplayNameErrorText": "Last name cannot be empty",
+  "fieldBirthdayLabel": "Date of birth",
   "pgSignInTagLine": "Real talk. Real connection",
   "pgSignInWithBtn": "Continue with {provider}",
   "@pgSignInWithBtn": {
