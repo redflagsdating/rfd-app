@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Onboarding stage 1 Account verification > Step 1 Full Name
-class OnboardVerificationFullName extends StatefulWidget {
+class VerificationFullName extends StatefulWidget {
   final bool? enabled;
   final TextEditingController firstNameCtrl;
   final TextEditingController lastNameCtrl;
 
-  const OnboardVerificationFullName({
+  const VerificationFullName({
     super.key,
     this.enabled,
     required this.firstNameCtrl,
@@ -15,12 +15,10 @@ class OnboardVerificationFullName extends StatefulWidget {
   });
 
   @override
-  State<OnboardVerificationFullName> createState() =>
-      _OnboardVerificationFullNameState();
+  State<VerificationFullName> createState() => _VerificationFullNameState();
 }
 
-class _OnboardVerificationFullNameState
-    extends State<OnboardVerificationFullName> {
+class _VerificationFullNameState extends State<VerificationFullName> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -51,12 +49,12 @@ class _OnboardVerificationFullNameState
             controller: widget.firstNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
-              labelText: l10n.pgOnboardFirstNameLabel,
-              helperText: l10n.pgOnboardFirstNameHelperText,
+              labelText: l10n.fieldFirstNameLabel,
+              helperText: l10n.fieldFirstNameHelperText,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.pgOnboardFirstNameErrorText;
+                return l10n.fieldFirstNameErrorText;
               }
 
               return null;
@@ -69,12 +67,12 @@ class _OnboardVerificationFullNameState
             controller: widget.lastNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
-              labelText: l10n.pgOnboardLastNameLabel,
-              helperText: l10n.pgOnboardLastNameHelperText,
+              labelText: l10n.fieldLastNameLabel,
+              helperText: l10n.fieldLastNameHelperText,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.pgOnboardLastNameErrorText;
+                return l10n.fieldLastNameErrorText;
               }
 
               return null;

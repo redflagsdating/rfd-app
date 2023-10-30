@@ -2,23 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Onboarding stage 1 Account verification > Step 2 Preferred Name
-class OnboardVerificationDisplayName extends StatefulWidget {
+class VerificationDisplayName extends StatefulWidget {
   final bool? enabled;
   final TextEditingController displayNameCtrl;
 
-  const OnboardVerificationDisplayName({
+  const VerificationDisplayName({
     super.key,
     this.enabled,
     required this.displayNameCtrl,
   });
 
   @override
-  State<OnboardVerificationDisplayName> createState() =>
-      _OnboardVerificationDisplayNameState();
+  State<VerificationDisplayName> createState() =>
+      _VerificationDisplayNameState();
 }
 
-class _OnboardVerificationDisplayNameState
-    extends State<OnboardVerificationDisplayName> {
+class _VerificationDisplayNameState extends State<VerificationDisplayName> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -47,11 +46,11 @@ class _OnboardVerificationDisplayNameState
             controller: widget.displayNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
-              labelText: l10n.pgOnboardDisplayNameLabel,
+              labelText: l10n.fieldDisplayNameLabel,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return l10n.pgOnboardDisplayNameErrorText;
+                return l10n.fieldDisplayNameErrorText;
               }
 
               return null;

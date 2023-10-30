@@ -1,69 +1,59 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:red_flags/mixins/mixin_local_storage.dart';
+import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/models/user.dart';
-import 'package:red_flags/widgets/onboarding/onboard_app_bar.dart';
-import 'package:red_flags/widgets/onboarding/onboard_verification_display_name.dart';
-import 'package:red_flags/widgets/onboarding/onboard_verification_full_name.dart';
+import 'package:red_flags/pages/page_onboard_home.dart';
+import 'package:red_flags/widgets/onboarding/scaffold_onboard.dart';
+import 'package:red_flags/widgets/onboarding/verification_display_name.dart';
+import 'package:red_flags/widgets/onboarding/verification_full_name.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+/// Step 1 - First/Last name
+/// Step 2 - Preferred (display) name
+/// Step 3 - ID verification (KYC)
 const maxSteps = 3;
 
 /// Onboarding stage 1 Account verification Scaffold
 class PageOnboardVerification extends StatefulWidget {
   const PageOnboardVerification({
-    super.key,
+    Key? key,
     required this.initStep,
-    this.initFirstName,
-    this.initLastName,
-    this.initDisplayName,
-  });
+  }) : super(key: key);
 
   final int initStep;
-  final String? initFirstName;
-  final String? initLastName;
-  final String? initDisplayName;
 
   @override
   State<PageOnboardVerification> createState() =>
       _PageOnboardVerificationState();
 }
 
-class _PageOnboardVerificationState extends State<PageOnboardVerification> {
-  int _step = 0;
-  bool _reverse = false;
-  bool _loading = false;
-
-  final _form = GlobalKey<FormState>();
+class _PageOnboardVerificationState extends State<PageOnboardVerification>
+    with MixinOnboardState, MixinLocalStorage {
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   final _displayNameCtrl = TextEditingController();
 
-  void _setLoading(bool loading) {
-    setState(() {
-      _loading = loading;
-    });
-  }
-
-  void _nextStep([bool? back]) {
-    setState(() {
-      if (back == true && _step > 0) {
-        _reverse = true;
-        _step--;
-      } else if (back != true && _step < maxSteps) {
-        _reverse = false;
-        _step++;
-      }
-    });
+  void _next() {
+    if (step < maxSteps - 1) {
+      next();
+    } else {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => const PageOnboardHome(
+            current: OnboardingStage.verification,
+          ),
+        ),
+      );
+    }
   }
 
   @override
   void didChangeDependencies() {
-    _step = widget.initStep;
-    _firstNameCtrl.text = widget.initFirstName ?? "";
-    _lastNameCtrl.text = widget.initLastName ?? "";
-    _displayNameCtrl.text = widget.initDisplayName ?? "";
+    step = widget.initStep;
+
+    _firstNameCtrl.text = getFirstName() ?? "";
+    _lastNameCtrl.text = getLastName() ?? "";
+    _displayNameCtrl.text = getDisplayName() ?? "";
 
     super.didChangeDependencies();
   }
@@ -71,124 +61,87 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isLoading = _loading == true;
-    final localStorage = Provider.of<SharedPreferences>(context);
 
-    return Scaffold(
-      appBar: OnboardAppBar(
-          theme: theme,
-          step: _step,
-          maxSteps: maxSteps,
-          onBack: isLoading
-              ? null
-              : () {
-                  if (_step == 0) {
-                    Navigator.of(context).pop();
-                  } else if (_step > 0) {
-                    _nextStep(true);
-                  }
-                },
-          onSkip: () {
-            localStorage
-                .setBool(
-                  UserFields.onboarding.name,
-                  true,
+    return ScaffoldOnboard(
+      step: step,
+      maxSteps: maxSteps,
+      appBarBackground: theme.colorScheme.background,
+      stepIndicatorColor: theme.colorScheme.primaryContainer,
+      onBackPressed: submitting
+          ? null
+          : () {
+              if (step == 0) {
+                Navigator.of(context).pop();
+              } else {
+                next(true);
+              }
+            },
+      onSkipPressed: () {
+        //TODO: Skip prompt
+        _next();
+      },
+      onNextPressed: submitting
+          ? null
+          : () async {
+              if (!onboardForm.currentState!.validate()) {
+                return;
+              }
+
+              setSubmitting(true);
+
+              final uid = getUserId();
+              final firstName = _firstNameCtrl.text;
+              final lastName = _lastNameCtrl.text;
+              final displayName = _displayNameCtrl.text;
+
+              if (step == 0 &&
+                  (getFirstName() != firstName || getLastName() != lastName)) {
+                setFirstName(firstName);
+                setLastName(lastName);
+
+                await usersRef.doc(uid).update({
+                  UserFields.firstName.name: firstName,
+                  UserFields.lastName.name: lastName,
+                });
+              } else if (step == 1 && getDisplayName() != displayName) {
+                setDisplayName(displayName);
+
+                await usersRef
+                    .doc(uid)
+                    .update({UserFields.displayName.name: displayName});
+              } else {
+                /// The delay prevents immediate state change from true to
+                /// false by _setLoading when no data changes are needed to
+                /// save to Firestore. This ensure "autofocus" of TextFormField
+                /// works as expected as the delay allows loading state change
+                /// reflects to the "enabled" state of TextFormField which
+                /// triggers unfocus automatically.
+                await Future.delayed(const Duration(milliseconds: 100));
+              }
+
+              setSubmitting(false);
+              _next();
+            },
+      content: Form(
+        key: onboardForm,
+        child: PageSlideTransitionSwitcher(
+          reverse: slideReverse,
+          duration: const Duration(milliseconds: 500),
+          child: step == 0
+              ? VerificationFullName(
+                  enabled: !submitting,
+                  firstNameCtrl: _firstNameCtrl,
+                  lastNameCtrl: _lastNameCtrl,
                 )
-                .then(
-                  (value) => Navigator.of(context).pushReplacementNamed("/"),
-                );
-          }),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        onPressed: isLoading
-            ? null
-            : () async {
-                if (!_form.currentState!.validate()) {
-                  return;
-                }
-
-                _setLoading(true);
-
-                final uid = FirebaseAuth.instance.currentUser!.uid;
-                final firstName = localStorage.getString(
-                  UserFields.firstName.name,
-                );
-                final lastName = localStorage.getString(
-                  UserFields.lastName.name,
-                );
-                final displayName = localStorage.getString(
-                  UserFields.displayName.name,
-                );
-
-                switch (_step) {
-                  case 0:
-                    if (firstName != _firstNameCtrl.text ||
-                        lastName != _lastNameCtrl.text) {
-                      localStorage.setString(
-                        UserFields.firstName.name,
-                        _firstNameCtrl.text,
-                      );
-                      localStorage.setString(
-                        UserFields.lastName.name,
-                        _lastNameCtrl.text,
-                      );
-
-                      await usersRef.doc(uid).update({
-                        UserFields.firstName.name: _firstNameCtrl.text,
-                        UserFields.lastName.name: _lastNameCtrl.text,
-                      });
-                    }
-                    break;
-
-                  case 1:
-                    if (displayName != _displayNameCtrl.text) {
-                      localStorage.setString(
-                        UserFields.displayName.name,
-                        _displayNameCtrl.text,
-                      );
-
-                      await usersRef.doc(uid).update({
-                        UserFields.displayName.name: _displayNameCtrl.text,
-                      });
-                    }
-                    break;
-
-                  case 2:
-                    // TODO
-                    break;
-                }
-
-                _setLoading(false);
-                _nextStep();
-              },
-        child: const Icon(Icons.arrow_forward_ios_rounded),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 36,
-        ),
-        child: Form(
-          key: _form,
-          child: PageSlideTransitionSwitcher(
-            reverse: _reverse,
-            duration: const Duration(milliseconds: 500),
-            child: _step == 0
-                ? OnboardVerificationFullName(
-                    enabled: !isLoading,
-                    firstNameCtrl: _firstNameCtrl,
-                    lastNameCtrl: _lastNameCtrl,
-                  )
-                : _step == 1
-                    ? OnboardVerificationDisplayName(
-                        enabled: !isLoading,
-                        displayNameCtrl: _displayNameCtrl,
-                      )
-                    // TODO
-                    : _step == 2
-                        ? const Text("KYC")
-                        : const Text("Unknown"),
-          ),
+              : step == 1
+                  ? VerificationDisplayName(
+                      enabled: !submitting,
+                      displayNameCtrl: _displayNameCtrl,
+                    )
+                  // TODO
+                  : step == 2
+                      ? const Text("KYC")
+                      : const Text("Unknown"),
         ),
       ),
     );

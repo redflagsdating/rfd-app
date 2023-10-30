@@ -2,6 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart'
     show Timestamp, FirebaseFirestore;
 import 'package:flutter/material.dart';
 
+enum Gender {
+  man,
+  woman,
+  nonBinary,
+}
+
 enum UserFields {
   uid,
   email,
@@ -15,7 +21,7 @@ enum UserFields {
   genderFor,
   reside,
   phoneNumber,
-  onboarding,
+  onboarded,
   verified,
   verifySubmitted,
 }
@@ -27,7 +33,7 @@ class UserModel {
     required this.uid,
     required this.email,
     required this.createdAt,
-    required this.onboarding,
+    required this.onboarded,
     required this.verified,
     required this.verifySubmitted,
     this.photoUrl,
@@ -44,7 +50,7 @@ class UserModel {
   final String uid;
   final String email;
   final DateTime createdAt;
-  final bool onboarding;
+  final bool onboarded;
   final bool verified;
   final bool verifySubmitted;
   final String? photoUrl;
@@ -53,17 +59,16 @@ class UserModel {
   final String? displayName;
   final DateTime? dob;
   final String? gender;
-  final String? genderFor;
+  final List<String>? genderFor;
   final String? reside;
   final String? phoneNumber;
 
-//
   Map<String, dynamic> toJson() {
     return {
       UserFields.uid.name: uid,
       UserFields.email.name: email,
       UserFields.createdAt.name: createdAt,
-      UserFields.onboarding.name: onboarding,
+      UserFields.onboarded.name: onboarded,
       UserFields.verified.name: verified,
       UserFields.verifySubmitted.name: verifySubmitted,
       UserFields.photoUrl.name: photoUrl,
@@ -78,13 +83,12 @@ class UserModel {
     };
   }
 
-//
   UserModel.fromJson(Map<String, dynamic> json)
       : this(
           uid: json[UserFields.uid.name]!,
           email: json[UserFields.email.name]!,
           createdAt: (json[UserFields.createdAt.name]! as Timestamp).toDate(),
-          onboarding: json[UserFields.onboarding.name]!,
+          onboarded: json[UserFields.onboarded.name]!,
           verified: json[UserFields.verified.name]!,
           verifySubmitted: json[UserFields.verifySubmitted.name]!,
           photoUrl: json[UserFields.photoUrl.name],
@@ -95,7 +99,7 @@ class UserModel {
               ? json[UserFields.dob.name].toDate()
               : null,
           gender: json[UserFields.gender.name],
-          genderFor: json[UserFields.genderFor.name],
+          genderFor: json[UserFields.genderFor.name]?.cast<String>(),
           reside: json[UserFields.reside.name],
           phoneNumber: json[UserFields.phoneNumber.name],
         );

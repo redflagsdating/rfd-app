@@ -310,10 +310,13 @@ class AuthProvider extends ChangeNotifier {
   /// Cross user sign-in status **FirebaseAuth** `currentUser`, user data
   /// in **SharedPreferences** and `SocialAuthProvider` status
   Future<bool> isSignedIn() async {
+    final uid = localStorage.getString(UserFields.uid.name);
     final email = localStorage.getString(UserFields.email.name);
     final providerData = firebaseAuth.currentUser?.providerData;
 
-    if (email == null || providerData == null) {
+    if (email == null ||
+        providerData == null ||
+        uid != firebaseAuth.currentUser!.uid) {
       logger.d('email: $email, providerData: $providerData',
           time: DateTime.now());
 
@@ -472,7 +475,7 @@ class AuthProvider extends ChangeNotifier {
         photoUrl: firebaseUser.photoURL,
         displayName: firebaseUser.displayName,
         phoneNumber: firebaseUser.phoneNumber,
-        onboarding: false,
+        onboarded: false,
         verified: false,
         verifySubmitted: false,
       );
@@ -489,17 +492,54 @@ class AuthProvider extends ChangeNotifier {
     // Save user data in the local storage
     await localStorage.setString(UserFields.uid.name, userModel.uid);
     await localStorage.setString(UserFields.email.name, userModel.email);
-    await localStorage.setString(
-        UserFields.photoUrl.name, userModel.photoUrl ?? "");
-    await localStorage.setString(
-        UserFields.firstName.name, userModel.firstName ?? "");
-    await localStorage.setString(
-        UserFields.lastName.name, userModel.lastName ?? "");
-    await localStorage.setString(
-        UserFields.displayName.name, userModel.displayName ?? "");
+    await localStorage.setInt(
+      UserFields.createdAt.name,
+      userModel.createdAt.millisecondsSinceEpoch,
+    );
     await localStorage.setBool(
-        UserFields.onboarding.name, userModel.onboarding);
+      UserFields.onboarded.name,
+      userModel.onboarded,
+    );
     await localStorage.setBool(UserFields.verified.name, userModel.verified);
+    await localStorage.setBool(
+      UserFields.verifySubmitted.name,
+      userModel.verifySubmitted,
+    );
+    await localStorage.setString(
+      UserFields.firstName.name,
+      userModel.firstName ?? "",
+    );
+    await localStorage.setString(
+      UserFields.lastName.name,
+      userModel.lastName ?? "",
+    );
+    await localStorage.setString(
+      UserFields.displayName.name,
+      userModel.displayName ?? "",
+    );
+    if (userModel.dob != null) {
+      await localStorage.setInt(
+        UserFields.dob.name,
+        userModel.dob!.millisecondsSinceEpoch,
+      );
+    }
+
+    await localStorage.setString(
+      UserFields.gender.name,
+      userModel.gender ?? "",
+    );
+    await localStorage.setStringList(
+      UserFields.genderFor.name,
+      userModel.genderFor ?? [],
+    );
+    await localStorage.setString(
+      UserFields.reside.name,
+      userModel.reside ?? "",
+    );
+    await localStorage.setString(
+      UserFields.photoUrl.name,
+      userModel.photoUrl ?? "",
+    );
 
     logger.d(
       'Successfully write the user (${userModel.email}) into local storage',

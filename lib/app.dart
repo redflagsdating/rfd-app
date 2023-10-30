@@ -66,6 +66,25 @@ class App extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                 ),
+                chipTheme: ChipThemeData(
+                  side: BorderSide(color: lightColorScheme.outlineVariant),
+                  color: MaterialStateProperty.resolveWith(
+                    (states) {
+                      const Set<MaterialState> interactiveStates =
+                          <MaterialState>{
+                        MaterialState.pressed,
+                        MaterialState.hovered,
+                        MaterialState.focused,
+                        MaterialState.selected,
+                      };
+                      if (states.any(interactiveStates.contains)) {
+                        return lightColorScheme.primaryContainer;
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
                 colorScheme: lightColorScheme,
                 useMaterial3: true,
                 pageTransitionsTheme: const PageTransitionsTheme(
@@ -87,7 +106,7 @@ class App extends StatelessWidget {
                   final showIntro =
                       !(localStorage.getBool(sharedPrefKey) ?? false);
                   final isOnboard =
-                      localStorage.getBool(UserFields.onboarding.name) ?? false;
+                      localStorage.getBool(UserFields.onboarded.name) ?? false;
 
                   return PageSlideTransitionSwitcher(
                     reverse: !authProvider.isAuthenticated() &&

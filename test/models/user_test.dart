@@ -21,7 +21,7 @@ void main() {
       uid: uid,
       email: "example@email.com",
       createdAt: DateTime.now(),
-      onboarding: false,
+      onboarded: false,
       verified: false,
       verifySubmitted: false,
       photoUrl: "https://picsum.photos/200/300",
@@ -29,8 +29,8 @@ void main() {
       lastName: "Smith",
       displayName: "Johnny",
       dob: DateTime.now(),
-      gender: "Male",
-      genderFor: "Female",
+      gender: Gender.man.name,
+      genderFor: [Gender.woman.name],
       phoneNumber: "+61411111111",
     );
 
@@ -43,7 +43,7 @@ void main() {
 
     expect(userData.email == userModel.email, isTrue);
     expect(userData.createdAt == userModel.createdAt, isTrue);
-    expect(userData.onboarding == userModel.onboarding, isTrue);
+    expect(userData.onboarded == userModel.onboarded, isTrue);
     expect(userData.verified == userModel.verified, isTrue);
     expect(userData.verifySubmitted == userModel.verifySubmitted, isTrue);
     expect(userData.photoUrl == userModel.photoUrl, isTrue);
@@ -52,7 +52,8 @@ void main() {
     expect(userData.displayName == userModel.displayName, isTrue);
     expect(userData.dob == userModel.dob, isTrue);
     expect(userData.gender == userModel.gender, isTrue);
-    expect(userData.genderFor == userModel.genderFor, isTrue);
+    expect(const ListEquality().equals(userData.genderFor, userModel.genderFor),
+        isTrue);
     expect(userData.phoneNumber == userModel.phoneNumber, isTrue);
   });
 }
