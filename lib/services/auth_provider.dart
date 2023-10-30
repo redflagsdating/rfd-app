@@ -129,8 +129,62 @@ class AuthProvider extends ChangeNotifier {
     return _status == AuthStatus.authenticateError;
   }
 
+  /// Update user data in localStorage
+  Future<void> _localStorageUpdate(UserModel userModel) async {
+    await localStorage.setString(UserFields.uid.name, userModel.uid);
+    await localStorage.setString(UserFields.email.name, userModel.email);
+    await localStorage.setInt(
+      UserFields.createdAt.name,
+      userModel.createdAt.millisecondsSinceEpoch,
+    );
+    await localStorage.setBool(
+      UserFields.onboarded.name,
+      userModel.onboarded,
+    );
+    await localStorage.setBool(UserFields.verified.name, userModel.verified);
+    await localStorage.setBool(
+      UserFields.verifySubmitted.name,
+      userModel.verifySubmitted,
+    );
+    await localStorage.setString(
+      UserFields.firstName.name,
+      userModel.firstName ?? "",
+    );
+    await localStorage.setString(
+      UserFields.lastName.name,
+      userModel.lastName ?? "",
+    );
+    await localStorage.setString(
+      UserFields.displayName.name,
+      userModel.displayName ?? "",
+    );
+    if (userModel.dob != null) {
+      await localStorage.setInt(
+        UserFields.dob.name,
+        userModel.dob!.millisecondsSinceEpoch,
+      );
+    }
+
+    await localStorage.setString(
+      UserFields.gender.name,
+      userModel.gender ?? "",
+    );
+    await localStorage.setStringList(
+      UserFields.genderFor.name,
+      userModel.genderFor ?? [],
+    );
+    await localStorage.setString(
+      UserFields.reside.name,
+      userModel.reside ?? "",
+    );
+    await localStorage.setString(
+      UserFields.photoUrl.name,
+      userModel.photoUrl ?? "",
+    );
+  }
+
   /// Clear localStorage after logout
-  Future<void> localStorageClear() async {
+  Future<void> _localStorageClear() async {
     await localStorage.remove(UserFields.uid.name);
     await localStorage.remove(UserFields.photoUrl.name);
     await localStorage.remove(UserFields.phoneNumber.name);
@@ -375,7 +429,18 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
-    return userInfo != null;
+    if (userInfo != null) {
+      final user = await users.where(UserFields.uid.name, isEqualTo: uid).get();
+
+      // Update cache user data from database to keep it up-to-date
+      if (user.docs.isNotEmpty) {
+        _localStorageUpdate(user.docs.first.data());
+      }
+
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ///
@@ -489,57 +554,7 @@ class AuthProvider extends ChangeNotifier {
       userModel = user.docs.first.data();
     }
 
-    // Save user data in the local storage
-    await localStorage.setString(UserFields.uid.name, userModel.uid);
-    await localStorage.setString(UserFields.email.name, userModel.email);
-    await localStorage.setInt(
-      UserFields.createdAt.name,
-      userModel.createdAt.millisecondsSinceEpoch,
-    );
-    await localStorage.setBool(
-      UserFields.onboarded.name,
-      userModel.onboarded,
-    );
-    await localStorage.setBool(UserFields.verified.name, userModel.verified);
-    await localStorage.setBool(
-      UserFields.verifySubmitted.name,
-      userModel.verifySubmitted,
-    );
-    await localStorage.setString(
-      UserFields.firstName.name,
-      userModel.firstName ?? "",
-    );
-    await localStorage.setString(
-      UserFields.lastName.name,
-      userModel.lastName ?? "",
-    );
-    await localStorage.setString(
-      UserFields.displayName.name,
-      userModel.displayName ?? "",
-    );
-    if (userModel.dob != null) {
-      await localStorage.setInt(
-        UserFields.dob.name,
-        userModel.dob!.millisecondsSinceEpoch,
-      );
-    }
-
-    await localStorage.setString(
-      UserFields.gender.name,
-      userModel.gender ?? "",
-    );
-    await localStorage.setStringList(
-      UserFields.genderFor.name,
-      userModel.genderFor ?? [],
-    );
-    await localStorage.setString(
-      UserFields.reside.name,
-      userModel.reside ?? "",
-    );
-    await localStorage.setString(
-      UserFields.photoUrl.name,
-      userModel.photoUrl ?? "",
-    );
+    _localStorageUpdate(userModel);
 
     logger.d(
       'Successfully write the user (${userModel.email}) into local storage',
@@ -581,7 +596,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
 
-    await localStorageClear();
+    await _localStorageClear();
 
     logger.d('Local storage purged', time: DateTime.now());
 
