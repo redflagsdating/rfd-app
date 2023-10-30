@@ -21,6 +21,18 @@ class ProfileBirthday extends StatefulWidget {
 
 class _ProfileBirthdayState extends State<ProfileBirthday>
     with MixinOnboardState, MixinLocalStorage {
+  String? _helperText;
+
+  void _setHelperText(String value) {
+    setState(() {
+      _helperText = value;
+    });
+  }
+
+  int _getAge(DateTime dob) {
+    return (DateTime.now().difference(dob).inDays / 365).floor();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -33,6 +45,10 @@ class _ProfileBirthdayState extends State<ProfileBirthday>
         : null;
     final initialDate =
         initialValue ?? lastYear.subtract(const Duration(days: 1));
+
+    if (initialValue != null) {
+      _setHelperText(l10n!.fieldBirthdayHelperText(_getAge(initialValue)));
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,9 +69,22 @@ class _ProfileBirthdayState extends State<ProfileBirthday>
           inputType: InputType.date,
           controller: widget.birthdayCtrl,
           enabled: widget.enabled != false,
+          onChanged: (value) {
+            if (value != null) {
+              _setHelperText(l10n.fieldBirthdayHelperText(_getAge(value)));
+            } else {
+              _setHelperText("");
+            }
+          },
           decoration: InputDecoration(
             border: const UnderlineInputBorder(),
             labelText: l10n.fieldBirthdayLabel,
+            helperText: _helperText,
+            helperStyle: widget.birthdayCtrl.text.isNotEmpty
+                ? TextStyle(
+                    color: theme.colorScheme.secondary,
+                  )
+                : null,
           ),
         )
       ],

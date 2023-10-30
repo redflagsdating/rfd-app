@@ -22,6 +22,7 @@
   "fieldDisplayNameLabel": "Your preferred name",
   "fieldDisplayNameErrorText": "Last name cannot be empty",
   "fieldBirthdayLabel": "Date of birth",
+  "fieldBirthdayHelperText": "You are {age} years old",
   "pgSignInTagLine": "Real talk. Real connection",
   "pgSignInWithBtn": "Continue with {provider}",
   "@pgSignInWithBtn": {
