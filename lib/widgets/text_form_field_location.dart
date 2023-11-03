@@ -54,8 +54,12 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation> {
           await placemarkFromCoordinates(_pos!.latitude, _pos!.longitude);
 
       if (placemarks.isNotEmpty) {
-        widget.controller.text =
-            placemarks.first.locality ?? placemarks.first.subLocality ?? "";
+        final place = [
+          placemarks.first.locality,
+          placemarks.first.administrativeArea
+        ];
+
+        widget.controller.text = place.join(', ');
       }
     } catch (e) {
       rethrow;

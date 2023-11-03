@@ -3,8 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:red_flags/mixins/mixin_local_storage.dart';
 import 'package:red_flags/pages/page_onboard_profile.dart';
 import 'package:red_flags/pages/page_onboard_verification.dart';
-import 'package:red_flags/widgets/onboarding/page_onboard_splash.dart';
 import 'package:red_flags/widgets/page_fade_route_builder.dart';
+import 'package:red_flags/widgets/page_onboard_splash.dart';
 
 enum OnboardingStage { verification, profile, redflags }
 

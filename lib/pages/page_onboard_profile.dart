@@ -4,11 +4,11 @@ import 'package:red_flags/mixins/mixin_local_storage.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
-import 'package:red_flags/widgets/onboarding/profile_birthday.dart';
-import 'package:red_flags/widgets/onboarding/profile_gender.dart';
-import 'package:red_flags/widgets/onboarding/profile_locality.dart';
-import 'package:red_flags/widgets/onboarding/scaffold_onboard.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
+import 'package:red_flags/widgets/profile_birthday.dart';
+import 'package:red_flags/widgets/profile_gender.dart';
+import 'package:red_flags/widgets/profile_locality.dart';
+import 'package:red_flags/widgets/scaffold_onboard.dart';
 
 /// Step 1 - Gender
 /// Step 2 - Gender to meet

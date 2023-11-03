@@ -3,10 +3,10 @@ import 'package:red_flags/mixins/mixin_local_storage.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
-import 'package:red_flags/widgets/onboarding/scaffold_onboard.dart';
-import 'package:red_flags/widgets/onboarding/verification_display_name.dart';
-import 'package:red_flags/widgets/onboarding/verification_full_name.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
+import 'package:red_flags/widgets/scaffold_onboard.dart';
+import 'package:red_flags/widgets/verification_display_name.dart';
+import 'package:red_flags/widgets/verification_full_name.dart';
 
 /// Step 1 - First/Last name
 /// Step 2 - Preferred (display) name
