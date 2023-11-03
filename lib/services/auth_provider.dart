@@ -174,8 +174,8 @@ class AuthProvider extends ChangeNotifier {
       userModel.genderFor ?? [],
     );
     await localStorage.setString(
-      UserFields.reside.name,
-      userModel.reside ?? "",
+      UserFields.locality.name,
+      userModel.locality ?? "",
     );
     await localStorage.setString(
       UserFields.photoUrl.name,

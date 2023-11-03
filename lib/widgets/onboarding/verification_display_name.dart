@@ -4,12 +4,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 /// Onboarding stage 1 Account verification > Step 2 Preferred Name
 class VerificationDisplayName extends StatefulWidget {
   final bool? enabled;
-  final TextEditingController displayNameCtrl;
+  final TextEditingController controller;
 
   const VerificationDisplayName({
     super.key,
     this.enabled,
-    required this.displayNameCtrl,
+    required this.controller,
   });
 
   @override
@@ -40,13 +40,12 @@ class _VerificationDisplayNameState extends State<VerificationDisplayName> {
           Text(l10n.pgOnboardDisplayNameBody),
           const SizedBox(height: 48),
           TextFormField(
-            maxLength: 50,
             autofocus: true,
             enabled: widget.enabled != false,
-            controller: widget.displayNameCtrl,
+            controller: widget.controller,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
-              labelText: l10n.fieldDisplayNameLabel,
+              hintText: l10n.fieldDisplayNameHintText,
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {

@@ -43,13 +43,12 @@ class _VerificationFullNameState extends State<VerificationFullName> {
           Text(l10n.pgOnboardFullNameBody),
           const SizedBox(height: 48),
           TextFormField(
-            maxLength: 50,
             autofocus: true,
             enabled: isEnabled,
             controller: widget.firstNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
-              labelText: l10n.fieldFirstNameLabel,
+              hintText: l10n.fieldFirstNameHintText,
               helperText: l10n.fieldFirstNameHelperText,
             ),
             validator: (value) {
@@ -62,12 +61,11 @@ class _VerificationFullNameState extends State<VerificationFullName> {
           ),
           const SizedBox(height: 24),
           TextFormField(
-            maxLength: 50,
             enabled: isEnabled,
             controller: widget.lastNameCtrl,
             decoration: InputDecoration(
               border: const UnderlineInputBorder(),
-              labelText: l10n.fieldLastNameLabel,
+              hintText: l10n.fieldLastNameHintText,
               helperText: l10n.fieldLastNameHelperText,
             ),
             validator: (value) {

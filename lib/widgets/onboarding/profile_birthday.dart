@@ -9,11 +9,11 @@ class ProfileBirthday extends StatefulWidget {
   const ProfileBirthday({
     Key? key,
     this.enabled,
-    required this.birthdayCtrl,
+    required this.controller,
   }) : super(key: key);
 
   final bool? enabled;
-  final TextEditingController birthdayCtrl;
+  final TextEditingController controller;
 
   @override
   State<ProfileBirthday> createState() => _ProfileBirthdayState();
@@ -40,8 +40,8 @@ class _ProfileBirthdayState extends State<ProfileBirthday>
     final currentYear = DateTime.now().year;
     final firstYear = DateTime(currentYear - 80);
     final lastYear = DateTime(currentYear - 18);
-    final initialValue = widget.birthdayCtrl.text.isNotEmpty
-        ? DateFormat.yMd().parse(widget.birthdayCtrl.text)
+    final initialValue = widget.controller.text.isNotEmpty
+        ? DateFormat.yMd().parse(widget.controller.text)
         : null;
     final initialDate =
         initialValue ?? lastYear.subtract(const Duration(days: 1));
@@ -67,7 +67,7 @@ class _ProfileBirthdayState extends State<ProfileBirthday>
           initialValue: initialValue,
           initialDate: initialDate,
           inputType: InputType.date,
-          controller: widget.birthdayCtrl,
+          controller: widget.controller,
           enabled: widget.enabled != false,
           onChanged: (value) {
             if (value != null) {
@@ -78,9 +78,9 @@ class _ProfileBirthdayState extends State<ProfileBirthday>
           },
           decoration: InputDecoration(
             border: const UnderlineInputBorder(),
-            labelText: l10n.fieldBirthdayLabel,
+            hintText: l10n.fieldBirthdayHintText,
             helperText: _helperText,
-            helperStyle: widget.birthdayCtrl.text.isNotEmpty
+            helperStyle: widget.controller.text.isNotEmpty
                 ? TextStyle(
                     color: theme.colorScheme.secondary,
                   )

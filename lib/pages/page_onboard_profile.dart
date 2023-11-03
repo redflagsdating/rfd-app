@@ -6,6 +6,7 @@ import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
 import 'package:red_flags/widgets/onboarding/profile_birthday.dart';
 import 'package:red_flags/widgets/onboarding/profile_gender.dart';
+import 'package:red_flags/widgets/onboarding/profile_locality.dart';
 import 'package:red_flags/widgets/onboarding/scaffold_onboard.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 
@@ -31,6 +32,7 @@ class PageOnboardProfile extends StatefulWidget {
 class _PageOnboardProfileState extends State<PageOnboardProfile>
     with MixinOnboardState, MixinLocalStorage {
   final _birthdayCtrl = TextEditingController();
+  final _localityCtrl = TextEditingController();
 
   void _next() {
     if (step < maxSteps - 1) {
@@ -51,6 +53,7 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
     step = widget.initStep;
 
     final dob = getDob();
+    _localityCtrl.text = getLocality() ?? "";
 
     if (dob != null) {
       _birthdayCtrl.text = DateFormat.yMd().format(dob);
@@ -97,6 +100,7 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
 
               final uid = getUserId();
               final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
+              final locality = _localityCtrl.text;
 
               if (step == 0) {
                 await usersRef
@@ -109,6 +113,11 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
               } else if (step == 2 && !dob.isAtSameMomentAs(getDob()!)) {
                 await setDob(dob);
                 await usersRef.doc(uid).update({UserFields.dob.name: dob});
+              } else if (step == 3) {
+                await setLocality(locality);
+                await usersRef
+                    .doc(uid)
+                    .update({UserFields.locality.name: locality});
               }
 
               setSubmitting(false);
@@ -131,9 +140,14 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
                   : step == 2
                       ? ProfileBirthday(
                           enabled: !submitting,
-                          birthdayCtrl: _birthdayCtrl,
+                          controller: _birthdayCtrl,
                         )
-                      : const Text("TODO"),
+                      : step == 3
+                          ? ProfileLocality(
+                              enabled: !submitting,
+                              controller: _localityCtrl,
+                            )
+                          : const Text("TODO"),
         ),
       ),
     );

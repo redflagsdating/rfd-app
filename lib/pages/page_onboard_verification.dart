@@ -136,7 +136,7 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
               : step == 1
                   ? VerificationDisplayName(
                       enabled: !submitting,
-                      displayNameCtrl: _displayNameCtrl,
+                      controller: _displayNameCtrl,
                     )
                   // TODO
                   : step == 2

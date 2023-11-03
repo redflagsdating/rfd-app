@@ -19,7 +19,7 @@ enum UserFields {
   dob,
   gender,
   genderFor,
-  reside,
+  locality,
   phoneNumber,
   onboarded,
   verified,
@@ -43,7 +43,7 @@ class UserModel {
     this.dob,
     this.gender,
     this.genderFor,
-    this.reside,
+    this.locality,
     this.phoneNumber,
   });
 
@@ -60,7 +60,7 @@ class UserModel {
   final DateTime? dob;
   final String? gender;
   final List<String>? genderFor;
-  final String? reside;
+  final String? locality;
   final String? phoneNumber;
 
   Map<String, dynamic> toJson() {
@@ -78,7 +78,7 @@ class UserModel {
       UserFields.dob.name: dob,
       UserFields.gender.name: gender,
       UserFields.genderFor.name: genderFor,
-      UserFields.reside.name: reside,
+      UserFields.locality.name: locality,
       UserFields.phoneNumber.name: phoneNumber,
     };
   }
@@ -100,7 +100,7 @@ class UserModel {
               : null,
           gender: json[UserFields.gender.name],
           genderFor: json[UserFields.genderFor.name]?.cast<String>(),
-          reside: json[UserFields.reside.name],
+          locality: json[UserFields.locality.name],
           phoneNumber: json[UserFields.phoneNumber.name],
         );
 }

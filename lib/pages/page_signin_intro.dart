@@ -37,7 +37,7 @@ class _PageSignInIntroState extends State<PageSignInIntro> {
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
     final headline = _step == 1
-        ? l10n!.pgIntroHeadline2
+        ? l10n!.pgIntroHeadline2(l10n.brandName)
         : _step == 2
             ? l10n!.pgIntroHeadline3
             : l10n!.pgIntroHeadline1;

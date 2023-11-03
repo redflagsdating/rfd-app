@@ -27,7 +27,7 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
     super.initState();
 
     /// Better UX to show PageOnboardSplash animated spinning screen after sign
-    /// in only
+    /// in and delay to avoid Navigator call before initState() is finished
     Future.delayed(const Duration(milliseconds: 100), () {
       verification();
     });
@@ -46,7 +46,8 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
     final profileStep1 = getGender() == "";
     final profileStep2 = getGenderFor()?.isEmpty ?? true;
     final profileStep3 = getDob() == null;
-    final profileStep4 = getReside() == "";
+    final profileStep4 = getLocality() == "";
+    const profileStep5 = true;
 
     ///** Onboarding stage 1 - Account verification
     if (widget.current == null && (verifyStep1 || verifyStep2 || verifyStep3)) {
@@ -67,7 +68,11 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
 
     ///** Onboarding stage 2 - Profile
     else if (widget.current == OnboardingStage.verification &&
-        (profileStep1 || profileStep2 || profileStep3 || profileStep4)) {
+        (profileStep1 ||
+            profileStep2 ||
+            profileStep3 ||
+            profileStep4 ||
+            profileStep5)) {
       title = l10n!.pgOnboardSplash2Title;
       buttonLabel = l10n.pgOnboardSplash2Btn;
       builder = Builder(
@@ -78,14 +83,15 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
                   ? 1
                   : profileStep3
                       ? 2
-                      : 3,
+                      : profileStep4
+                          ? 3
+                          : 4,
         ),
       );
     }
 
     Navigator.of(context).pushReplacement(
       PageFadeRouteBuilder(
-        transitionDuration: const Duration(seconds: 1),
         page: Builder(
           builder: (context) => PageOnboardSplash(
             title: title,

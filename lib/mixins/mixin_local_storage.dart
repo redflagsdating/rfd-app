@@ -79,12 +79,12 @@ mixin MixinLocalStorage<T extends StatefulWidget> on State<T> {
     return localStorage.setInt(UserFields.dob.name, dob.millisecondsSinceEpoch);
   }
 
-  String? getReside() {
-    return localStorage.getString(UserFields.reside.name);
+  String? getLocality() {
+    return localStorage.getString(UserFields.locality.name);
   }
 
-  Future<bool> setReside(String reside) {
-    return localStorage.setString(UserFields.reside.name, reside);
+  Future<bool> setLocality(String locality) {
+    return localStorage.setString(UserFields.locality.name, locality);
   }
 
   bool? getOnboarded() {
