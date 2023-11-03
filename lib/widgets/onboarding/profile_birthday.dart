@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
-import 'package:red_flags/mixins/mixin_local_storage.dart';
-import 'package:red_flags/mixins/mixin_onboard_state.dart';
 
 class ProfileBirthday extends StatefulWidget {
   const ProfileBirthday({
@@ -19,8 +17,7 @@ class ProfileBirthday extends StatefulWidget {
   State<ProfileBirthday> createState() => _ProfileBirthdayState();
 }
 
-class _ProfileBirthdayState extends State<ProfileBirthday>
-    with MixinOnboardState, MixinLocalStorage {
+class _ProfileBirthdayState extends State<ProfileBirthday> {
   String? _helperText;
 
   void _setHelperText(String value) {

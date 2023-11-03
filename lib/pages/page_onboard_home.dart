@@ -28,7 +28,7 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
 
     /// Better UX to show PageOnboardSplash animated spinning screen after sign
     /// in and delay to avoid Navigator call before initState() is finished
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       verification();
     });
   }

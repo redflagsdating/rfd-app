@@ -125,7 +125,7 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
       content: Form(
         key: onboardForm,
         child: PageSlideTransitionSwitcher(
-          reverse: slideReverse,
+          reverse: slideTransitionReverse,
           duration: const Duration(milliseconds: 500),
           child: step == 0
               ? VerificationFullName(

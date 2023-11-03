@@ -7,7 +7,7 @@ mixin MixinOnboardState<T extends StatefulWidget> on State<T> {
   // Current step of the onboarding stage (OnboardingStage)
   int step = 0;
   bool submitting = false;
-  bool slideReverse = false;
+  bool slideTransitionReverse = false;
 
   void setSubmitting(bool loading) {
     setState(() {
@@ -19,11 +19,11 @@ mixin MixinOnboardState<T extends StatefulWidget> on State<T> {
     setState(() {
       if (backward == true) {
         if (step > 0) {
-          slideReverse = true;
+          slideTransitionReverse = true;
           step--;
         }
       } else {
-        slideReverse = false;
+        slideTransitionReverse = false;
         step++;
       }
     });
