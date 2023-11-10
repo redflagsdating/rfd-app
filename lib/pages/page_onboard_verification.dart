@@ -131,7 +131,6 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
         key: onboardForm,
         child: PageSlideTransitionSwitcher(
           reverse: slideTransitionReverse,
-          duration: const Duration(milliseconds: 500),
           child: step == 0
               ? VerificationFullName(
                   enabled: !submitting,
@@ -144,9 +143,7 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
                       controller: _displayNameCtrl,
                     )
                   // TODO
-                  : step == 2
-                      ? const Text("KYC")
-                      : const Text("Unknown"),
+                  : const Text("KYC"),
         ),
       ),
     );

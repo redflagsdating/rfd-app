@@ -51,11 +51,11 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n!.pgOnboardBirthdayHeadline,
+          l10n!.pgBirthdayHeadline,
           style: theme.textTheme.headlineSmall,
         ),
         const SizedBox(height: 10),
-        Text(l10n.pgOnboardBirthdayBody),
+        Text(l10n.pgBirthdayBody),
         const SizedBox(height: 48),
         FormBuilderDateTimePicker(
           name: "birthday",

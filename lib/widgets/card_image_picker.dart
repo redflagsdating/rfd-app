@@ -14,8 +14,8 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/fade_through_transition_switcher.dart';
 
-class ImagePickerCard extends StatefulWidget {
-  const ImagePickerCard({
+class CardImagePicker extends StatefulWidget {
+  const CardImagePicker({
     Key? key,
     this.imageRef,
     required this.size,
@@ -27,10 +27,10 @@ class ImagePickerCard extends StatefulWidget {
   final Reference? imageRef;
 
   @override
-  State<ImagePickerCard> createState() => _ImagePickerCardState();
+  State<CardImagePicker> createState() => _CardImagePickerState();
 }
 
-class _ImagePickerCardState extends State<ImagePickerCard> {
+class _CardImagePickerState extends State<CardImagePicker> {
   File? _file;
   XFile? _xFile;
   Reference? _imageRef;

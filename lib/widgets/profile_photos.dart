@@ -2,10 +2,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/pages/page_onboard_splash.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/image_picker_card.dart';
-import 'package:red_flags/widgets/page_onboard_splash.dart';
+import 'package:red_flags/widgets/card_image_picker.dart';
 
 class ProfilePhotos extends StatefulWidget {
   const ProfilePhotos({
@@ -41,27 +41,26 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n!.pgOnboardPhotoHeadline(
-                    userProvider.getDisplayNameCache() ?? ""),
+                l10n!.pgPhotoHeadline(userProvider.getDisplayNameCache() ?? ""),
                 style: theme.textTheme.headlineSmall,
               ),
               const SizedBox(height: 10),
-              Text(l10n.pgOnboardPhotoBody),
+              Text(l10n.pgPhotoBody),
               const SizedBox(height: 48),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ImagePickerCard(
+                  CardImagePicker(
                     size: 100,
                     enabled: widget.enabled,
                     imageRef: count > 0 ? listRef.first : null,
                   ),
-                  ImagePickerCard(
+                  CardImagePicker(
                     size: 100,
                     enabled: widget.enabled,
                     imageRef: count > 1 ? listRef[1] : null,
                   ),
-                  ImagePickerCard(
+                  CardImagePicker(
                     size: 100,
                     enabled: widget.enabled,
                     imageRef: count > 2 ? listRef[2] : null,
@@ -72,17 +71,17 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  ImagePickerCard(
+                  CardImagePicker(
                     size: 100,
                     enabled: widget.enabled,
                     imageRef: count > 3 ? listRef[3] : null,
                   ),
-                  ImagePickerCard(
+                  CardImagePicker(
                     size: 100,
                     enabled: widget.enabled,
                     imageRef: count > 4 ? listRef[4] : null,
                   ),
-                  ImagePickerCard(
+                  CardImagePicker(
                     size: 100,
                     enabled: widget.enabled,
                     imageRef: count > 5 ? listRef[5] : null,
@@ -91,7 +90,7 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
               ),
               const SizedBox(height: 10),
               Text(
-                l10n.pgOnboardPhotoHelperText,
+                l10n.pgPhotoHelperText,
                 style: theme.textTheme.bodySmall,
               ),
             ],

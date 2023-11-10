@@ -26,11 +26,11 @@ class _ProfileLocalityState extends State<ProfileLocality> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          l10n!.pgOnboardLocalityHeadline,
+          l10n!.pgLocalityHeadline,
           style: theme.textTheme.headlineSmall,
         ),
         const SizedBox(height: 10),
-        Text(l10n.pgOnboardLocalityBody),
+        Text(l10n.pgLocalityBody),
         const SizedBox(height: 48),
         TextFormFieldLocation(
           enabled: widget.enabled,

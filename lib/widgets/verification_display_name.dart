@@ -33,11 +33,11 @@ class _VerificationDisplayNameState extends State<VerificationDisplayName> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n!.pgOnboardDisplayNameHeadline,
+            l10n!.pgDisplayNameHeadline,
             style: theme.textTheme.headlineSmall,
           ),
           const SizedBox(height: 10),
-          Text(l10n.pgOnboardDisplayNameBody),
+          Text(l10n.pgDisplayNameBody),
           const SizedBox(height: 48),
           TextFormField(
             autofocus: true,

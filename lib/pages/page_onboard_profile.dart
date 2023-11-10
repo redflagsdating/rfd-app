@@ -129,30 +129,30 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
       content: Form(
         key: onboardForm,
         child: PageSlideTransitionSwitcher(
-            reverse: slideTransitionReverse,
-            duration: const Duration(milliseconds: 500),
-            child: step == 0
-                ? ProfileGender(
-                    enabled: !submitting,
-                  )
-                : step == 1
-                    ? ProfileGender(
-                        enabled: !submitting,
-                        genderFor: true,
-                      )
-                    : step == 2
-                        ? ProfileBirthday(
-                            enabled: !submitting,
-                            controller: _birthdayCtrl,
-                          )
-                        : step == 3
-                            ? ProfileLocality(
-                                enabled: !submitting,
-                                controller: _localityCtrl,
-                              )
-                            : ProfilePhotos(
-                                enabled: !submitting,
-                              )),
+          reverse: slideTransitionReverse,
+          child: step == 0
+              ? ProfileGender(
+                  enabled: !submitting,
+                )
+              : step == 1
+                  ? ProfileGender(
+                      enabled: !submitting,
+                      genderFor: true,
+                    )
+                  : step == 2
+                      ? ProfileBirthday(
+                          enabled: !submitting,
+                          controller: _birthdayCtrl,
+                        )
+                      : step == 3
+                          ? ProfileLocality(
+                              enabled: !submitting,
+                              controller: _localityCtrl,
+                            )
+                          : ProfilePhotos(
+                              enabled: !submitting,
+                            ),
+        ),
       ),
     );
   }

@@ -36,11 +36,11 @@ class _VerificationFullNameState extends State<VerificationFullName> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n!.pgOnboardFullNameHeadline,
+            l10n!.pgFullNameHeadline,
             style: theme.textTheme.headlineSmall,
           ),
           const SizedBox(height: 10),
-          Text(l10n.pgOnboardFullNameBody),
+          Text(l10n.pgFullNameBody),
           const SizedBox(height: 48),
           TextFormField(
             autofocus: true,

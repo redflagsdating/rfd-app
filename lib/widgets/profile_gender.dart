@@ -104,9 +104,8 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
       },
     ];
     final chips = isGenderForPage ? genderForChips : genderChips;
-    final title = isGenderForPage
-        ? l10n.pgOnboardGenderForHeadline
-        : l10n.pgOnboardGenderHeadline;
+    final title =
+        isGenderForPage ? l10n.pgGenderForHeadline : l10n.pgGenderHeadline;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +118,7 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
             ? Column(
                 children: [
                   const SizedBox(height: 10),
-                  Text(l10n.pgOnboardGenderForBody),
+                  Text(l10n.pgGenderForBody),
                   const SizedBox(height: 48)
                 ],
               )
