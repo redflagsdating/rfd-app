@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:red_flags/mixins/mixin_local_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
+import 'package:red_flags/services/user_provider.dart';
 
 /// ProfileGender is reused for gender and genderFor fields during onboarding
 class ProfileGender extends StatefulWidget {
@@ -18,10 +19,10 @@ class ProfileGender extends StatefulWidget {
   State<ProfileGender> createState() => _OnboardProfileGenderState();
 }
 
-class _OnboardProfileGenderState extends State<ProfileGender>
-    with MixinLocalStorage {
+class _OnboardProfileGenderState extends State<ProfileGender> {
   String _gender = "";
   List<String> _genderFor = [];
+  late UserProvider _userProvider;
 
   void _setGender(Gender? gender) {
     setState(() {
@@ -33,24 +34,26 @@ class _OnboardProfileGenderState extends State<ProfileGender>
           } else {
             _genderFor.add(gender.name);
           }
-          setGenderFor(_genderFor);
+          _userProvider.setGenderFor(_genderFor);
         }
         // gender String
         else {
           _gender = gender.name;
-          setGender(_gender);
+          _userProvider.setGender(_gender);
         }
       } else {
         _gender = "";
-        removeGender();
+        _userProvider.setGender("");
       }
     });
   }
 
   @override
   void didChangeDependencies() {
-    _gender = getGender() ?? "";
-    _genderFor = getGenderFor() ?? [];
+    _userProvider = Provider.of<UserProvider>(context);
+
+    _gender = _userProvider.getGenderCache() ?? "";
+    _genderFor = _userProvider.getGenderForCache() ?? [];
 
     super.didChangeDependencies();
   }

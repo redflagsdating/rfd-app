@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,8 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:red_flags/models/user.dart' show UserModel, UserFields;
+import 'package:red_flags/models/user.dart' show UserModel;
+import 'package:red_flags/services/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// * Use `SocialAuthProvider.google` as an general identifier.
@@ -41,9 +41,9 @@ class AuthProvider extends ChangeNotifier {
   AuthProvider({
     required this.logger,
     required this.gSignIn,
-    required this.users,
     required this.firebaseAuth,
     required this.localStorage,
+    required this.userProvider,
 
     // Optional due to no mock/fake flutter_facebook_auth
     this.fbSignIn,
@@ -81,8 +81,8 @@ class AuthProvider extends ChangeNotifier {
   final GoogleSignIn gSignIn;
   final FacebookAuth? fbSignIn;
   final FirebaseAuth firebaseAuth;
-  final CollectionReference<UserModel> users;
   final SharedPreferences localStorage;
+  final UserProvider userProvider;
 
   final isDev = FlavorConfig.instance.variables["longName"] == "Development";
 
@@ -129,68 +129,6 @@ class AuthProvider extends ChangeNotifier {
     return _status == AuthStatus.authenticateError;
   }
 
-  /// Update user data in localStorage
-  Future<void> _localStorageUpdate(UserModel userModel) async {
-    await localStorage.setString(UserFields.uid.name, userModel.uid);
-    await localStorage.setString(UserFields.email.name, userModel.email);
-    await localStorage.setInt(
-      UserFields.createdAt.name,
-      userModel.createdAt.millisecondsSinceEpoch,
-    );
-    await localStorage.setBool(
-      UserFields.onboarded.name,
-      userModel.onboarded,
-    );
-    await localStorage.setBool(UserFields.verified.name, userModel.verified);
-    await localStorage.setBool(
-      UserFields.verifySubmitted.name,
-      userModel.verifySubmitted,
-    );
-    await localStorage.setString(
-      UserFields.firstName.name,
-      userModel.firstName ?? "",
-    );
-    await localStorage.setString(
-      UserFields.lastName.name,
-      userModel.lastName ?? "",
-    );
-    await localStorage.setString(
-      UserFields.displayName.name,
-      userModel.displayName ?? "",
-    );
-    if (userModel.dob != null) {
-      await localStorage.setInt(
-        UserFields.dob.name,
-        userModel.dob!.millisecondsSinceEpoch,
-      );
-    }
-
-    await localStorage.setString(
-      UserFields.gender.name,
-      userModel.gender ?? "",
-    );
-    await localStorage.setStringList(
-      UserFields.genderFor.name,
-      userModel.genderFor ?? [],
-    );
-    await localStorage.setString(
-      UserFields.locality.name,
-      userModel.locality ?? "",
-    );
-    await localStorage.setString(
-      UserFields.photoUrl.name,
-      userModel.photoUrl ?? "",
-    );
-  }
-
-  /// Clear localStorage after logout
-  Future<void> _localStorageClear() async {
-    await localStorage.remove(UserFields.uid.name);
-    await localStorage.remove(UserFields.photoUrl.name);
-    await localStorage.remove(UserFields.phoneNumber.name);
-    await localStorage.remove(UserFields.displayName.name);
-  }
-
   /// A simple wrapper of `FirebaseAuth.instance.signInWithCredential` to handle errors.
   Future<UserCredential?> _signInWithCredential(
       AuthCredential credential) async {
@@ -214,7 +152,7 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final email = localStorage.getString(UserFields.email.name);
+      final email = await userProvider.getEmail();
 
       if (email != null) {
         return await firebaseAuth.signInWithEmailLink(
@@ -364,8 +302,8 @@ class AuthProvider extends ChangeNotifier {
   /// Cross user sign-in status **FirebaseAuth** `currentUser`, user data
   /// in **SharedPreferences** and `SocialAuthProvider` status
   Future<bool> isSignedIn() async {
-    final uid = localStorage.getString(UserFields.uid.name);
-    final email = localStorage.getString(UserFields.email.name);
+    final uid = await userProvider.getId();
+    final email = await userProvider.getEmail();
     final providerData = firebaseAuth.currentUser?.providerData;
 
     if (email == null ||
@@ -430,11 +368,11 @@ class AuthProvider extends ChangeNotifier {
     );
 
     if (userInfo != null) {
-      final user = await users.where(UserFields.uid.name, isEqualTo: uid).get();
+      final user = await userProvider.findUserById(uid);
 
       // Update cache user data from database to keep it up-to-date
       if (user.docs.isNotEmpty) {
-        _localStorageUpdate(user.docs.first.data());
+        userProvider.updateUserCache(user.docs.first.data());
       }
 
       return true;
@@ -466,7 +404,7 @@ class AuthProvider extends ChangeNotifier {
           dynamicLinkDomain: dynamicLinkDomain,
         ),
       );
-      await localStorage.setString(UserFields.email.name, email);
+      await userProvider.setEmail(email);
 
       _status = AuthStatus.pending;
       notifyListeners();
@@ -480,7 +418,6 @@ class AuthProvider extends ChangeNotifier {
   /// * `SocialAuthProvider`
   /// * String - Sign-in link in the email from `sendSignInLinkToEmail()`
   Future<bool> handleSignIn(dynamic input) async {
-    late UserModel userModel;
     late UserCredential? credential;
 
     final providerId = input is SocialAuthProvider ? input.providerId : null;
@@ -524,42 +461,26 @@ class AuthProvider extends ChangeNotifier {
     );
 
     // Check the user existence in Firestore
-    final user = await users
-        .where(UserFields.uid.name, isEqualTo: firebaseUser.uid)
-        .get();
+    final user = await userProvider.findUserById(firebaseUser.uid);
 
     logger.d('Successfully query user in Firestore', time: DateTime.now());
 
     if (user.docs.isEmpty) {
       logger.d('New user logged in', time: DateTime.now());
-
-      userModel = UserModel(
+      userProvider.createUser(UserModel(
         uid: firebaseUser.uid,
         email: firebaseUser.email ?? "",
         createdAt: DateTime.now(),
-        photoUrl: firebaseUser.photoURL,
         displayName: firebaseUser.displayName,
         phoneNumber: firebaseUser.phoneNumber,
         onboarded: false,
         verified: false,
         verifySubmitted: false,
-      );
-
-      users.doc(firebaseUser.uid).set(userModel);
-
-      logger.d('Saved user data to Firestore', time: DateTime.now());
+      ));
     } else {
       logger.d('Existing user logged in', time: DateTime.now());
-
-      userModel = user.docs.first.data();
+      userProvider.updateUserCache(user.docs.first.data());
     }
-
-    _localStorageUpdate(userModel);
-
-    logger.d(
-      'Successfully write the user (${userModel.email}) into local storage',
-      time: DateTime.now(),
-    );
 
     _status = AuthStatus.authenticated;
     notifyListeners();
@@ -596,9 +517,7 @@ class AuthProvider extends ChangeNotifier {
       }
     }
 
-    await _localStorageClear();
-
-    logger.d('Local storage purged', time: DateTime.now());
+    await userProvider.purgeUserCache();
 
     notifyListeners();
   }

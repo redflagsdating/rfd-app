@@ -88,5 +88,10 @@
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<key>NSLocationAlwaysUsageDescription</key>
+	<!-- TODO: Review copy -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow Red Flags to access the photo library on this device in order to select a photo for displaying on your profile.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
 </dict>
 </plist>

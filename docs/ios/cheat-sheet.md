@@ -2,6 +2,8 @@
 
 - [(Xcode) Change the app icon and launch screen](#change-the-app-icon-and-launch-screen)
 - [(Xcode) Add/Remove dependency packages](#addremove-dependency-packages)
+- [CocoaPods dependency](#cocoapods-dependency)
+- [Image usage description](#image-usage-description)
 
 ## Change the app icon and launch screen
 
@@ -18,3 +20,23 @@
 Open **Xcode** and select ***Runner*** > ***PROJECT - Runner*** > ***Package Dependencies*** tab.
 
 <img src="./xocde-package-dependency.png" width="800px" />
+
+## CocoaPods Dependency
+
+Sometimes adding **Flutter** dependency via `flutter pub add xxx` command, it requires to update **CocoaPods** dependency as well for **iOS** as it might cause build fail. Simply just change into `ios/` folder then run `pod install` to update `Podfile.lock`.
+
+```bash
+cd ios
+pod install
+```
+
+## Image usage description
+
+As part of **iOS** security requirements to access photo library and camera on device, the `NSPhotoLibraryUsageDescription` and `NSCameraUsageDescription` need to be set in the `Info.plist` to elaborate the purpose of accessing which will be prompted to users for context and consent.
+
+```plist
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Allow Red Flags to access the photo library on this device in order to select a photo for displaying on your profile.</string>
+<key>NSCameraUsageDescription</key>
+<string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
+```

@@ -2,6 +2,7 @@
 
 - [Change the app icon](#change-the-app-icon)
 - [View & debug shared preferences (local storage)](#view-and-debug-shared-preference)
+- [Image crop](#image-crop)
 
 ## Change the app icon
 
@@ -21,3 +22,14 @@ To view or debug local storage data (via `SharedPreferences` library), open **An
 
 <img src="./device-explorer.png" width="200px" />
 <img src="./shared-preferences.png" width="540px" />
+
+## Image crop
+
+`image_cropper` requires to add below snippet in the `AndroidManifest.xml`
+
+```xml
+ <activity
+    android:name="com.yalantis.ucrop.UCropActivity"
+    android:screenOrientation="portrait"
+    android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+```

@@ -7,6 +7,7 @@ import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/dialog_signin_email.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,17 +24,25 @@ void main() {
     // Load l10n strings
     final l10n = await AppLocalizations.delegate.load(const Locale("en"));
 
+    final localStorage = await SharedPreferences.getInstance();
+    final logger = LoggerProvider(silent: true).logger;
+    final fakeUsersRef =
+        FakeFirebaseFirestore().collection('users').withConverter<UserModel>(
+              fromFirestore: (snapshots, _) =>
+                  UserModel.fromJson(snapshots.data()!),
+              toFirestore: (user, _) => user.toJson(),
+            );
+
     final authProvider = AuthProvider(
       gSignIn: MockGoogleSignIn(),
       firebaseAuth: MockFirebaseAuth(),
-      logger: LoggerProvider(silent: true).logger,
-      users:
-          FakeFirebaseFirestore().collection('users').withConverter<UserModel>(
-                fromFirestore: (snapshots, _) =>
-                    UserModel.fromJson(snapshots.data()!),
-                toFirestore: (user, _) => user.toJson(),
-              ),
-      localStorage: await SharedPreferences.getInstance(),
+      logger: logger,
+      userProvider: UserProvider(
+        localStorage: localStorage,
+        logger: logger,
+        mockUsersRef: fakeUsersRef,
+      ),
+      localStorage: localStorage,
     );
 
     await tester.pumpWidget(

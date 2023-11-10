@@ -8,6 +8,24 @@ enum Gender {
   nonBinary,
 }
 
+enum UserBoolFields {
+  onboarded,
+  verified,
+  verifySubmitted,
+}
+
+enum UserStringFields {
+  uid,
+  email,
+  photoUrl,
+  firstName,
+  lastName,
+  displayName,
+  gender,
+  locality,
+  phoneNumber,
+}
+
 enum UserFields {
   uid,
   email,
@@ -26,7 +44,6 @@ enum UserFields {
   verifySubmitted,
 }
 
-///
 @immutable
 class UserModel {
   const UserModel({

@@ -13,7 +13,9 @@ import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/pages/page_signin_splash.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/theme/color_schemes.g.dart';
 import 'package:red_flags/theme/typography_theme.g.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
@@ -32,13 +34,25 @@ class App extends StatelessWidget {
         Provider<LoggerProvider>(
           create: (_) => LoggerProvider(),
         ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (context) => UserProvider(
+            localStorage: localStorage,
+            logger: context.read<LoggerProvider>().logger,
+          ),
+        ),
+        Provider<FireStorageProvider>(
+          create: (context) => FireStorageProvider(
+            context: context,
+            userProvider: context.read<UserProvider>(),
+          ),
+        ),
         ChangeNotifierProvider<AuthProvider>(
           create: (context) => AuthProvider(
             localStorage: localStorage,
-            users: usersRef,
             gSignIn: GoogleSignIn(),
             fbSignIn: FacebookAuth.instance,
             firebaseAuth: FirebaseAuth.instance,
+            userProvider: context.read<UserProvider>(),
             logger: context.read<LoggerProvider>().logger,
           ),
         )
@@ -53,6 +67,10 @@ class App extends StatelessWidget {
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: typographyTheme,
+                badgeTheme: BadgeThemeData(
+                  textColor: lightColorScheme.onTertiary,
+                  backgroundColor: darkColorScheme.tertiary,
+                ),
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
                   foregroundColor: lightColorScheme.onPrimary,
                   backgroundColor: lightColorScheme.primary,

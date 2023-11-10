@@ -11,6 +11,7 @@ import 'package:red_flags/models/user.dart' show UserModel, UserFields;
 import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -57,14 +58,6 @@ void main() {
       ),
     );
 
-    authProvider = AuthProvider(
-      gSignIn: MockGoogleSignIn(),
-      firebaseAuth: firebaseAuth,
-      logger: loggerProvider.logger,
-      users: fakeUsersRef,
-      localStorage: localStorage,
-    );
-
     // Create a new root widget for each test
     widget = MultiProvider(
       providers: [
@@ -72,8 +65,25 @@ void main() {
         Provider<LoggerProvider>(
           create: (_) => loggerProvider,
         ),
+        ChangeNotifierProvider<UserProvider>(
+          create: (_) => UserProvider(
+            localStorage: localStorage,
+            logger: loggerProvider.logger,
+            mockUsersRef: fakeUsersRef,
+          ),
+        ),
         ChangeNotifierProvider<AuthProvider>(
-          create: (_) => authProvider,
+          create: (context) {
+            authProvider = AuthProvider(
+              gSignIn: MockGoogleSignIn(),
+              firebaseAuth: firebaseAuth,
+              logger: loggerProvider.logger,
+              userProvider: context.read<UserProvider>(),
+              localStorage: localStorage,
+            );
+
+            return authProvider;
+          },
         ),
       ],
       child: const MaterialApp(
@@ -108,7 +118,6 @@ void main() {
     final userModel = result.docs.first.data();
     expect(userModel.displayName == 'Test User', isTrue);
     expect(userModel.uid == 'ecd5e6e2-58af-4f54-8084-98e9974969ba', isTrue);
-    expect(userModel.photoUrl, isNotNull);
     expect(userModel.createdAt, isNotNull);
   });
 

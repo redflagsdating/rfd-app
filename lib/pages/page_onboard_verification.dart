@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:red_flags/mixins/mixin_local_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:red_flags/widgets/scaffold_onboard.dart';
 import 'package:red_flags/widgets/verification_display_name.dart';
@@ -28,7 +29,8 @@ class PageOnboardVerification extends StatefulWidget {
 }
 
 class _PageOnboardVerificationState extends State<PageOnboardVerification>
-    with MixinOnboardState, MixinLocalStorage {
+    with MixinOnboardState {
+  late UserProvider _userProvider;
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   final _displayNameCtrl = TextEditingController();
@@ -48,12 +50,18 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
   }
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     step = widget.initStep;
+    super.initState();
+  }
 
-    _firstNameCtrl.text = getFirstName() ?? "";
-    _lastNameCtrl.text = getLastName() ?? "";
-    _displayNameCtrl.text = getDisplayName() ?? "";
+  @override
+  void didChangeDependencies() {
+    _userProvider = Provider.of<UserProvider>(context);
+
+    _firstNameCtrl.text = _userProvider.getFirstNameCache() ?? "";
+    _lastNameCtrl.text = _userProvider.getLastNameCache() ?? "";
+    _displayNameCtrl.text = _userProvider.getDisplayNameCache() ?? "";
 
     super.didChangeDependencies();
   }
@@ -89,26 +97,23 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
 
               setSubmitting(true);
 
-              final uid = getUserId();
               final firstName = _firstNameCtrl.text;
               final lastName = _lastNameCtrl.text;
               final displayName = _displayNameCtrl.text;
 
               if (step == 0 &&
-                  (getFirstName() != firstName || getLastName() != lastName)) {
-                setFirstName(firstName);
-                setLastName(lastName);
-
-                await usersRef.doc(uid).update({
+                  (await _userProvider.getFirstName() != firstName ||
+                      await _userProvider.getLastName() != lastName)) {
+                await _userProvider.setFirstName(firstName);
+                await _userProvider.setLastName(lastName);
+                await _userProvider.userDocRef?.update({
                   UserFields.firstName.name: firstName,
                   UserFields.lastName.name: lastName,
                 });
-              } else if (step == 1 && getDisplayName() != displayName) {
-                setDisplayName(displayName);
-
-                await usersRef
-                    .doc(uid)
-                    .update({UserFields.displayName.name: displayName});
+              } else if (step == 1 &&
+                  await _userProvider.getDisplayName() != displayName) {
+                await _userProvider.setDisplayName(displayName,
+                    localOnly: false);
               } else {
                 /// The delay prevents immediate state change from true to
                 /// false by _setLoading when no data changes are needed to

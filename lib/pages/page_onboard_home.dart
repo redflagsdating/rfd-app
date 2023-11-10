@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:red_flags/mixins/mixin_local_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/pages/page_onboard_profile.dart';
 import 'package:red_flags/pages/page_onboard_verification.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/page_onboard_splash.dart';
 
@@ -20,8 +21,7 @@ class PageOnboardHome extends StatefulWidget {
   State<PageOnboardHome> createState() => _PageOnboardHomeState();
 }
 
-class _PageOnboardHomeState extends State<PageOnboardHome>
-    with MixinLocalStorage {
+class _PageOnboardHomeState extends State<PageOnboardHome> {
   @override
   void initState() {
     super.initState();
@@ -39,18 +39,25 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
     late Builder builder;
 
     final l10n = AppLocalizations.of(context);
-    final verifyStep1 = getFirstName() == "" || getLastName() == "";
-    final verifyStep2 = getDisplayName() == "";
-    final verifyStep3 = getVerifySubmitted() != true;
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    final profileStep1 = getGender() == "";
-    final profileStep2 = getGenderFor()?.isEmpty ?? true;
-    final profileStep3 = getDob() == null;
-    final profileStep4 = getLocality() == "";
-    const profileStep5 = true;
+    final fromRoot = widget.current == null;
+    final fromStage1 = widget.current == OnboardingStage.verification;
+    final fromStage2 = widget.current == OnboardingStage.profile;
+
+    final verifyStep1 = userProvider.getFirstNameCache() == "" ||
+        userProvider.getLastNameCache() == "";
+    final verifyStep2 = userProvider.getDisplayNameCache() == "";
+    final verifyStep3 = userProvider.getVerifySubmittedCache() != true;
+
+    final profileStep1 = userProvider.getGenderCache() == "";
+    final profileStep2 = userProvider.getGenderForCache()?.isEmpty ?? true;
+    final profileStep3 = userProvider.getDobCache() == null;
+    final profileStep4 = userProvider.getLocalityCache() == "";
+    final profileStep5 = userProvider.getPhotoUrlCache() == "";
 
     ///** Onboarding stage 1 - Account verification
-    if (widget.current == null && (verifyStep1 || verifyStep2 || verifyStep3)) {
+    if (fromRoot && (verifyStep1 || verifyStep2 || verifyStep3)) {
       title = l10n!.pgOnboardSplash1Title;
       buttonLabel = l10n.pgOnboardSplash1Btn;
       builder = Builder(
@@ -59,20 +66,18 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
               ? 0
               : verifyStep2
                   ? 1
-                  : verifyStep3
-                      ? 2
-                      : 0,
+                  : 2,
         ),
       );
     }
 
     ///** Onboarding stage 2 - Profile
-    else if (widget.current == OnboardingStage.verification &&
+    else if ((fromRoot || fromStage1) &&
         (profileStep1 ||
             profileStep2 ||
             profileStep3 ||
             profileStep4 ||
-            profileStep5)) {
+            !profileStep5)) {
       title = l10n!.pgOnboardSplash2Title;
       buttonLabel = l10n.pgOnboardSplash2Btn;
       builder = Builder(
@@ -88,6 +93,9 @@ class _PageOnboardHomeState extends State<PageOnboardHome>
                           : 4,
         ),
       );
+    } else if (fromRoot || fromStage1 || fromStage2) {
+      title = l10n!.pgOnboardSplash3Title(l10n.brandName);
+      buttonLabel = l10n.pgOnboardSplash3Btn;
     }
 
     Navigator.of(context).pushReplacement(

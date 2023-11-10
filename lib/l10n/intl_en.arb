@@ -2,6 +2,8 @@
   "sent": "Sent",
   "and": "and",
   "skip": "Skip",
+  "camera": "Camera",
+  "gallery": "Gallery",
   "resend": "Resend",
   "email": "Email",
   "allow": "Allow",
@@ -33,6 +35,8 @@
   "fieldLocationDisabledError": "Turn on Location Services in the device settings.",
   "fieldLocationRejectedError": "Location access permission is rejected.",
   "fieldLocationDeniedError": "Change your Location Permission to allow \"{brandName}\" to request permission.",
+  "cardImagePickerSheetTitle": "Upload photo",
+  "cardImagePickerCropTitle": "Edit Photo",
   "pgSignInTagLine": "Real talk. Real connection",
   "pgSignInWithBtn": "Continue with {provider}",
   "@pgSignInWithBtn": {
@@ -79,5 +83,5 @@
   "pgOnboardLocalityBody": "We help you find a more suitable match with someone in your vicinity.",
   "pgOnboardPhotoHeadline": "{displayName}, it’s time to embrace your real and authentic self",
   "pgOnboardPhotoBody": "Upload up to 6 photos to display on your profile.",
-  "pgOnboardPhotoHelperText": "Tap to edit, drag or reorder"
+  "pgOnboardPhotoHelperText": "Tap to edit, long press to set spotlight"
 }

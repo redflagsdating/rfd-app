@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:red_flags/mixins/mixin_local_storage.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
-import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:red_flags/widgets/profile_birthday.dart';
 import 'package:red_flags/widgets/profile_gender.dart';
 import 'package:red_flags/widgets/profile_locality.dart';
+import 'package:red_flags/widgets/profile_photos.dart';
 import 'package:red_flags/widgets/scaffold_onboard.dart';
 
 /// Step 1 - Gender
@@ -30,7 +31,8 @@ class PageOnboardProfile extends StatefulWidget {
 }
 
 class _PageOnboardProfileState extends State<PageOnboardProfile>
-    with MixinOnboardState, MixinLocalStorage {
+    with MixinOnboardState {
+  late UserProvider _userProvider;
   final _birthdayCtrl = TextEditingController();
   final _localityCtrl = TextEditingController();
 
@@ -41,7 +43,7 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => const PageOnboardHome(
-            current: OnboardingStage.verification,
+            current: OnboardingStage.profile,
           ),
         ),
       );
@@ -49,15 +51,21 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
   }
 
   @override
-  void didChangeDependencies() {
+  void initState() {
     step = widget.initStep;
+    super.initState();
+  }
 
-    final dob = getDob();
-    _localityCtrl.text = getLocality() ?? "";
+  @override
+  void didChangeDependencies() {
+    _userProvider = Provider.of<UserProvider>(context);
 
+    final dob = _userProvider.getDobCache();
     if (dob != null) {
       _birthdayCtrl.text = DateFormat.yMd().format(dob);
     }
+
+    _localityCtrl.text = _userProvider.getLocalityCache() ?? "";
 
     super.didChangeDependencies();
   }
@@ -87,37 +95,32 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
       onNextPressed: submitting
           ? null
           : () async {
-              final gender = getGender();
-              final genderFor = getGenderFor();
+              final gender = _userProvider.getGenderCache();
+              final genderFor = _userProvider.getGenderForCache();
+              final photoUrl = _userProvider.getPhotoUrlCache();
 
               if (!onboardForm.currentState!.validate() ||
-                  (step == 0 && gender!.isEmpty) ||
-                  (step == 1 && (genderFor == null || genderFor.isEmpty))) {
+                  (step == 0 && (gender == null || gender.isEmpty)) ||
+                  (step == 1 && (genderFor == null || genderFor.isEmpty)) ||
+                  (step == 4 && (photoUrl == null || photoUrl.isEmpty))) {
                 return;
               }
 
               setSubmitting(true);
 
-              final uid = getUserId();
               final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
               final locality = _localityCtrl.text;
+              final dobCache = _userProvider.getDobCache();
 
               if (step == 0) {
-                await usersRef
-                    .doc(uid)
-                    .update({UserFields.gender.name: gender});
+                await _userProvider.setGender(gender as String);
               } else if (step == 1) {
-                await usersRef
-                    .doc(uid)
-                    .update({UserFields.genderFor.name: genderFor});
-              } else if (step == 2 && !dob.isAtSameMomentAs(getDob()!)) {
-                await setDob(dob);
-                await usersRef.doc(uid).update({UserFields.dob.name: dob});
+                await _userProvider.setGenderFor(genderFor as List<String>);
+              } else if (step == 2 &&
+                  (dobCache == null || !dob.isAtSameMomentAs(dobCache))) {
+                await _userProvider.setDob(dob, localOnly: false);
               } else if (step == 3) {
-                await setLocality(locality);
-                await usersRef
-                    .doc(uid)
-                    .update({UserFields.locality.name: locality});
+                await _userProvider.setLocality(locality, localOnly: false);
               }
 
               setSubmitting(false);
@@ -126,29 +129,30 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
       content: Form(
         key: onboardForm,
         child: PageSlideTransitionSwitcher(
-          reverse: slideTransitionReverse,
-          duration: const Duration(milliseconds: 500),
-          child: step == 0
-              ? ProfileGender(
-                  enabled: !submitting,
-                )
-              : step == 1
-                  ? ProfileGender(
-                      enabled: !submitting,
-                      genderFor: true,
-                    )
-                  : step == 2
-                      ? ProfileBirthday(
-                          enabled: !submitting,
-                          controller: _birthdayCtrl,
-                        )
-                      : step == 3
-                          ? ProfileLocality(
-                              enabled: !submitting,
-                              controller: _localityCtrl,
-                            )
-                          : const Text("TODO"),
-        ),
+            reverse: slideTransitionReverse,
+            duration: const Duration(milliseconds: 500),
+            child: step == 0
+                ? ProfileGender(
+                    enabled: !submitting,
+                  )
+                : step == 1
+                    ? ProfileGender(
+                        enabled: !submitting,
+                        genderFor: true,
+                      )
+                    : step == 2
+                        ? ProfileBirthday(
+                            enabled: !submitting,
+                            controller: _birthdayCtrl,
+                          )
+                        : step == 3
+                            ? ProfileLocality(
+                                enabled: !submitting,
+                                controller: _localityCtrl,
+                              )
+                            : ProfilePhotos(
+                                enabled: !submitting,
+                              )),
       ),
     );
   }
