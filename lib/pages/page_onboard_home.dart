@@ -77,7 +77,7 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
             profileStep2 ||
             profileStep3 ||
             profileStep4 ||
-            !profileStep5)) {
+            profileStep5)) {
       title = l10n!.pgOnboardSplash2Title;
       buttonLabel = l10n.pgOnboardSplash2Btn;
       builder = Builder(
