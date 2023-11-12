@@ -88,10 +88,11 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
                 next(true);
               }
             },
-      onSkipPressed: () {
-        //TODO: Skip prompt
-        next();
-      },
+      //TODO: Skip prompt
+      // onSkipPressed: () {
+
+      //   next();
+      // },
       onNextPressed: submitting
           ? null
           : () async {
@@ -108,17 +109,20 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
 
               setSubmitting(true);
 
-              final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
               final locality = _localityCtrl.text;
               final dobCache = _userProvider.getDobCache();
 
               if (step == 0) {
-                await _userProvider.setGender(gender as String);
+                await _userProvider.setGender(gender as String,
+                    localOnly: false);
               } else if (step == 1) {
-                await _userProvider.setGenderFor(genderFor as List<String>);
-              } else if (step == 2 &&
-                  (dobCache == null || !dob.isAtSameMomentAs(dobCache))) {
-                await _userProvider.setDob(dob, localOnly: false);
+                await _userProvider.setGenderFor(genderFor as List<String>,
+                    localOnly: false);
+              } else if (step == 2) {
+                final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
+                if (dobCache == null || !dob.isAtSameMomentAs(dobCache)) {
+                  await _userProvider.setDob(dob, localOnly: false);
+                }
               } else if (step == 3) {
                 await _userProvider.setLocality(locality, localOnly: false);
               }

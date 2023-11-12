@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/user_provider.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({super.key});
@@ -11,7 +15,17 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
+  File? _img;
   late AuthProvider authProvider;
+
+  void setImageFile() async {
+    final userProvider = Provider.of<UserProvider>(context);
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final spotlightPhoto = userProvider.getPhotoUrlCache();
+
+    _img = File('${appDocDir.path}/$spotlightPhoto');
+    setState(() {});
+  }
 
   @override
   void didChangeDependencies() {
@@ -21,9 +35,19 @@ class _PageHomeState extends State<PageHome> {
 
   @override
   Widget build(BuildContext context) {
+    setImageFile();
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        if (_img != null)
+          Image.file(
+            _img as File,
+            width: 300,
+            height: 300,
+            fit: BoxFit.cover,
+          ),
+        const SizedBox(height: 40),
         FilledButton(
           onPressed: () {
             authProvider.handleSignOut();

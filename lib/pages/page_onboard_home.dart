@@ -53,7 +53,8 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       final verifyStep1 = userProvider.getFirstNameCache() == "" ||
           userProvider.getLastNameCache() == "";
       final verifyStep2 = userProvider.getDisplayNameCache() == "";
-      final verifyStep3 = userProvider.getVerifySubmittedCache() != true;
+      // TODO
+      // final verifyStep3 = userProvider.getVerifySubmittedCache() != true;
 
       final profileStep1 = userProvider.getGenderCache() == "";
       final profileStep2 = userProvider.getGenderForCache()?.isEmpty ?? true;
@@ -62,11 +63,11 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       final profileStep5 = userProvider.getPhotoUrlCache() == "";
 
       final realTalkStep = userProvider.getRealTalkCache()?.isEmpty ?? true;
-      final redFlagsStep = userProvider.getRealTalkCache()?.isEmpty ?? true;
-      final greenFlagStep = userProvider.getRealTalkCache()?.isEmpty ?? true;
+      final redFlagsStep = userProvider.getRedFlagsCache()?.isEmpty ?? true;
+      final greenFlagsStep = userProvider.getGreenFlagsCache()?.isEmpty ?? true;
 
       ///** Onboarding stage 1 - Account verification
-      if (fromRoot && (verifyStep1 || verifyStep2 || verifyStep3)) {
+      if (fromRoot && (verifyStep1 || verifyStep2)) {
         title = l10n!.pgOnboardSplash1Title;
         buttonLabel = l10n.pgOnboardSplash1Btn;
         builder = Builder(
@@ -103,17 +104,22 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
           ),
         );
       } else if ((fromRoot || fromStage1 || fromStage2) &&
-          (realTalkStep || redFlagsStep || greenFlagStep)) {
+          (realTalkStep || redFlagsStep || greenFlagsStep)) {
         title = l10n!.pgOnboardSplash3Title(l10n.brandName);
         buttonLabel = l10n.pgOnboardSplash3Btn;
         builder = Builder(
           builder: (context) => PageOnboardRedflags(
-              initStep: realTalkStep
-                  ? 0
-                  : redFlagsStep
-                      ? 1
-                      : 2),
+            initStep: realTalkStep
+                ? 0
+                : redFlagsStep
+                    ? 1
+                    : 2,
+          ),
         );
+      } else {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacementNamed("/");
+        return;
       }
 
       // ignore: use_build_context_synchronously

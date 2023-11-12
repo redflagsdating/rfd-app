@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
-import 'package:red_flags/pages/page_home.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:red_flags/widgets/profile_greenflags.dart';
@@ -33,10 +32,7 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
     if (step < maxSteps - 1) {
       next();
     } else {
-      // TODO: Splash then root
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const PageHome()),
-      );
+      Navigator.of(context).pushReplacementNamed("/");
     }
   }
 
@@ -70,19 +66,29 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
                 next(true);
               }
             },
-      onSkipPressed: () {
-        //TODO: Skip prompt
-        next();
-      },
+      //TODO: Skip prompt
+      // onSkipPressed: () {
+      //   next();
+      // },
       onNextPressed: submitting
           ? null
           : () async {
               final realTalk = _userProvider.getRealTalkCache();
+              final redFlags = _userProvider.getRedFlagsCache();
+              final greenFlags = _userProvider.getGreenFlagsCache();
+
+              setSubmitting(true);
 
               if (step == 0 && realTalk != null) {
-                _userProvider.setRealTalk(realTalk);
+                await _userProvider.setRealTalk(realTalk, localOnly: false);
+              } else if (step == 1 && redFlags != null) {
+                await _userProvider.setRedFlags(redFlags, localOnly: false);
+              } else if (step == 2 && greenFlags != null) {
+                await _userProvider.setGreenFlags(greenFlags, localOnly: false);
+                await _userProvider.setOnboarded(true, localOnly: false);
               }
 
+              setSubmitting(false);
               _next();
             },
       content: Form(

@@ -516,9 +516,10 @@ class AuthProvider extends ChangeNotifier {
         logger.d('Facebook logged out successfully', time: DateTime.now());
       }
     }
-
-    await userProvider.purgeUserCache();
-
     notifyListeners();
+
+    // TODO: Revisit, delay to avoid content flickering
+    Future.delayed(
+        const Duration(milliseconds: 300), () => userProvider.purgeUserCache());
   }
 }

@@ -101,6 +101,7 @@ flutter:
     - assets/signin-bg.jpg
     - assets/signin-splash-bg.jpg
     - assets/onboard-splash-bg.png
+    - assets/onboard-complete-splash-bg.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

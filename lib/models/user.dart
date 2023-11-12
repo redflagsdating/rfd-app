@@ -14,6 +14,12 @@ enum UserBoolFields {
   verifySubmitted,
 }
 
+enum UserStringListFields {
+  genderFor,
+  redFlags,
+  greenFlags,
+}
+
 enum UserStringFields {
   uid,
   email,

@@ -41,11 +41,13 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
 
     if (realTalk != null) {
       realTalk[_currentQuestion as String] = _currentAnswerCtrl.text;
-      await _userProvider.setRealTalk(realTalk, localOnly: true, silent: true);
+      await _userProvider.setRealTalk(
+        realTalk,
+      );
     } else {
       await _userProvider.setRealTalk(
-          {_currentQuestion!: _currentAnswerCtrl.text},
-          localOnly: true, silent: true);
+        {_currentQuestion!: _currentAnswerCtrl.text},
+      );
     }
 
     setUpdating(false);
@@ -111,13 +113,20 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final realTalk = _userProvider.getRealTalkCache();
-    final firstQuestion = realTalk?.entries.first;
-    final secondQuestion =
-        realTalk!.length > 1 ? realTalk.entries.elementAt(1) : null;
-    final thirdQuestion =
-        realTalk.length > 2 ? realTalk.entries.elementAt(1) : null;
 
-    _selected.addAll(realTalk.keys);
+    MapEntry<String, String>? firstQuestion;
+    MapEntry<String, String>? secondQuestion;
+    MapEntry<String, String>? thirdQuestion;
+
+    if (realTalk != null) {
+      firstQuestion = realTalk.entries.first;
+      secondQuestion =
+          realTalk.length > 1 ? realTalk.entries.elementAt(1) : null;
+      thirdQuestion =
+          realTalk.length > 2 ? realTalk.entries.elementAt(1) : null;
+
+      _selected.addAll(realTalk.keys);
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,10 +149,11 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
           onLongPress: () {
             final question = firstQuestion?.key;
 
-            if (question != null) {
+            if (question != null && realTalk != null) {
               realTalk.remove(question);
-              _userProvider.setRealTalk(realTalk,
-                  localOnly: true, silent: true);
+              _userProvider.setRealTalk(
+                realTalk,
+              );
 
               setState(() {});
             }
@@ -160,10 +170,11 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
           onLongPress: () {
             final question = secondQuestion?.key;
 
-            if (question != null) {
+            if (question != null && realTalk != null) {
               realTalk.remove(question);
-              _userProvider.setRealTalk(realTalk,
-                  localOnly: true, silent: true);
+              _userProvider.setRealTalk(
+                realTalk,
+              );
 
               setState(() {});
             }
@@ -180,7 +191,7 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
           onLongPress: () {
             final question = thirdQuestion?.key;
 
-            if (question != null) {
+            if (question != null && realTalk != null) {
               realTalk.remove(question);
               _userProvider.setRealTalk(
                 realTalk,

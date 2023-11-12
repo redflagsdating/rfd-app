@@ -1,7 +1,7 @@
 //**
 // TODO: Revisit for l10n and scalability
 // */
-const qod = [
+const _questions = [
   "Do you think you've changed over the last two years?",
   '"If you change one thing about yourself',
   'What is your dearest memory from the last twelve months?',
@@ -108,5 +108,5 @@ const qod = [
 class QuestionModel {
   QuestionModel();
 
-  static List<String> get questions => qod;
+  static List<String> get questions => _questions;
 }
