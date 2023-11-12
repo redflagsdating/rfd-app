@@ -41,7 +41,7 @@ class _PageSignInIntroState extends State<PageSignInIntro>
     final headline = step == 1
         ? l10n!.pgIntroHeadline2(l10n.brandName)
         : step == 2
-            ? l10n!.pgIntroHeadline3
+            ? l10n!.brandTagLine
             : l10n!.pgIntroHeadline1;
     final body = step == 1
         ? l10n.pgIntroBody2

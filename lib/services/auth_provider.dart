@@ -368,7 +368,7 @@ class AuthProvider extends ChangeNotifier {
     );
 
     if (userInfo != null) {
-      final user = await userProvider.findUserById(uid);
+      final user = await userProvider.getUserById(uid);
 
       // Update cache user data from database to keep it up-to-date
       if (user.docs.isNotEmpty) {
@@ -461,7 +461,7 @@ class AuthProvider extends ChangeNotifier {
     );
 
     // Check the user existence in Firestore
-    final user = await userProvider.findUserById(firebaseUser.uid);
+    final user = await userProvider.getUserById(firebaseUser.uid);
 
     logger.d('Successfully query user in Firestore', time: DateTime.now());
 

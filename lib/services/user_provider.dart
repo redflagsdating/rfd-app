@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
@@ -22,15 +24,20 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> createUser(UserModel user) async {
-    _userDocRef = _getUsersRef().doc(user.uid);
+    final ref = _getUsersRef().doc(user.uid);
 
-    await _getUsersRef().doc(user.uid).set(user);
+    _userDocRef = ref;
+    await ref.set(user);
     await updateUserCache(user);
 
     logger.d('New user (${user.email}) is created', time: DateTime.now());
   }
 
-  Future<QuerySnapshot<UserModel>> findUserById(String? uid) async {
+  Future<UserModel?> getCurrentUser() async {
+    return (await _userDocRef?.get())?.data();
+  }
+
+  Future<QuerySnapshot<UserModel>> getUserById(String? uid) async {
     return _getUsersRef().where(UserFields.uid.name, isEqualTo: uid).get();
   }
 
@@ -126,6 +133,20 @@ class UserProvider extends ChangeNotifier {
 
   String? getPhotoUrlCache() {
     return _getStringFieldCache(UserStringFields.photoUrl);
+  }
+
+  Map<String, String>? getRealTalkCache() {
+    final rawData = _getStringFieldCache(UserStringFields.realTalk);
+
+    try {
+      final map = (json.decode(rawData!) as Map).cast<String, String>();
+
+      return map;
+    } catch (e) {
+      logger.d(e, time: DateTime.now());
+    }
+
+    return null;
   }
 
   Future<bool?> getOnboarded() async {
@@ -270,6 +291,32 @@ class UserProvider extends ChangeNotifier {
     return result;
   }
 
+  Future<bool?> setRealTalk(Map<String, String> realtalk,
+      {bool? silent, bool? localOnly}) async {
+    String? realTalkStr;
+
+    try {
+      realTalkStr = json.encode(realtalk);
+    } catch (e) {
+      logger.d(e, time: DateTime.now());
+    }
+
+    bool result = await localStorage.setString(
+      UserFields.realTalk.name,
+      realTalkStr ?? "",
+    );
+
+    if (localOnly != true) {
+      await _userDocRef?.update({UserFields.realTalk.name: realtalk});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
   Future<bool> purgeUserCache() async {
     late bool result = true;
 
@@ -287,6 +334,9 @@ class UserProvider extends ChangeNotifier {
     result &= await localStorage.remove(UserFields.onboarded.name);
     result &= await localStorage.remove(UserFields.verified.name);
     result &= await localStorage.remove(UserFields.verifySubmitted.name);
+    result &= await localStorage.remove(UserFields.realTalk.name);
+    result &= await localStorage.remove(UserFields.redFlags.name);
+    result &= await localStorage.remove(UserFields.greenFlags.name);
 
     logger.d('Local storage purged', time: DateTime.now());
 
@@ -299,24 +349,21 @@ class UserProvider extends ChangeNotifier {
 
     final dob = user.dob;
 
-    await setId(user.uid);
-    await setEmail(user.email);
-    await setFirstName(user.firstName ?? "");
-    await setLastName(user.lastName ?? "");
-    await setDisplayName(user.displayName ?? "");
-    await setGender(user.gender ?? "");
-    await setLocality(user.locality ?? "");
-    await setPhotoUrl(user.photoUrl ?? "");
-    await setGenderFor(user.genderFor ?? []);
+    await setId(user.uid, localOnly: true, silent: true);
+    await setEmail(user.email, localOnly: true, silent: true);
+    await setFirstName(user.firstName ?? "", localOnly: true, silent: true);
+    await setLastName(user.lastName ?? "", localOnly: true, silent: true);
+    await setDisplayName(user.displayName ?? "", localOnly: true, silent: true);
+    await setGender(user.gender ?? "", localOnly: true, silent: true);
+    await setLocality(user.locality ?? "", localOnly: true, silent: true);
+    await setPhotoUrl(user.photoUrl ?? "", localOnly: true, silent: true);
+    await setGenderFor(user.genderFor ?? [], localOnly: true, silent: true);
+    await setRealTalk(user.realTalk ?? {}, localOnly: true, silent: true);
 
     if (dob != null) {
-      await setDob(dob);
+      await setDob(dob, localOnly: true, silent: true);
     }
 
-    await localStorage.setInt(
-      UserFields.createdAt.name,
-      user.createdAt.millisecondsSinceEpoch,
-    );
     await localStorage.setBool(
       UserFields.onboarded.name,
       user.onboarded,

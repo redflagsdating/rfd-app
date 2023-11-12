@@ -24,6 +24,7 @@ enum UserStringFields {
   gender,
   locality,
   phoneNumber,
+  realTalk,
 }
 
 enum UserFields {
@@ -42,6 +43,9 @@ enum UserFields {
   onboarded,
   verified,
   verifySubmitted,
+  realTalk,
+  redFlags,
+  greenFlags,
 }
 
 @immutable
@@ -62,6 +66,9 @@ class UserModel {
     this.genderFor,
     this.locality,
     this.phoneNumber,
+    this.realTalk,
+    this.redFlags,
+    this.greenFlags,
   });
 
   final String uid;
@@ -79,6 +86,9 @@ class UserModel {
   final List<String>? genderFor;
   final String? locality;
   final String? phoneNumber;
+  final Map<String, String>? realTalk;
+  final List<String>? redFlags;
+  final List<String>? greenFlags;
 
   Map<String, dynamic> toJson() {
     return {
@@ -97,6 +107,9 @@ class UserModel {
       UserFields.genderFor.name: genderFor,
       UserFields.locality.name: locality,
       UserFields.phoneNumber.name: phoneNumber,
+      UserFields.realTalk.name: realTalk,
+      UserFields.redFlags.name: redFlags,
+      UserFields.greenFlags.name: greenFlags,
     };
   }
 
@@ -119,6 +132,9 @@ class UserModel {
           genderFor: json[UserFields.genderFor.name]?.cast<String>(),
           locality: json[UserFields.locality.name],
           phoneNumber: json[UserFields.phoneNumber.name],
+          realTalk: json[UserFields.realTalk.name]?.cast<String, String>(),
+          redFlags: json[UserFields.redFlags.name]?.cast<String>(),
+          greenFlags: json[UserFields.greenFlags.name]?.cast<String>(),
         );
 }
 
