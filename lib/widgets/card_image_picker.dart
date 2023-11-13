@@ -106,8 +106,8 @@ class _CardImagePickerState extends State<CardImagePicker> {
       await _imageRef!.putFile(_file as File);
 
       // Set as default spotlight photo when not existed
-      if (userProvider.getPhotoUrlCache() == null) {
-        userProvider.setPhotoUrl(
+      if (userProvider.getPhotoUrlCache()!.isEmpty) {
+        await userProvider.setPhotoUrl(
           _imageRef!.fullPath,
           localOnly: false,
           silent: false,
