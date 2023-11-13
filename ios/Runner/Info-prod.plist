@@ -52,6 +52,10 @@
 	<string>e393bca70fa3829bbe4ed3b942d29ac7</string>
 	<key>FacebookDisplayName</key>
 	<string>Red Flags Dating</string>
+	<key>FirebaseDynamicLinksCustomDomains</key>
+	<array>
+		<string>https://redflagsprod.page.link/naxz</string>
+	</array>
 	<key>GIDClientID</key>
 	<string>409120994021-re50ugfvjqvrgnehkpq6pbbnamfglr2r.apps.googleusercontent.com</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -61,6 +65,12 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>NSLocationAlwaysUsageDescription</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Allow Red Flags to access the photo library on this device in order to select a photo for displaying on your profile.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -70,28 +80,15 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>FirebaseDynamicLinksCustomDomains</key>
-	<array>
-		<string>https://redflagsprod.page.link/naxz</string>
-	</array>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<!-- TODO: Review copy -->
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow Red Flags to access the photo library on this device in order to select a photo for displaying on your profile.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
 </dict>
 </plist>
