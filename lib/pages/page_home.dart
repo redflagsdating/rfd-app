@@ -23,6 +23,8 @@ class _PageHomeState extends State<PageHome> {
     final appDocDir = await getApplicationDocumentsDirectory();
     final spotlightPhoto = userProvider.getPhotoUrlCache();
 
+    // TODO: Download photo url for different devices
+
     _img = File('${appDocDir.path}/$spotlightPhoto');
     setState(() {});
   }
