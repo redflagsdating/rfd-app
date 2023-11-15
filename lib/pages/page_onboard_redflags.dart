@@ -77,9 +77,9 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
               final redFlags = _userProvider.getRedFlagsCache();
               final greenFlags = _userProvider.getGreenFlagsCache();
 
-              if ((step == 0 && realTalk!.isEmpty) ||
-                  (step == 1 && redFlags!.isEmpty) ||
-                  (step == 2 && greenFlags!.isEmpty)) {
+              if ((step == 0 && (realTalk == null || realTalk.isEmpty)) ||
+                  (step == 1 && (redFlags == null || redFlags.isEmpty)) ||
+                  (step == 2 && (greenFlags == null || greenFlags.isEmpty))) {
                 return;
               }
 
