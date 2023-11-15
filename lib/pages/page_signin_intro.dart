@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
-import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const maxSteps = 3;
@@ -69,7 +69,7 @@ class _PageSignInIntroState extends State<PageSignInIntro>
           child: Column(
             children: [
               const Spacer(),
-              PageSlideTransitionSwitcher(
+              SlideTransitionSwitcher(
                 reverse: slideTransitionReverse,
                 duration: const Duration(milliseconds: 500),
                 child: Column(

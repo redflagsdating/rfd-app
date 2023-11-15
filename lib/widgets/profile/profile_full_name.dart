@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Onboarding stage 1 Account verification > Step 1 Full Name
-class VerificationFullName extends StatefulWidget {
+class ProfileFullName extends StatefulWidget {
   final bool? enabled;
   final TextEditingController firstNameCtrl;
   final TextEditingController lastNameCtrl;
 
-  const VerificationFullName({
+  const ProfileFullName({
     super.key,
     this.enabled,
     required this.firstNameCtrl,
@@ -15,10 +15,10 @@ class VerificationFullName extends StatefulWidget {
   });
 
   @override
-  State<VerificationFullName> createState() => _VerificationFullNameState();
+  State<ProfileFullName> createState() => _ProfileFullNameState();
 }
 
-class _VerificationFullNameState extends State<VerificationFullName> {
+class _ProfileFullNameState extends State<ProfileFullName> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -27,7 +27,7 @@ class _VerificationFullNameState extends State<VerificationFullName> {
 
     return Container(
       // A workaround of visual shifting issue from SingleChildScrollView +
-      // PageSlideTransitionSwitcher.
+      // SlideTransitionSwitcher.
       constraints: const BoxConstraints(
         minHeight: 400,
       ),

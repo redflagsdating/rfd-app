@@ -6,7 +6,7 @@ import 'package:red_flags/pages/page_onboard_redflags.dart';
 import 'package:red_flags/pages/page_onboard_splash.dart';
 import 'package:red_flags/pages/page_onboard_verification.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/page_fade_route_builder.dart';
+import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 
 enum OnboardingStage { verification, profile, redflags }
 

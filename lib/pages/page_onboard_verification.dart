@@ -4,10 +4,10 @@ import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
+import 'package:red_flags/widgets/profile/profile_display_name.dart';
+import 'package:red_flags/widgets/profile/profile_full_name.dart';
 import 'package:red_flags/widgets/scaffold_onboard.dart';
-import 'package:red_flags/widgets/verification_display_name.dart';
-import 'package:red_flags/widgets/verification_full_name.dart';
 
 /// Step 1 - First/Last name
 /// Step 2 - Preferred (display) name
@@ -129,16 +129,16 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
             },
       content: Form(
         key: onboardForm,
-        child: PageSlideTransitionSwitcher(
+        child: SlideTransitionSwitcher(
           reverse: slideTransitionReverse,
           child: step == 0
-              ? VerificationFullName(
+              ? ProfileFullName(
                   enabled: !submitting,
                   firstNameCtrl: _firstNameCtrl,
                   lastNameCtrl: _lastNameCtrl,
                 )
               : step == 1
-                  ? VerificationDisplayName(
+                  ? ProfileDisplayName(
                       enabled: !submitting,
                       controller: _displayNameCtrl,
                     )

@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 
-class ChipFlags extends StatefulWidget {
-  const ChipFlags({
+class ListFlagChips extends StatefulWidget {
+  const ListFlagChips({
     Key? key,
-    required this.flags,
+    required this.labels,
+    this.spacing,
+    this.runSpacing,
+    this.alignment,
     this.initialSelected,
     this.onSelected,
   }) : super(key: key);
 
-  final List<String> flags;
+  final List<String> labels;
+  final double? spacing;
+  final double? runSpacing;
+  final WrapAlignment? alignment;
   final List<String>? initialSelected;
   final void Function(List<String> selected)? onSelected;
 
   @override
-  State<ChipFlags> createState() => _ChipFlagsState();
+  State<ListFlagChips> createState() => _ListFlagChipsState();
 }
 
-class _ChipFlagsState extends State<ChipFlags> {
+class _ListFlagChipsState extends State<ListFlagChips> {
   final List<String> _selected = [];
 
   @override
@@ -34,11 +40,14 @@ class _ChipFlagsState extends State<ChipFlags> {
 
   @override
   Widget build(BuildContext context) {
-    final sorted = widget.flags.toList()
+    // Sort the labels to best use the space for chips
+    final sorted = widget.labels.toList()
       ..sort((a, b) => a.length.compareTo(b.length));
 
     return Wrap(
-      spacing: 6,
+      spacing: widget.spacing ?? 6,
+      runSpacing: widget.runSpacing ?? 0,
+      alignment: widget.alignment ?? WrapAlignment.start,
       children: List.generate(
         sorted.length,
         (index) {

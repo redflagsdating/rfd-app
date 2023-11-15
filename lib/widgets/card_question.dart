@@ -1,31 +1,33 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class CardRealTalk extends StatefulWidget {
-  const CardRealTalk({
+class CardQuestion extends StatefulWidget {
+  const CardQuestion({
     Key? key,
     this.question,
     this.answer,
+    this.hintText,
+    this.icon,
     this.onTap,
     this.onLongPress,
   }) : super(key: key);
 
   final String? question;
   final String? answer;
+  final String? hintText;
+  final IconData? icon;
   final void Function()? onTap;
   final void Function()? onLongPress;
 
   @override
-  State<CardRealTalk> createState() => _CardRealTalkState();
+  State<CardQuestion> createState() => _CardQuestionState();
 }
 
-class _CardRealTalkState extends State<CardRealTalk> {
+class _CardQuestionState extends State<CardQuestion> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
     final placeholderColor = theme.colorScheme.inversePrimary;
 
     return GestureDetector(
@@ -84,15 +86,16 @@ class _CardRealTalkState extends State<CardRealTalk> {
                     children: [
                       Icon(
                         size: 32,
-                        Icons.question_answer_outlined,
+                        widget.icon ?? Icons.question_answer_outlined,
                         color: placeholderColor,
                       ),
-                      Text(
-                        l10n!.cardRealTalkText,
-                        style: theme.textTheme
-                            .apply(bodyColor: placeholderColor)
-                            .labelLarge,
-                      )
+                      if (widget.hintText != null)
+                        Text(
+                          widget.hintText!,
+                          style: theme.textTheme
+                              .apply(bodyColor: placeholderColor)
+                              .labelLarge,
+                        )
                     ],
                   ),
                 ),

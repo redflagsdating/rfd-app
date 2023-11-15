@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/flag.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/chip_flags.dart';
+import 'package:red_flags/widgets/list_flag_chips.dart';
 
 class ProfileRedFlags extends StatefulWidget {
   const ProfileRedFlags({Key? key}) : super(key: key);
@@ -29,8 +29,8 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
         const SizedBox(height: 10),
         Text(l10n.pgSelectFlagsBody),
         const SizedBox(height: 20),
-        ChipFlags(
-          flags: FlagModel.redFlags,
+        ListFlagChips(
+          labels: FlagModel.redFlags,
           initialSelected: userProvider.getRedFlagsCache(),
           onSelected: (selected) {
             userProvider.setRedFlags(selected);

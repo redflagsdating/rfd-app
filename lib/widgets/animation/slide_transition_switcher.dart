@@ -1,7 +1,7 @@
 import 'package:animations/animations.dart';
 
-class PageSlideTransitionSwitcher extends PageTransitionSwitcher {
-  PageSlideTransitionSwitcher({
+class SlideTransitionSwitcher extends PageTransitionSwitcher {
+  SlideTransitionSwitcher({
     super.key,
     super.child,
     super.reverse,

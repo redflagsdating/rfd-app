@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
-import 'package:red_flags/widgets/profile_greenflags.dart';
-import 'package:red_flags/widgets/profile_realtalk.dart';
-import 'package:red_flags/widgets/profile_redflags.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
+import 'package:red_flags/widgets/profile/profile_greenflags.dart';
+import 'package:red_flags/widgets/profile/profile_realtalk.dart';
+import 'package:red_flags/widgets/profile/profile_redflags.dart';
 import 'package:red_flags/widgets/scaffold_onboard.dart';
 
 /// Step 1 - Real talk
@@ -93,7 +93,7 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
             },
       content: Form(
         key: onboardForm,
-        child: PageSlideTransitionSwitcher(
+        child: SlideTransitionSwitcher(
           reverse: slideTransitionReverse,
           child: step == 0
               ? const ProfileRealTalk()

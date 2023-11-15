@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
+import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/dialog_signin_email.dart';
-import 'package:red_flags/widgets/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/scaffold_signin.dart';
 
 class PageSignIn extends StatefulWidget {

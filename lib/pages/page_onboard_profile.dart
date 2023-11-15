@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
-import 'package:red_flags/widgets/profile_birthday.dart';
-import 'package:red_flags/widgets/profile_gender.dart';
-import 'package:red_flags/widgets/profile_locality.dart';
-import 'package:red_flags/widgets/profile_photos.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
+import 'package:red_flags/widgets/profile/profile_birthday.dart';
+import 'package:red_flags/widgets/profile/profile_gender.dart';
+import 'package:red_flags/widgets/profile/profile_locality.dart';
+import 'package:red_flags/widgets/profile/profile_photos.dart';
 import 'package:red_flags/widgets/scaffold_onboard.dart';
 
 /// Step 1 - Gender
@@ -132,7 +132,7 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
             },
       content: Form(
         key: onboardForm,
-        child: PageSlideTransitionSwitcher(
+        child: SlideTransitionSwitcher(
           reverse: slideTransitionReverse,
           child: step == 0
               ? ProfileGender(

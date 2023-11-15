@@ -3,9 +3,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/question.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/card_realtalk.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
+import 'package:red_flags/widgets/card_question.dart';
 import 'package:red_flags/widgets/listview_questions.dart';
-import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
 import 'package:red_flags/widgets/question_editor.dart';
 
 class ProfileRealTalk extends StatefulWidget {
@@ -67,7 +67,7 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
           builder: (context, setState) {
             return Padding(
               padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              child: PageSlideTransitionSwitcher(
+              child: SlideTransitionSwitcher(
                 child: _currentQuestion != null
                     ? QuestionEditor(
                         enabled: _updating != true,
@@ -138,7 +138,8 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
         const SizedBox(height: 10),
         Text(l10n.pgRealTalkBody),
         const SizedBox(height: 20),
-        CardRealTalk(
+        CardQuestion(
+          hintText: l10n.cardRealTalkText,
           question: firstQuestion?.key,
           answer: firstQuestion?.value,
           onTap: () {
@@ -159,7 +160,8 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
             }
           },
         ),
-        CardRealTalk(
+        CardQuestion(
+          hintText: l10n.cardRealTalkText,
           question: secondQuestion?.key,
           answer: secondQuestion?.value,
           onTap: () {
@@ -180,7 +182,8 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
             }
           },
         ),
-        CardRealTalk(
+        CardQuestion(
+          hintText: l10n.cardRealTalkText,
           question: thirdQuestion?.key,
           answer: thirdQuestion?.value,
           onTap: () {

@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/fade_through_transition_switcher.dart';
+import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
 
 class CardImagePicker extends StatefulWidget {
   const CardImagePicker({

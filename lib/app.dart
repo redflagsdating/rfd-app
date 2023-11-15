@@ -18,7 +18,7 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/theme/color_schemes.g.dart';
 import 'package:red_flags/theme/typography_theme.g.dart';
-import 'package:red_flags/widgets/page_slide_transition_switcher.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class App extends StatelessWidget {
@@ -126,7 +126,7 @@ class App extends StatelessWidget {
                   final isOnboard =
                       localStorage.getBool(UserFields.onboarded.name) ?? false;
 
-                  return PageSlideTransitionSwitcher(
+                  return SlideTransitionSwitcher(
                     reverse: !authProvider.isAuthenticated() &&
                             !authProvider.isAuthenticating()
                         ? true
