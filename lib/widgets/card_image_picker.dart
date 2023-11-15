@@ -46,9 +46,40 @@ class _CardImagePickerState extends State<CardImagePicker> {
     });
   }
 
+  Future<String> _getLocalFilePath() async {
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final dir = Directory(
+      '${appDocDir.path}/${_imageRef?.parent?.fullPath}',
+    );
+
+    if (!await dir.exists()) {
+      await dir.create(recursive: true);
+    }
+
+    return "${dir.path}/${_imageRef?.name}";
+  }
+
+  Future<void> _setSpotlightPhoto() async {
+    final userProvider = context.read<UserProvider>();
+
+    await _imageRef!.writeToFile(File(await _getLocalFilePath()));
+    await userProvider.setPhotoUrl(
+      _imageRef!.fullPath,
+      localOnly: false,
+      silent: false,
+    );
+  }
+
   Future<void> _delete() async {
     await _imageRef!.delete();
     await _file?.delete();
+
+    // Ensure to delete cache version in application document directory
+    final file = File(await _getLocalFilePath());
+
+    if (file.existsSync()) {
+      await file.delete();
+    }
 
     _file = null;
     _xFile = null;
@@ -63,13 +94,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
     }
 
     _imageRef = widget.imageRef;
-
-    final appDocDir = await getApplicationDocumentsDirectory();
-    final dir = await Directory(
-      '${appDocDir.path}/${widget.imageRef?.parent?.fullPath}',
-    ).create(recursive: true);
-
-    _file = File("${dir.path}/${widget.imageRef?.name}");
+    _file = File(await _getLocalFilePath());
 
     final downloadTask = widget.imageRef!.writeToFile(_file!);
     downloadTask.snapshotEvents.listen((taskSnapshot) {
@@ -107,11 +132,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
 
       // Set as default spotlight photo when not existed
       if (userProvider.getPhotoUrlCache()!.isEmpty) {
-        await userProvider.setPhotoUrl(
-          _imageRef!.fullPath,
-          localOnly: false,
-          silent: false,
-        );
+        await _setSpotlightPhoto();
       }
     } on FirebaseException catch (e) {
       // TODO
@@ -188,11 +209,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
         if (_imageRef != null) {
           HapticFeedback.vibrate();
 
-          await userProvider.setPhotoUrl(
-            _imageRef!.fullPath,
-            localOnly: false,
-            silent: false,
-          );
+          await _setSpotlightPhoto();
         }
       },
       onTap: () {

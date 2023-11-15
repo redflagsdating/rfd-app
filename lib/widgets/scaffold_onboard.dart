@@ -44,6 +44,7 @@ class ScaffoldOnboard extends Scaffold {
             ],
           ),
           floatingActionButton: FloatingActionButton(
+            enableFeedback: true,
             shape: const CircleBorder(),
             onPressed: onNextPressed,
             child: const Icon(Icons.arrow_forward_ios_rounded),

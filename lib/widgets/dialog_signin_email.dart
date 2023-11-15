@@ -52,6 +52,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                       enabled: enabled,
                       autofocus: true,
                       controller: _textCtrl,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       decoration: InputDecoration(
                         border: const UnderlineInputBorder(),
                         labelText: l10n.pgSignInEmailLabel,

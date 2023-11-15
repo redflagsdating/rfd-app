@@ -65,7 +65,15 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
           initialDate: initialDate,
           inputType: InputType.date,
           controller: widget.controller,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           enabled: widget.enabled != false,
+          validator: (value) {
+            if (value == null) {
+              return l10n.fieldBirthdayEmptyErrorText;
+            }
+
+            return null;
+          },
           onChanged: (value) {
             if (value != null) {
               _setHelperText(l10n.fieldBirthdayHelperText(_getAge(value)));

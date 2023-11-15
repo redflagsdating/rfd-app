@@ -77,14 +77,21 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
               final redFlags = _userProvider.getRedFlagsCache();
               final greenFlags = _userProvider.getGreenFlagsCache();
 
+              if ((step == 0 && realTalk!.isEmpty) ||
+                  (step == 1 && redFlags!.isEmpty) ||
+                  (step == 2 && greenFlags!.isEmpty)) {
+                return;
+              }
+
               setSubmitting(true);
 
-              if (step == 0 && realTalk != null) {
-                await _userProvider.setRealTalk(realTalk, localOnly: false);
-              } else if (step == 1 && redFlags != null) {
-                await _userProvider.setRedFlags(redFlags, localOnly: false);
-              } else if (step == 2 && greenFlags != null) {
-                await _userProvider.setGreenFlags(greenFlags, localOnly: false);
+              if (step == 0) {
+                await _userProvider.setRealTalk(realTalk!, localOnly: false);
+              } else if (step == 1) {
+                await _userProvider.setRedFlags(redFlags!, localOnly: false);
+              } else if (step == 2) {
+                await _userProvider.setGreenFlags(greenFlags!,
+                    localOnly: false);
                 await _userProvider.setOnboarded(true, localOnly: false);
               }
 

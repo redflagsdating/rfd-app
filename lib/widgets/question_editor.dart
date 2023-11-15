@@ -79,8 +79,8 @@ class _QuestionEditorState extends State<QuestionEditor> {
           const SizedBox(height: 20),
           TextFormField(
             autofocus: true,
-            minLines: 5,
-            maxLines: 5,
+            minLines: 4,
+            maxLines: 4,
             maxLength: 250,
             enabled: isEnabled,
             controller: widget.controller,

@@ -114,15 +114,13 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
           title,
           style: theme.textTheme.headlineSmall,
         ),
-        isGenderForPage
-            ? Column(
-                children: [
-                  const SizedBox(height: 10),
-                  Text(l10n.pgGenderForBody),
-                  const SizedBox(height: 48)
-                ],
-              )
-            : const SizedBox(height: 48),
+        Column(
+          children: [
+            const SizedBox(height: 10),
+            Text(isGenderForPage ? l10n.pgGenderForBody : l10n.pgGenderBody),
+            const SizedBox(height: 48)
+          ],
+        ),
         for (var chip in chips)
           Container(
             margin: const EdgeInsets.only(bottom: 16),
