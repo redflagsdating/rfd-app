@@ -27,9 +27,7 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
   void initState() {
     super.initState();
 
-    /// Better UX to show PageOnboardSplash animated spinning screen after sign
-    /// in and delay to avoid Navigator call before initState() is finished
-    Future.delayed(const Duration(milliseconds: 300), () async {
+    Future.delayed(const Duration(milliseconds: 100), () async {
       late String title;
       late String buttonLabel;
       late Builder builder;
@@ -125,6 +123,8 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
         PageFadeRouteBuilder(
+          reverseTransitionDuration: const Duration(seconds: 0),
+          transitionDuration: const Duration(milliseconds: 500),
           page: Builder(
             builder: (context) => PageOnboardSplash(
               title: title,
@@ -145,6 +145,6 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
 
   @override
   Widget build(BuildContext context) {
-    return const PageOnboardSplash(transition: true);
+    return Container();
   }
 }

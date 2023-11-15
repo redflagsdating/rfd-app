@@ -46,7 +46,7 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
               ),
               const SizedBox(height: 10),
               Text(l10n.pgPhotoBody),
-              const SizedBox(height: 48),
+              const SizedBox(height: 32),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,12 +63,14 @@ class _CardImagePickerState extends State<CardImagePicker> {
   Future<void> _setSpotlightPhoto() async {
     final userProvider = context.read<UserProvider>();
 
-    await _imageRef!.writeToFile(File(await _getLocalFilePath()));
     await userProvider.setPhotoUrl(
       _imageRef!.fullPath,
       localOnly: false,
       silent: false,
     );
+
+    // Async write to app doc directory as no dependency
+    _imageRef!.writeToFile(File(await _getLocalFilePath()));
   }
 
   Future<void> _delete() async {
@@ -325,83 +328,86 @@ class _CardImagePickerState extends State<CardImagePicker> {
       child: Builder(
         builder: (context) {
           return FadeThroughTransitionSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: _file == null
-                  ? SizedBox(
+            duration: const Duration(milliseconds: 800),
+            child: _file == null
+                ? DottedBorder(
+                    dashPattern: const [10, 5],
+                    borderType: BorderType.RRect,
+                    radius: const Radius.circular(12),
+                    color: theme.colorScheme.outlineVariant,
+                    child: SizedBox(
                       width: widget.size,
                       height: widget.size,
-                      child: Card(
-                        margin: const EdgeInsets.all(0),
-                        child: Icon(
-                          Icons.add_a_photo_outlined,
-                          size: (widget.size / 4),
-                          color: theme.colorScheme.outline.withOpacity(0.5),
-                        ),
+                      child: Icon(
+                        Icons.add_a_photo_outlined,
+                        size: (widget.size / 4),
+                        color: theme.colorScheme.outlineVariant,
                       ),
-                    )
-                  : isDisabled
-                      ? Container(
-                          width: widget.size,
-                          height: widget.size,
-                          decoration: BoxDecoration(
+                    ),
+                  )
+                : isDisabled
+                    ? Container(
+                        width: widget.size,
+                        height: widget.size,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(
+                            //** Workaround of Image.file cache issue */
+                            //** https://github.com/flutter/flutter/issues/24858 */
+                            image: MemoryImage(
+                              (_file as File).readAsBytesSync(),
+                            ),
+                            fit: BoxFit.cover,
+                            opacity: 0.5,
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(40),
+                        child: const CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            image: DecorationImage(
-                              //** Workaround of Image.file cache issue */
-                              //** https://github.com/flutter/flutter/issues/24858 */
-                              image: MemoryImage(
-                                (_file as File).readAsBytesSync(),
-                              ),
+                            //** Workaround of Image.file cache issue */
+                            //** https://github.com/flutter/flutter/issues/24858 */
+                            child: Image.memory(
+                              (_file as File).readAsBytesSync(),
+                              width: widget.size,
+                              height: widget.size,
                               fit: BoxFit.cover,
-                              opacity: 0.5,
                             ),
                           ),
-                          padding: const EdgeInsets.all(40),
-                          child: const CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              //** Workaround of Image.file cache issue */
-                              //** https://github.com/flutter/flutter/issues/24858 */
-                              child: Image.memory(
-                                (_file as File).readAsBytesSync(),
-                                width: widget.size,
-                                height: widget.size,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            ListenableBuilder(
-                              listenable: userProvider,
-                              builder: (context, _) {
-                                final spotlight =
-                                    userProvider.getPhotoUrlCache();
-                                final isSpotlight =
-                                    _imageRef?.fullPath.contains(spotlight!) ??
-                                        false;
+                          ListenableBuilder(
+                            listenable: userProvider,
+                            builder: (context, _) {
+                              final spotlight = userProvider.getPhotoUrlCache();
+                              final isSpotlight =
+                                  _imageRef?.fullPath.contains(spotlight!) ??
+                                      false;
 
-                                if (isSpotlight) {
-                                  return Positioned(
-                                    top: -8,
-                                    left: -8,
-                                    child: Badge(
-                                      largeSize: 32,
-                                      label: Icon(
-                                        Icons.star,
-                                        color: theme.colorScheme.onTertiary,
-                                      ),
+                              if (isSpotlight) {
+                                return Positioned(
+                                  top: -8,
+                                  left: -8,
+                                  child: Badge(
+                                    largeSize: 32,
+                                    label: Icon(
+                                      Icons.star,
+                                      color: theme.colorScheme.onTertiary,
                                     ),
-                                  );
-                                }
+                                  ),
+                                );
+                              }
 
-                                return const SizedBox.shrink();
-                              },
-                            ),
-                          ],
-                        ));
+                              return const SizedBox.shrink();
+                            },
+                          ),
+                        ],
+                      ),
+          );
         },
       ),
     );
