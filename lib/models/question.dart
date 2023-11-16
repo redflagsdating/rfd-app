@@ -1,7 +1,18 @@
 //**
 // TODO: Revisit for l10n and scalability
 // */
-const _questions = [
+const _realtalk = [
+  "What are you looking for in your next partner?",
+  "What is something about you that surprises most people?",
+  "What is something you wouldn't normally tell someone on a first date?",
+  "What are you most proud of in your life?",
+  "What scares you the most about a relationship?",
+  "What is something you want to work on in your next relationship?",
+  "What is something you want to accomplish in the next 12 months?",
+  "What would you never want to change about yourself?"
+];
+
+const _qod = [
   "Do you think you've changed over the last two years?",
   '"If you change one thing about yourself',
   'What is your dearest memory from the last twelve months?',
@@ -108,5 +119,6 @@ const _questions = [
 class QuestionModel {
   QuestionModel();
 
-  static List<String> get questions => _questions;
+  static List<String> get qod => _qod;
+  static List<String> get realtalk => _realtalk;
 }

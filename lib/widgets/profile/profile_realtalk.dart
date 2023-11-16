@@ -84,7 +84,7 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
                         onEditingComplete: _onEditingComplete,
                       )
                     : ListViewQuestions(
-                        questions: QuestionModel.questions,
+                        questions: QuestionModel.realtalk,
                         selected: _selected,
                         onSelect: (question) {
                           // Using setState from StatefulBuilder

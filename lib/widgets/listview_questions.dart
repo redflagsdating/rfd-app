@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:red_flags/models/question.dart';
 
 class ListViewQuestions extends StatelessWidget {
   const ListViewQuestions({
@@ -18,9 +17,9 @@ class ListViewQuestions extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListView.builder(
-      itemCount: QuestionModel.questions.length,
+      itemCount: questions.length,
       itemBuilder: (context, index) {
-        final question = QuestionModel.questions[index];
+        final question = questions[index];
         final isSelected = selected?.contains(question) ?? false;
 
         return GestureDetector(
