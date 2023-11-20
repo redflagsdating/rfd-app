@@ -22,9 +22,25 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          l10n!.pgRedFlagsHeadline,
-          style: theme.textTheme.headlineSmall,
+        Row(
+          children: [
+            Text(
+              l10n!.pgRedFlagsHeadline,
+              style: theme.textTheme.headlineSmall,
+            ),
+            Icon(
+              Icons.flag_rounded,
+              size: 32,
+              shadows: [
+                Shadow(
+                  color: theme.colorScheme.outlineVariant,
+                  offset: const Offset(0, 1),
+                  blurRadius: 6,
+                )
+              ],
+              color: theme.colorScheme.primary,
+            )
+          ],
         ),
         const SizedBox(height: 10),
         Text(l10n.pgSelectFlagsBody),

@@ -42,7 +42,7 @@ class _ListFlagChipsState extends State<ListFlagChips> {
   Widget build(BuildContext context) {
     // Sort the labels to best use the space for chips
     final sorted = widget.labels.toList()
-      ..sort((a, b) => a.length.compareTo(b.length));
+      ..sort((a, b) => a.toLowerCase().compareTo(b.toLowerCase()));
 
     return Wrap(
       spacing: widget.spacing ?? 6,
@@ -52,6 +52,7 @@ class _ListFlagChipsState extends State<ListFlagChips> {
         sorted.length,
         (index) {
           return ChoiceChip(
+            showCheckmark: false,
             label: Text(sorted[index]),
             selected: _selected.contains(sorted[index]),
             onSelected: (isSelected) {

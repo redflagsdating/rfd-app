@@ -1,6 +1,5 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ScaffoldOnboard extends Scaffold {
   ScaffoldOnboard({
@@ -33,15 +32,6 @@ class ScaffoldOnboard extends Scaffold {
                 color: stepIndicatorColor,
               ),
             ),
-            actions: [
-              TextButton(
-                onPressed: onSkipPressed,
-                child: Builder(
-                  builder: (context) =>
-                      Text(AppLocalizations.of(context)!.skip),
-                ),
-              )
-            ],
           ),
           floatingActionButton: FloatingActionButton(
             enableFeedback: true,

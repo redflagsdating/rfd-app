@@ -85,7 +85,16 @@ class App extends StatelessWidget {
                   ),
                 ),
                 chipTheme: ChipThemeData(
-                  side: BorderSide(color: lightColorScheme.outlineVariant),
+                  side: MaterialStateBorderSide.resolveWith(
+                    (states) {
+                      if (!states.contains(MaterialState.selected)) {
+                        return BorderSide(
+                            color: lightColorScheme.outlineVariant);
+                      }
+
+                      return null;
+                    },
+                  ),
                   color: MaterialStateProperty.resolveWith(
                     (states) {
                       const Set<MaterialState> interactiveStates =

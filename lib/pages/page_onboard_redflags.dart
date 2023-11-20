@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
+import 'package:red_flags/widgets/animation/slide_animated_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_greenflags.dart';
 import 'package:red_flags/widgets/profile/profile_realtalk.dart';
 import 'package:red_flags/widgets/profile/profile_redflags.dart';
@@ -98,16 +98,14 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
               setSubmitting(false);
               _next();
             },
-      content: Form(
-        key: onboardForm,
-        child: SlideTransitionSwitcher(
-          reverse: slideTransitionReverse,
-          child: step == 0
-              ? const ProfileRealTalk()
-              : step == 1
-                  ? const ProfileRedFlags()
-                  : const ProfileGreenFlags(),
-        ),
+      content: SlideAnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        reverse: slideTransitionReverse,
+        child: step == 0
+            ? const ProfileRealTalk()
+            : step == 1
+                ? const ProfileRedFlags()
+                : const ProfileGreenFlags(),
       ),
     );
   }
