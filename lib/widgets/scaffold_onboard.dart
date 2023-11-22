@@ -16,6 +16,7 @@ class ScaffoldOnboard extends Scaffold {
           appBar: AppBar(
             centerTitle: true,
             backgroundColor: appBarBackground,
+            surfaceTintColor: appBarBackground,
             leading: IconButton(
                 onPressed: onBackPressed,
                 icon: const Icon(Icons.arrow_back_ios_new_rounded)),

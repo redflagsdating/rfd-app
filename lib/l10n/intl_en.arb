@@ -38,6 +38,11 @@
   "fieldLocationDisabledError": "Turn on Location Services in the device settings.",
   "fieldLocationRejectedError": "Location access permission is rejected.",
   "fieldLocationDeniedError": "Change your Location Permission to allow \"{brandName}\" to request permission.",
+  "fieldYourRedFlagsHintText": "Add your own red flags",
+  "fieldYourRedFlagsErrorText": "The red flag already exists",
+  "fieldYourGreenFlagsHintText": "Add your own green flags",
+  "fieldYourGreenFlagsErrorText": "The green flag already exists",
+  "textFieldChipsHelperText": "Use comma (,) to separate text",
   "cardImagePickerSheetTitle": "Upload photo",
   "cardImagePickerCropTitle": "Edit Photo",
   "cardRealTalkText": "Select a real talk",
@@ -94,5 +99,5 @@
   "pgRealTalkBody": "Be real, be vulnerable, be your true self.",
   "pgRedFlagsHeadline": "What are your red flags?",
   "pgGreenFlagsHeadline": "What are your green flags?",
-  "pgSelectFlagsBody": "Select 3 from the list"
+  "pgSelectFlagsBody": "Add or select from the list up to 3 maximum"
 }

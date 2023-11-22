@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/extensions/list_extension.dart';
+import 'package:red_flags/extensions/string_extension.dart';
 import 'package:red_flags/models/flag.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/list_flag_chips.dart';
+import 'package:red_flags/widgets/list_flag_choice_chips.dart';
+import 'package:red_flags/widgets/text_field_chips.dart';
 
 class ProfileRedFlags extends StatefulWidget {
   const ProfileRedFlags({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,12 +47,58 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
         ),
         const SizedBox(height: 10),
         Text(l10n.pgSelectFlagsBody),
-        const SizedBox(height: 20),
-        ListFlagChips(
-          labels: FlagModel.redFlags,
-          initialSelected: userProvider.getRedFlagsCache(),
-          onSelected: (selected) {
-            userProvider.setRedFlags(selected);
+        const SizedBox(height: 10),
+        ListenableBuilder(
+          listenable: userProvider,
+          builder: (context, _) {
+            final selected = userProvider.getRedFlagsCache() ?? [];
+            final isEnabled = selected.length < 3;
+            final splitMatch = selected
+                .splitMatch((element) => FlagModel.redFlags.contains(element));
+
+            return Column(
+              children: [
+                TextFieldChips(
+                  readOnly: !isEnabled,
+                  initialChips: splitMatch.unmatched,
+                  hintText: l10n.fieldYourRedFlagsHintText,
+                  validator: (value) {
+                    // Force to retrieve from cache due to validator context
+                    final s = userProvider.getRedFlagsCache() ?? [];
+                    final isExisted = FlagModel.redFlags.any((element) =>
+                        element.toLowerCase() == value.toLowerCase());
+                    final isDuplicated = s.contains(value);
+
+                    if (isExisted || isDuplicated) {
+                      return l10n.fieldYourRedFlagsErrorText;
+                    }
+
+                    s.add(value.capitalize());
+                    userProvider.setRedFlags(s, silent: false);
+
+                    return null;
+                  },
+                  onDeleted: (value) {
+                    selected.remove(value);
+                    userProvider.setRedFlags(selected, silent: false);
+                  },
+                ),
+                const SizedBox(height: 20),
+                ListFlagChoiceChips(
+                  enabled: isEnabled,
+                  labels: FlagModel.redFlags,
+                  selected: splitMatch.matched,
+                  onAdded: (value) {
+                    selected.add(value);
+                    userProvider.setRedFlags(selected, silent: false);
+                  },
+                  onDeleted: (value) {
+                    selected.remove(value);
+                    userProvider.setRedFlags(selected, silent: false);
+                  },
+                ),
+              ],
+            );
           },
         )
       ],

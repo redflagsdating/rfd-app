@@ -63,6 +63,7 @@ dependencies:
   uuid: ^3.0.7
   path_provider: ^2.1.1
   dotted_border: ^2.1.0
+  textfield_tags: ^2.0.2
 
 dev_dependencies:
   flutter_test:

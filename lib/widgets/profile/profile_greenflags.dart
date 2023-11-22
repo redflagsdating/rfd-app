@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/extensions/list_extension.dart';
+import 'package:red_flags/extensions/string_extension.dart';
 import 'package:red_flags/models/flag.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/list_flag_chips.dart';
+import 'package:red_flags/widgets/list_flag_choice_chips.dart';
+import 'package:red_flags/widgets/text_field_chips.dart';
 
 class ProfileGreenFlags extends StatefulWidget {
   const ProfileGreenFlags({Key? key}) : super(key: key);
@@ -17,7 +20,7 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,12 +47,58 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
         ),
         const SizedBox(height: 10),
         Text(l10n.pgSelectFlagsBody),
-        const SizedBox(height: 20),
-        ListFlagChips(
-          labels: FlagModel.greenFlags,
-          initialSelected: userProvider.getGreenFlagsCache(),
-          onSelected: (selected) {
-            userProvider.setGreenFlags(selected);
+        const SizedBox(height: 10),
+        ListenableBuilder(
+          listenable: userProvider,
+          builder: (context, _) {
+            final selected = userProvider.getGreenFlagsCache() ?? [];
+            final isEnabled = selected.length < 3;
+            final splitMatch = selected.splitMatch(
+                (element) => FlagModel.greenFlags.contains(element));
+
+            return Column(
+              children: [
+                TextFieldChips(
+                  readOnly: !isEnabled,
+                  initialChips: splitMatch.unmatched,
+                  hintText: l10n.fieldYourGreenFlagsHintText,
+                  validator: (value) {
+                    // Force to retrieve from cache due to validator context
+                    final s = userProvider.getGreenFlagsCache() ?? [];
+                    final isExisted = FlagModel.greenFlags.any((element) =>
+                        element.toLowerCase() == value.toLowerCase());
+                    final isDuplicated = s.contains(value);
+
+                    if (isExisted || isDuplicated) {
+                      return l10n.fieldYourGreenFlagsErrorText;
+                    }
+
+                    s.add(value.capitalize());
+                    userProvider.setGreenFlags(s, silent: false);
+
+                    return null;
+                  },
+                  onDeleted: (value) {
+                    selected.remove(value);
+                    userProvider.setGreenFlags(selected, silent: false);
+                  },
+                ),
+                const SizedBox(height: 20),
+                ListFlagChoiceChips(
+                  enabled: isEnabled,
+                  labels: FlagModel.greenFlags,
+                  selected: splitMatch.matched,
+                  onAdded: (value) {
+                    selected.add(value);
+                    userProvider.setGreenFlags(selected, silent: false);
+                  },
+                  onDeleted: (value) {
+                    selected.remove(value);
+                    userProvider.setGreenFlags(selected, silent: false);
+                  },
+                ),
+              ],
+            );
           },
         )
       ],

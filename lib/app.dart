@@ -67,6 +67,13 @@ class App extends StatelessWidget {
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: typographyTheme,
+                inputDecorationTheme: const InputDecorationTheme(
+                  hintStyle: TextStyle(
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black26,
+                  ),
+                ),
                 badgeTheme: BadgeThemeData(
                   textColor: lightColorScheme.onTertiary,
                   backgroundColor: darkColorScheme.tertiary,
