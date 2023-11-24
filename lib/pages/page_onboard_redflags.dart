@@ -66,10 +66,6 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
                 next(true);
               }
             },
-      //TODO: Skip prompt
-      // onSkipPressed: () {
-      //   next();
-      // },
       onNextPressed: submitting
           ? null
           : () async {

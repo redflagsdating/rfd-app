@@ -88,11 +88,6 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
                 next(true);
               }
             },
-      //TODO: Skip prompt
-      // onSkipPressed: () {
-
-      //   next();
-      // },
       onNextPressed: submitting
           ? null
           : () async {

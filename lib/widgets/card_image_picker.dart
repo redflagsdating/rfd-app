@@ -36,6 +36,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
   XFile? _xFile;
   Reference? _imageRef;
   bool _uploading = false;
+  bool _deleting = false;
 
   final _picker = ImagePicker();
   late Logger _logger;
@@ -44,6 +45,12 @@ class _CardImagePickerState extends State<CardImagePicker> {
   void setUploading(bool value) {
     setState(() {
       _uploading = value;
+    });
+  }
+
+  void setDeleting(bool value) {
+    setState(() {
+      _deleting = value;
     });
   }
 
@@ -61,19 +68,26 @@ class _CardImagePickerState extends State<CardImagePicker> {
   }
 
   Future<void> _setSpotlightPhoto() async {
-    final userProvider = context.read<UserProvider>();
-
-    await userProvider.setPhotoUrl(
-      _imageRef!.fullPath,
-      localOnly: false,
-      silent: false,
-    );
+    await context.read<UserProvider>().setPhotoUrl(
+          _imageRef!.fullPath,
+          localOnly: false,
+          silent: false,
+        );
 
     // Async write to app doc directory as no dependency
     _imageRef!.writeToFile(File(await _getLocalFilePath()));
   }
 
+  Future<bool> _isSpotlightPhoto() async {
+    return await (context.read<UserProvider>().getPhotoUrl()) ==
+        _imageRef!.fullPath;
+  }
+
   Future<void> _delete() async {
+    final isPrimary = await _isSpotlightPhoto();
+
+    setDeleting(true);
+
     await _imageRef!.delete();
     await _file?.delete();
 
@@ -88,7 +102,16 @@ class _CardImagePickerState extends State<CardImagePicker> {
     _xFile = null;
     _imageRef = null;
 
-    setState(() {});
+    if (isPrimary) {
+      // ignore: use_build_context_synchronously
+      await context.read<UserProvider>().setPhotoUrl(
+            '',
+            localOnly: false,
+            silent: false,
+          );
+    }
+
+    setDeleting(false);
   }
 
   Future<void> _download() async {
@@ -124,27 +147,6 @@ class _CardImagePickerState extends State<CardImagePicker> {
     });
   }
 
-  Future<void> _upload() async {
-    _imageRef ??= _fireStorage.newImgStorageRef;
-    final userProvider = context.read<UserProvider>();
-
-    setUploading(true);
-
-    try {
-      await _imageRef!.putFile(_file as File);
-
-      // Set as default spotlight photo when not existed
-      if (userProvider.getPhotoUrlCache()!.isEmpty) {
-        await _setSpotlightPhoto();
-      }
-    } on FirebaseException catch (e) {
-      // TODO
-      _logger.e(e, time: DateTime.now());
-    }
-
-    setUploading(false);
-  }
-
   Future<void> _crop() async {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
@@ -175,11 +177,26 @@ class _CardImagePickerState extends State<CardImagePicker> {
 
       if (croppedFile != null) {
         _file = File(croppedFile.path);
-      } else {
-        _file = File(_xFile!.path);
-      }
+        _imageRef ??= _fireStorage.newImgStorageRef;
 
-      setState(() {});
+        setUploading(true);
+
+        try {
+          await _imageRef!.putFile(_file as File);
+
+          // Set as default spotlight photo when not existed
+          // ignore: use_build_context_synchronously
+          if (context.read<UserProvider>().getPhotoUrlCache()!.isEmpty) {
+            await _setSpotlightPhoto();
+          }
+        } on FirebaseException catch (e) {
+          _logger.e(e, time: DateTime.now());
+        }
+
+        setUploading(false);
+      } else {
+        setState(() {});
+      }
     }
   }
 
@@ -201,7 +218,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
-    final isDisabled = _uploading || !widget.enabled;
+    final isDisabled = !widget.enabled || _uploading || _deleting;
 
     return GestureDetector(
       onLongPress: () async {
@@ -244,7 +261,6 @@ class _CardImagePickerState extends State<CardImagePicker> {
                                     Navigator.pop(context);
 
                                     await _crop();
-                                    await _upload();
                                   },
                                   icon: const Icon(Icons.crop),
                                 ),
@@ -253,7 +269,39 @@ class _CardImagePickerState extends State<CardImagePicker> {
                                   onPressed: () async {
                                     Navigator.pop(context);
 
-                                    await _delete();
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          icon: Icon(
+                                            size: 40,
+                                            Icons.warning_rounded,
+                                            color: theme.colorScheme.error,
+                                          ),
+                                          title: Text(
+                                            l10n.dialogDeletePrimaryPhotoTitle,
+                                          ),
+                                          content: Text(
+                                            l10n.dialogDeletePrimaryPhotoBody,
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(l10n.cancel),
+                                            ),
+                                            FilledButton(
+                                              onPressed: () {
+                                                _delete();
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(l10n.delete),
+                                            )
+                                          ],
+                                        );
+                                      },
+                                    );
                                   },
                                   icon: const Icon(Icons.delete),
                                 ),
@@ -277,7 +325,6 @@ class _CardImagePickerState extends State<CardImagePicker> {
                               );
 
                               await _crop();
-                              await _upload();
                             },
                             icon: const Icon(Icons.image),
                           ),
@@ -304,7 +351,6 @@ class _CardImagePickerState extends State<CardImagePicker> {
                               );
 
                               await _crop();
-                              await _upload();
                             },
                             icon: const Icon(Icons.photo_camera),
                           ),
@@ -362,9 +408,11 @@ class _CardImagePickerState extends State<CardImagePicker> {
                           ),
                         ),
                         padding: const EdgeInsets.all(40),
-                        child: const CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
+                        child: !_deleting
+                            ? const CircularProgressIndicator(
+                                strokeWidth: 2,
+                              )
+                            : const SizedBox.shrink(),
                       )
                     : Stack(
                         clipBehavior: Clip.none,
@@ -383,10 +431,12 @@ class _CardImagePickerState extends State<CardImagePicker> {
                           ListenableBuilder(
                             listenable: userProvider,
                             builder: (context, _) {
-                              final spotlight = userProvider.getPhotoUrlCache();
-                              final isSpotlight =
-                                  _imageRef?.fullPath.contains(spotlight!) ??
-                                      false;
+                              final photoUrl = _imageRef?.fullPath ?? "";
+                              final spotlight =
+                                  userProvider.getPhotoUrlCache() ?? "";
+                              final isSpotlight = spotlight.isNotEmpty &&
+                                  photoUrl.isNotEmpty &&
+                                  photoUrl.contains(spotlight);
 
                               if (isSpotlight) {
                                 return Positioned(

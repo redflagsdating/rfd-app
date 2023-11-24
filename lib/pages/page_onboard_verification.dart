@@ -84,10 +84,6 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
                 next(true);
               }
             },
-      //TODO: Skip prompt
-      // onSkipPressed: () {
-      //   _next();
-      // },
       onNextPressed: submitting
           ? null
           : () async {

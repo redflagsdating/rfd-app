@@ -27,6 +27,10 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final userProvider = context.read<UserProvider>();
+    final tipTextColor = theme.textTheme.apply(
+      bodyColor: theme.colorScheme.secondaryContainer,
+      displayColor: theme.colorScheme.secondaryContainer,
+    );
     _photosRefList ??=
         Provider.of<FireStorageProvider>(context).imgStorageRef.listAll();
 
@@ -46,7 +50,7 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
               ),
               const SizedBox(height: 10),
               Text(l10n.pgPhotoBody),
-              const SizedBox(height: 32),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -93,6 +97,45 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
                 l10n.pgPhotoHelperText,
                 style: theme.textTheme.bodySmall,
               ),
+              const SizedBox(height: 20),
+              Card(
+                color: theme.colorScheme.onSecondaryContainer,
+                surfaceTintColor: theme.colorScheme.onSecondaryContainer,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          style: tipTextColor.titleSmall,
+                          children: [
+                            WidgetSpan(
+                              child: Icon(
+                                Icons.lightbulb_rounded,
+                                color: theme.colorScheme.secondaryContainer,
+                              ),
+                            ),
+                            const WidgetSpan(
+                              child: SizedBox(width: 4),
+                            ),
+                            TextSpan(text: l10n.pgPhotoTipTitle)
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        l10n.pgPhotoTipBody,
+                        style: tipTextColor.bodySmall,
+                      )
+                    ],
+                  ),
+                ),
+              )
             ],
           );
         }
