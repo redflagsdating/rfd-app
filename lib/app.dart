@@ -16,6 +16,7 @@ import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
+import 'package:red_flags/theme/chip_theme.g.dart';
 import 'package:red_flags/theme/color_schemes.g.dart';
 import 'package:red_flags/theme/typography_theme.g.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
@@ -91,34 +92,7 @@ class App extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6.0),
                   ),
                 ),
-                chipTheme: ChipThemeData(
-                  side: MaterialStateBorderSide.resolveWith(
-                    (states) {
-                      if (!states.contains(MaterialState.selected)) {
-                        return BorderSide(
-                            color: lightColorScheme.outlineVariant);
-                      }
-
-                      return null;
-                    },
-                  ),
-                  color: MaterialStateProperty.resolveWith(
-                    (states) {
-                      const Set<MaterialState> interactiveStates =
-                          <MaterialState>{
-                        MaterialState.pressed,
-                        MaterialState.hovered,
-                        MaterialState.focused,
-                        MaterialState.selected,
-                      };
-                      if (states.any(interactiveStates.contains)) {
-                        return lightColorScheme.primaryContainer;
-                      }
-
-                      return null;
-                    },
-                  ),
-                ),
+                chipTheme: chipTheme,
                 colorScheme: lightColorScheme,
                 useMaterial3: true,
                 pageTransitionsTheme: const PageTransitionsTheme(

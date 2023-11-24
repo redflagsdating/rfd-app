@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/user_provider.dart';
@@ -65,40 +66,40 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
     final isGenderForPage = widget.genderFor == true;
     final genderChips = [
       {
-        "selected": _gender == Gender.man.name,
-        "icon": Icons.man_2_rounded,
-        "text": Text(l10n!.man(1).toUpperCase()),
-        "key": Gender.man
-      },
-      {
         "selected": _gender == Gender.woman.name,
-        "icon": Icons.woman_2_rounded,
-        "text": Text(l10n.woman(1).toUpperCase()),
+        "icon": FontAwesomeIcons.venus,
+        "text": Text(l10n!.woman(1).toUpperCase()),
         "key": Gender.woman
       },
       {
+        "selected": _gender == Gender.man.name,
+        "icon": FontAwesomeIcons.mars,
+        "text": Text(l10n.man(1).toUpperCase()),
+        "key": Gender.man
+      },
+      {
         "selected": _gender == Gender.nonBinary.name,
-        "icon": Icons.people,
+        "icon": FontAwesomeIcons.marsAndVenus,
         "text": Text(l10n.nonBinary.toUpperCase()),
         "key": Gender.nonBinary
       },
     ];
     final genderForChips = [
       {
-        "selected": _genderFor.contains(Gender.man.name),
-        "icon": Icons.man_2_rounded,
-        "text": Text(l10n.man(1).toUpperCase()),
-        "key": Gender.man
-      },
-      {
         "selected": _genderFor.contains(Gender.woman.name),
-        "icon": Icons.woman_2_rounded,
+        "icon": FontAwesomeIcons.venus,
         "text": Text(l10n.woman(1).toUpperCase()),
         "key": Gender.woman
       },
       {
+        "selected": _genderFor.contains(Gender.man.name),
+        "icon": FontAwesomeIcons.mars,
+        "text": Text(l10n.man(1).toUpperCase()),
+        "key": Gender.man
+      },
+      {
         "selected": _genderFor.contains(Gender.nonBinary.name),
-        "icon": Icons.people,
+        "icon": FontAwesomeIcons.marsAndVenus,
         "text": Text(l10n.nonBinary.toUpperCase()),
         "key": Gender.nonBinary
       },
@@ -128,7 +129,7 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
               key: Key((chip["key"] as Gender).name),
               selected: chip["selected"] as bool,
               showCheckmark: false,
-              avatar: Icon(
+              avatar: FaIcon(
                 chip["icon"] as IconData,
                 size: 28,
               ),
