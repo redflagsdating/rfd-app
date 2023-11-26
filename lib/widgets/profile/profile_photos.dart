@@ -45,7 +45,7 @@ class _ProfilePhotosState extends State<ProfilePhotos> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n!.pgPhotoHeadline(userProvider.getDisplayNameCache() ?? ""),
+                l10n!.pgPhotoHeadline(userProvider.getDisplayNameCache()),
                 style: theme.textTheme.headlineSmall,
               ),
               const SizedBox(height: 10),

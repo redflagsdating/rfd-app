@@ -13,8 +13,8 @@ import 'package:red_flags/widgets/scaffold_onboard.dart';
 /// Step 3 - Green flags
 const maxSteps = 3;
 
-class PageOnboardRedflags extends StatefulWidget {
-  const PageOnboardRedflags({
+class PageOnboardStage3 extends StatefulWidget {
+  const PageOnboardStage3({
     Key? key,
     required this.initStep,
   }) : super(key: key);
@@ -22,12 +22,13 @@ class PageOnboardRedflags extends StatefulWidget {
   final int initStep;
 
   @override
-  State<PageOnboardRedflags> createState() => _PageOnboardRedflagsState();
+  State<PageOnboardStage3> createState() => _PageOnboardStage3State();
 }
 
-class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
+class _PageOnboardStage3State extends State<PageOnboardStage3>
     with MixinOnboardState {
   late UserProvider _userProvider;
+
   void _next() {
     if (step < maxSteps - 1) {
       next();
@@ -44,7 +45,7 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
 
   @override
   void didChangeDependencies() {
-    _userProvider = Provider.of<UserProvider>(context);
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
     super.didChangeDependencies();
   }
 
@@ -74,8 +75,8 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
               final greenFlags = _userProvider.getGreenFlagsCache();
 
               if ((step == 0 && (realTalk == null || realTalk.isEmpty)) ||
-                  (step == 1 && (redFlags == null || redFlags.isEmpty)) ||
-                  (step == 2 && (greenFlags == null || greenFlags.isEmpty))) {
+                  (step == 1 && redFlags.isEmpty) ||
+                  (step == 2 && greenFlags.isEmpty)) {
                 return;
               }
 
@@ -84,10 +85,9 @@ class _PageOnboardRedflagsState extends State<PageOnboardRedflags>
               if (step == 0) {
                 await _userProvider.setRealTalk(realTalk!, localOnly: false);
               } else if (step == 1) {
-                await _userProvider.setRedFlags(redFlags!, localOnly: false);
+                await _userProvider.setRedFlags(redFlags, localOnly: false);
               } else if (step == 2) {
-                await _userProvider.setGreenFlags(greenFlags!,
-                    localOnly: false);
+                await _userProvider.setGreenFlags(greenFlags, localOnly: false);
                 await _userProvider.setOnboarded(true, localOnly: false);
               }
 

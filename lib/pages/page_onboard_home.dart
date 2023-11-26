@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/pages/page_onboard_profile.dart';
-import 'package:red_flags/pages/page_onboard_redflags.dart';
 import 'package:red_flags/pages/page_onboard_splash.dart';
-import 'package:red_flags/pages/page_onboard_verification.dart';
+import 'package:red_flags/pages/page_onboard_stage1.dart';
+import 'package:red_flags/pages/page_onboard_stage2.dart';
+import 'package:red_flags/pages/page_onboard_stage3.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
-
-enum OnboardingStage { verification, profile, redflags }
 
 /// Entry page for onboarding to encapsulate business logic and better
 /// transition UX.
 class PageOnboardHome extends StatefulWidget {
-  const PageOnboardHome({super.key, this.current});
+  const PageOnboardHome({super.key, this.fromStage});
 
-  // Current stage
-  final OnboardingStage? current;
+  // Indicate navigation from. E.g. current == OnboardingStage.profile if
+  // navigated from PageOnboardProfile
+  final int? fromStage;
 
   @override
   State<PageOnboardHome> createState() => _PageOnboardHomeState();
@@ -35,8 +34,8 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       final l10n = AppLocalizations.of(context);
       final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-      // Fetch user data from Firestore and update local cache at the initial stage
-      if (widget.current == null) {
+      // Fetch user data from Firestore and update local cache at launch time
+      if (widget.fromStage == null) {
         final userModel = await userProvider.getCurrentUser();
 
         if (userModel != null) {
@@ -44,35 +43,36 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
         }
       }
 
-      final fromRoot = widget.current == null;
-      final fromStage1 = widget.current == OnboardingStage.verification;
-      final fromStage2 = widget.current == OnboardingStage.profile;
+      final stage1Step1 = userProvider.getFirstNameCache().isEmpty ||
+          userProvider.getLastNameCache().isEmpty;
+      final stage1Step2 = userProvider.getDisplayNameCache().isEmpty;
+      final stage1 = stage1Step1 || stage1Step2;
 
-      final verifyStep1 = userProvider.getFirstNameCache() == "" ||
-          userProvider.getLastNameCache() == "";
-      final verifyStep2 = userProvider.getDisplayNameCache() == "";
-      // TODO
-      // final verifyStep3 = userProvider.getVerifySubmittedCache() != true;
+      final stage2Step1 = userProvider.getGenderCache().isEmpty;
+      final stage2Step2 = userProvider.getGenderForCache().isEmpty;
+      final stage2Step3 = userProvider.getDobCache() == null;
+      final stage2Step4 = userProvider.getLocalityCache().isEmpty;
+      final stage2 = stage2Step1 ||
+          stage2Step2 ||
+          stage2Step3 ||
+          stage2Step4 ||
+          userProvider.getPhotoUrlCache().isEmpty;
 
-      final profileStep1 = userProvider.getGenderCache() == "";
-      final profileStep2 = userProvider.getGenderForCache()?.isEmpty ?? true;
-      final profileStep3 = userProvider.getDobCache() == null;
-      final profileStep4 = userProvider.getLocalityCache() == "";
-      final profileStep5 = userProvider.getPhotoUrlCache() == "";
-
-      final realTalkStep = userProvider.getRealTalkCache()?.isEmpty ?? true;
-      final redFlagsStep = userProvider.getRedFlagsCache()?.isEmpty ?? true;
-      final greenFlagsStep = userProvider.getGreenFlagsCache()?.isEmpty ?? true;
+      final stage3Step1 = userProvider.getRealTalkCache()?.isEmpty ?? true;
+      final stage3Step2 = userProvider.getRedFlagsCache().isEmpty;
+      final stage3 = stage3Step1 ||
+          stage3Step2 ||
+          userProvider.getGreenFlagsCache().isEmpty;
 
       ///** Onboarding stage 1 - Account verification
-      if (fromRoot && (verifyStep1 || verifyStep2)) {
+      if (stage1) {
         title = l10n!.pgOnboardSplash1Title;
         buttonLabel = l10n.pgOnboardSplash1Btn;
         builder = Builder(
-          builder: (context) => PageOnboardVerification(
-            initStep: verifyStep1
+          builder: (context) => PageOnboardStage1(
+            initStep: stage1Step1
                 ? 0
-                : verifyStep2
+                : stage1Step2
                     ? 1
                     : 2,
           ),
@@ -80,36 +80,30 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       }
 
       ///** Onboarding stage 2 - Profile
-      else if ((fromRoot || fromStage1) &&
-          (profileStep1 ||
-              profileStep2 ||
-              profileStep3 ||
-              profileStep4 ||
-              profileStep5)) {
+      else if (stage2) {
         title = l10n!.pgOnboardSplash2Title;
         buttonLabel = l10n.pgOnboardSplash2Btn;
         builder = Builder(
-          builder: (context) => PageOnboardProfile(
-            initStep: profileStep1
+          builder: (context) => PageOnboardStage2(
+            initStep: stage2Step1
                 ? 0
-                : profileStep2
+                : stage2Step2
                     ? 1
-                    : profileStep3
+                    : stage2Step3
                         ? 2
-                        : profileStep4
+                        : stage2Step4
                             ? 3
                             : 4,
           ),
         );
-      } else if ((fromRoot || fromStage1 || fromStage2) &&
-          (realTalkStep || redFlagsStep || greenFlagsStep)) {
+      } else if (stage3) {
         title = l10n!.pgOnboardSplash3Title(l10n.brandName);
         buttonLabel = l10n.pgOnboardSplash3Btn;
         builder = Builder(
-          builder: (context) => PageOnboardRedflags(
-            initStep: realTalkStep
+          builder: (context) => PageOnboardStage3(
+            initStep: stage3Step1
                 ? 0
-                : redFlagsStep
+                : stage3Step2
                     ? 1
                     : 2,
           ),

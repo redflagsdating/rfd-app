@@ -51,7 +51,7 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
         ListenableBuilder(
           listenable: userProvider,
           builder: (context, _) {
-            final selected = userProvider.getRedFlagsCache() ?? [];
+            final selected = userProvider.getRedFlagsCache();
             final isEnabled = selected.length < 3;
             final splitMatch = selected
                 .splitMatch((element) => FlagModel.redFlags.contains(element));
@@ -64,7 +64,7 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
                   hintText: l10n.fieldYourRedFlagsHintText,
                   validator: (value) {
                     // Force to retrieve from cache due to validator context
-                    final s = userProvider.getRedFlagsCache() ?? [];
+                    final s = userProvider.getRedFlagsCache();
                     final isExisted = FlagModel.redFlags.any((element) =>
                         element.toLowerCase() == value.toLowerCase());
                     final isDuplicated = s.contains(value);

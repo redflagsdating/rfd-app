@@ -15,8 +15,8 @@ import 'package:red_flags/widgets/scaffold_onboard.dart';
 const maxSteps = 3;
 
 /// Onboarding stage 1 Account verification Scaffold
-class PageOnboardVerification extends StatefulWidget {
-  const PageOnboardVerification({
+class PageOnboardStage1 extends StatefulWidget {
+  const PageOnboardStage1({
     Key? key,
     required this.initStep,
   }) : super(key: key);
@@ -24,11 +24,10 @@ class PageOnboardVerification extends StatefulWidget {
   final int initStep;
 
   @override
-  State<PageOnboardVerification> createState() =>
-      _PageOnboardVerificationState();
+  State<PageOnboardStage1> createState() => _PageOnboardStage1State();
 }
 
-class _PageOnboardVerificationState extends State<PageOnboardVerification>
+class _PageOnboardStage1State extends State<PageOnboardStage1>
     with MixinOnboardState {
   late UserProvider _userProvider;
   final _firstNameCtrl = TextEditingController();
@@ -41,9 +40,7 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
     } else {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const PageOnboardHome(
-            current: OnboardingStage.verification,
-          ),
+          builder: (context) => const PageOnboardHome(fromStage: 1),
         ),
       );
     }
@@ -57,11 +54,11 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
 
   @override
   void didChangeDependencies() {
-    _userProvider = Provider.of<UserProvider>(context);
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    _firstNameCtrl.text = _userProvider.getFirstNameCache() ?? "";
-    _lastNameCtrl.text = _userProvider.getLastNameCache() ?? "";
-    _displayNameCtrl.text = _userProvider.getDisplayNameCache() ?? "";
+    _firstNameCtrl.text = _userProvider.getFirstNameCache();
+    _lastNameCtrl.text = _userProvider.getLastNameCache();
+    _displayNameCtrl.text = _userProvider.getDisplayNameCache();
 
     super.didChangeDependencies();
   }
@@ -98,16 +95,19 @@ class _PageOnboardVerificationState extends State<PageOnboardVerification>
               final displayName = _displayNameCtrl.text;
 
               if (step == 0 &&
-                  (await _userProvider.getFirstName() != firstName ||
-                      await _userProvider.getLastName() != lastName)) {
+                  (_userProvider.getFirstNameCache() != firstName ||
+                      _userProvider.getLastNameCache() != lastName)) {
+                // Update local cache only
                 await _userProvider.setFirstName(firstName);
                 await _userProvider.setLastName(lastName);
+
+                // Aggregate Firebase update API calls into one
                 await _userProvider.userDocRef?.update({
                   UserFields.firstName.name: firstName,
                   UserFields.lastName.name: lastName,
                 });
               } else if (step == 1 &&
-                  await _userProvider.getDisplayName() != displayName) {
+                  _userProvider.getDisplayNameCache() != displayName) {
                 await _userProvider.setDisplayName(displayName,
                     localOnly: false);
               } else {

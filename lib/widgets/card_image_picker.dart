@@ -186,7 +186,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
 
           // Set as default spotlight photo when not existed
           // ignore: use_build_context_synchronously
-          if (context.read<UserProvider>().getPhotoUrlCache()!.isEmpty) {
+          if (context.read<UserProvider>().getPhotoUrlCache().isEmpty) {
             await _setSpotlightPhoto();
           }
         } on FirebaseException catch (e) {
@@ -432,8 +432,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
                             listenable: userProvider,
                             builder: (context, _) {
                               final photoUrl = _imageRef?.fullPath ?? "";
-                              final spotlight =
-                                  userProvider.getPhotoUrlCache() ?? "";
+                              final spotlight = userProvider.getPhotoUrlCache();
                               final isSpotlight = spotlight.isNotEmpty &&
                                   photoUrl.isNotEmpty &&
                                   photoUrl.contains(spotlight);

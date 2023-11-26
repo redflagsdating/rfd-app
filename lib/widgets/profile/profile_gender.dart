@@ -51,10 +51,10 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
 
   @override
   void didChangeDependencies() {
-    _userProvider = Provider.of<UserProvider>(context);
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    _gender = _userProvider.getGenderCache() ?? "";
-    _genderFor = _userProvider.getGenderForCache() ?? [];
+    _gender = _userProvider.getGenderCache();
+    _genderFor = _userProvider.getGenderForCache();
 
     super.didChangeDependencies();
   }

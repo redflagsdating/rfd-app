@@ -30,12 +30,12 @@ class UserProvider extends ChangeNotifier {
     return localStorage.getBool(field.name);
   }
 
-  String? _getStringFieldCache(UserStringFields field) {
-    return localStorage.getString(field.name);
+  String _getStringFieldCache(UserStringFields field) {
+    return localStorage.getString(field.name) ?? "";
   }
 
-  List<String>? _getStringListFieldCache(UserStringListFields field) {
-    return localStorage.getStringList(field.name);
+  List<String> _getStringListFieldCache(UserStringListFields field) {
+    return localStorage.getStringList(field.name) ?? [];
   }
 
   Future<bool?> _getBoolField(UserBoolFields field) async {
@@ -49,7 +49,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<String?> _getStringField(UserStringFields field) async {
-    final cached = _getStringFieldCache(field);
+    final cached = localStorage.getString(field.name);
 
     if (cached != null) {
       return Future.value(cached);
@@ -59,7 +59,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<List<String>?> _getStringListField(UserStringListFields field) async {
-    final cached = _getStringListFieldCache(field);
+    final cached = localStorage.getStringList(field.name);
 
     if (cached != null) {
       return Future.value(cached);
@@ -210,31 +210,31 @@ class UserProvider extends ChangeNotifier {
   ///
   /// String field getter functions catch-only (from SharedPreference)
   ///
-  String? getIdCache() {
+  String getIdCache() {
     return _getStringFieldCache(UserStringFields.uid);
   }
 
-  String? getFirstNameCache() {
+  String getFirstNameCache() {
     return _getStringFieldCache(UserStringFields.firstName);
   }
 
-  String? getLastNameCache() {
+  String getLastNameCache() {
     return _getStringFieldCache(UserStringFields.lastName);
   }
 
-  String? getDisplayNameCache() {
+  String getDisplayNameCache() {
     return _getStringFieldCache(UserStringFields.displayName);
   }
 
-  String? getGenderCache() {
+  String getGenderCache() {
     return _getStringFieldCache(UserStringFields.gender);
   }
 
-  String? getLocalityCache() {
+  String getLocalityCache() {
     return _getStringFieldCache(UserStringFields.locality);
   }
 
-  String? getPhotoUrlCache() {
+  String getPhotoUrlCache() {
     return _getStringFieldCache(UserStringFields.photoUrl);
   }
 
@@ -242,15 +242,15 @@ class UserProvider extends ChangeNotifier {
   /// List<String> field getter functions catch-only (from SharedPreference)
   ///
 
-  List<String>? getGenderForCache() {
+  List<String> getGenderForCache() {
     return _getStringListFieldCache(UserStringListFields.genderFor);
   }
 
-  List<String>? getRedFlagsCache() {
+  List<String> getRedFlagsCache() {
     return _getStringListFieldCache(UserStringListFields.redFlags);
   }
 
-  List<String>? getGreenFlagsCache() {
+  List<String> getGreenFlagsCache() {
     return _getStringListFieldCache(UserStringListFields.greenFlags);
   }
 
@@ -362,7 +362,7 @@ class UserProvider extends ChangeNotifier {
     final rawData = _getStringFieldCache(UserStringFields.realTalk);
 
     try {
-      final map = (json.decode(rawData!) as Map).cast<String, String>();
+      final map = (json.decode(rawData) as Map).cast<String, String>();
 
       if (map.isEmpty) {
         return null;

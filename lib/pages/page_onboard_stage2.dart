@@ -18,8 +18,8 @@ import 'package:red_flags/widgets/scaffold_onboard.dart';
 /// Step 5 - Photos
 const maxSteps = 5;
 
-class PageOnboardProfile extends StatefulWidget {
-  const PageOnboardProfile({
+class PageOnboardStage2 extends StatefulWidget {
+  const PageOnboardStage2({
     Key? key,
     required this.initStep,
   }) : super(key: key);
@@ -27,10 +27,10 @@ class PageOnboardProfile extends StatefulWidget {
   final int initStep;
 
   @override
-  State<PageOnboardProfile> createState() => _PageOnboardProfileState();
+  State<PageOnboardStage2> createState() => _PageOnboardStage2State();
 }
 
-class _PageOnboardProfileState extends State<PageOnboardProfile>
+class _PageOnboardStage2State extends State<PageOnboardStage2>
     with MixinOnboardState {
   late UserProvider _userProvider;
   final _birthdayCtrl = TextEditingController();
@@ -42,9 +42,7 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
     } else {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (context) => const PageOnboardHome(
-            current: OnboardingStage.profile,
-          ),
+          builder: (context) => const PageOnboardHome(fromStage: 2),
         ),
       );
     }
@@ -58,14 +56,14 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
 
   @override
   void didChangeDependencies() {
-    _userProvider = Provider.of<UserProvider>(context);
+    _userProvider = Provider.of<UserProvider>(context, listen: false);
 
     final dob = _userProvider.getDobCache();
     if (dob != null) {
       _birthdayCtrl.text = DateFormat.yMd().format(dob);
     }
 
-    _localityCtrl.text = _userProvider.getLocalityCache() ?? "";
+    _localityCtrl.text = _userProvider.getLocalityCache();
 
     super.didChangeDependencies();
   }
@@ -96,9 +94,9 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
               final photoUrl = _userProvider.getPhotoUrlCache();
 
               if (!onboardForm.currentState!.validate() ||
-                  (step == 0 && (gender == null || gender.isEmpty)) ||
-                  (step == 1 && (genderFor == null || genderFor.isEmpty)) ||
-                  (step == 4 && (photoUrl == null || photoUrl.isEmpty))) {
+                  (step == 0 && gender.isEmpty) ||
+                  (step == 1 && genderFor.isEmpty) ||
+                  (step == 4 && photoUrl.isEmpty)) {
                 return;
               }
 
@@ -108,11 +106,9 @@ class _PageOnboardProfileState extends State<PageOnboardProfile>
               final dobCache = _userProvider.getDobCache();
 
               if (step == 0) {
-                await _userProvider.setGender(gender as String,
-                    localOnly: false);
+                await _userProvider.setGender(gender, localOnly: false);
               } else if (step == 1) {
-                await _userProvider.setGenderFor(genderFor as List<String>,
-                    localOnly: false);
+                await _userProvider.setGenderFor(genderFor, localOnly: false);
               } else if (step == 2) {
                 final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
                 if (dobCache == null || !dob.isAtSameMomentAs(dobCache)) {

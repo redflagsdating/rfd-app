@@ -19,7 +19,7 @@ class _PageHomeState extends State<PageHome> {
   late AuthProvider authProvider;
 
   void setImageFile() async {
-    final userProvider = Provider.of<UserProvider>(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     final appDocDir = await getApplicationDocumentsDirectory();
     final spotlightPhoto = userProvider.getPhotoUrlCache();
 

@@ -51,7 +51,7 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
         ListenableBuilder(
           listenable: userProvider,
           builder: (context, _) {
-            final selected = userProvider.getGreenFlagsCache() ?? [];
+            final selected = userProvider.getGreenFlagsCache();
             final isEnabled = selected.length < 3;
             final splitMatch = selected.splitMatch(
                 (element) => FlagModel.greenFlags.contains(element));
@@ -64,7 +64,7 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
                   hintText: l10n.fieldYourGreenFlagsHintText,
                   validator: (value) {
                     // Force to retrieve from cache due to validator context
-                    final s = userProvider.getGreenFlagsCache() ?? [];
+                    final s = userProvider.getGreenFlagsCache();
                     final isExisted = FlagModel.greenFlags.any((element) =>
                         element.toLowerCase() == value.toLowerCase());
                     final isDuplicated = s.contains(value);

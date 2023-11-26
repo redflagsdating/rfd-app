@@ -26,7 +26,7 @@ class FireStorageProvider {
 
   // Internal general functions
   String _getImagesPath([String? uid]) {
-    final u = uid ?? userProvider.getIdCache() ?? "";
+    final u = uid ?? userProvider.getIdCache();
 
     return u.isEmpty ? 'images' : 'images/$u';
   }
