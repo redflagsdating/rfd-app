@@ -6,6 +6,7 @@ class QuestionEditor extends StatefulWidget {
     Key? key,
     this.enabled,
     this.onBack,
+    this.onDelete,
     this.onEditingComplete,
     required this.question,
     required this.controller,
@@ -13,6 +14,7 @@ class QuestionEditor extends StatefulWidget {
 
   final bool? enabled;
   final void Function()? onBack;
+  final void Function()? onDelete;
   final void Function()? onEditingComplete;
   final String question;
   final TextEditingController controller;
@@ -44,7 +46,12 @@ class _QuestionEditorState extends State<QuestionEditor> {
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
                         onPressed: isEnabled ? widget.onBack : null,
                       )
-                    : const SizedBox.shrink(),
+                    : widget.onDelete != null
+                        ? IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: isEnabled ? widget.onDelete : null,
+                          )
+                        : const SizedBox.shrink(),
               ),
               Expanded(
                 child: Text(

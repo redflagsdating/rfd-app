@@ -3,10 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/question.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:red_flags/widgets/card_question.dart';
-import 'package:red_flags/widgets/listview_questions.dart';
-import 'package:red_flags/widgets/question_editor.dart';
 
 class ProfileRealTalk extends StatefulWidget {
   const ProfileRealTalk({Key? key}) : super(key: key);
@@ -16,90 +13,35 @@ class ProfileRealTalk extends StatefulWidget {
 }
 
 class _ProfileRealTalkState extends State<ProfileRealTalk> {
-  bool? _updating = false;
-  String? _currentQuestion;
   late UserProvider _userProvider;
-  final List<String> _selected = [];
-  final _currentAnswerCtrl = TextEditingController();
+  final Set<String> _selected = {};
 
-  void setUpdating(bool value) {
-    setState(() {
-      _updating = value;
-    });
-  }
-
-  void setCurrentQuestion([String? question]) {
-    setState(() {
-      _currentQuestion = question;
-    });
-  }
-
-  void _onEditingComplete() async {
-    setUpdating(true);
-
+  void _onAdded(String question, String answer) async {
     final realTalk = _userProvider.getRealTalkCache();
 
     if (realTalk != null) {
-      realTalk[_currentQuestion as String] = _currentAnswerCtrl.text;
-      await _userProvider.setRealTalk(
-        realTalk,
-      );
+      realTalk[question] = answer;
+      await _userProvider.setRealTalk(realTalk);
     } else {
-      await _userProvider.setRealTalk(
-        {_currentQuestion!: _currentAnswerCtrl.text},
-      );
+      await _userProvider.setRealTalk({question: answer});
     }
 
-    setUpdating(false);
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
+    setState(() {
+      _selected.add(question);
+    });
   }
 
-  void _onTap() {
-    showModalBottomSheet<void>(
-      elevation: 0,
-      context: context,
-      useSafeArea: true,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              child: SlideTransitionSwitcher(
-                child: _currentQuestion != null
-                    ? QuestionEditor(
-                        enabled: _updating != true,
-                        question: _currentQuestion!,
-                        controller: _currentAnswerCtrl,
-                        onBack: _currentQuestion != null
-                            ? null
-                            : () {
-                                setState(() {
-                                  _currentQuestion = null;
-                                  _currentAnswerCtrl.clear();
-                                });
-                              },
-                        onEditingComplete: _onEditingComplete,
-                      )
-                    : ListViewQuestions(
-                        questions: QuestionModel.realtalk,
-                        selected: _selected,
-                        onSelect: (question) {
-                          // Using setState from StatefulBuilder
-                          setState(() {
-                            _currentQuestion = question;
-                            _currentAnswerCtrl.clear();
-                          });
-                        },
-                      ),
-              ),
-            );
-          },
-        );
-      },
-    );
+  void _onDeleted(String question) async {
+    final realTalk = _userProvider.getRealTalkCache();
+
+    if (realTalk != null) {
+      realTalk.remove(question);
+      await _userProvider.setRealTalk(realTalk);
+    }
+
+    setState(() {
+      _selected.remove(question);
+    });
   }
 
   @override
@@ -114,16 +56,14 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
     final l10n = AppLocalizations.of(context);
     final realTalk = _userProvider.getRealTalkCache();
 
-    MapEntry<String, String>? firstQuestion;
-    MapEntry<String, String>? secondQuestion;
-    MapEntry<String, String>? thirdQuestion;
+    MapEntry<String, String>? first;
+    MapEntry<String, String>? second;
+    MapEntry<String, String>? third;
 
     if (realTalk != null) {
-      firstQuestion = realTalk.entries.first;
-      secondQuestion =
-          realTalk.length > 1 ? realTalk.entries.elementAt(1) : null;
-      thirdQuestion =
-          realTalk.length > 2 ? realTalk.entries.elementAt(1) : null;
+      first = realTalk.entries.first;
+      second = realTalk.length > 1 ? realTalk.entries.elementAt(1) : null;
+      third = realTalk.length > 2 ? realTalk.entries.elementAt(2) : null;
 
       _selected.addAll(realTalk.keys);
     }
@@ -140,71 +80,32 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
         const SizedBox(height: 20),
         CardQuestion(
           hintText: l10n.cardRealTalkText,
-          question: firstQuestion?.key,
-          answer: firstQuestion?.value,
-          onTap: () {
-            setCurrentQuestion(firstQuestion?.key);
-            _currentAnswerCtrl.text = firstQuestion?.value ?? "";
-            _onTap();
-          },
-          onLongPress: () {
-            final question = firstQuestion?.key;
-
-            if (question != null && realTalk != null) {
-              realTalk.remove(question);
-              _userProvider.setRealTalk(
-                realTalk,
-              );
-
-              setState(() {});
-            }
-          },
+          initialQuestion: first?.key,
+          initialAnswer: first?.value,
+          listQuestions: QuestionModel.realtalk,
+          selectedQuestions: _selected.toList(),
+          onDeleted: _onDeleted,
+          onAdded: _onAdded,
         ),
+        const SizedBox(height: 10),
         CardQuestion(
           hintText: l10n.cardRealTalkText,
-          question: secondQuestion?.key,
-          answer: secondQuestion?.value,
-          onTap: () {
-            setCurrentQuestion(secondQuestion?.key);
-            _currentAnswerCtrl.text = secondQuestion?.value ?? "";
-            _onTap();
-          },
-          onLongPress: () {
-            final question = secondQuestion?.key;
-
-            if (question != null && realTalk != null) {
-              realTalk.remove(question);
-              _userProvider.setRealTalk(
-                realTalk,
-              );
-
-              setState(() {});
-            }
-          },
+          initialQuestion: second?.key,
+          initialAnswer: second?.value,
+          listQuestions: QuestionModel.realtalk,
+          selectedQuestions: _selected.toList(),
+          onDeleted: _onDeleted,
+          onAdded: _onAdded,
         ),
+        const SizedBox(height: 10),
         CardQuestion(
           hintText: l10n.cardRealTalkText,
-          question: thirdQuestion?.key,
-          answer: thirdQuestion?.value,
-          onTap: () {
-            setCurrentQuestion(thirdQuestion?.key);
-            _currentAnswerCtrl.text = thirdQuestion?.value ?? "";
-            _onTap();
-          },
-          onLongPress: () {
-            final question = thirdQuestion?.key;
-
-            if (question != null && realTalk != null) {
-              realTalk.remove(question);
-              _userProvider.setRealTalk(
-                realTalk,
-                localOnly: true,
-                silent: true,
-              );
-
-              setState(() {});
-            }
-          },
+          initialQuestion: third?.key,
+          initialAnswer: third?.value,
+          listQuestions: QuestionModel.realtalk,
+          selectedQuestions: _selected.toList(),
+          onDeleted: _onDeleted,
+          onAdded: _onAdded,
         ),
       ],
     );

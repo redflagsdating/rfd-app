@@ -227,7 +227,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
         }
 
         if (_imageRef != null) {
-          HapticFeedback.vibrate();
+          HapticFeedback.heavyImpact();
 
           await _setSpotlightPhoto();
         }
@@ -275,7 +275,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
                                         return AlertDialog(
                                           icon: Icon(
                                             size: 40,
-                                            Icons.warning_rounded,
+                                            Icons.warning_amber_rounded,
                                             color: theme.colorScheme.error,
                                           ),
                                           title: Text(
