@@ -3,63 +3,39 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:red_flags/models/user.dart';
+import 'package:red_flags/models/user.dart' hide usersRef;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {
   DocumentReference<UserModel>? _userDocRef;
   DocumentReference<UserModel>? get userDocRef => _userDocRef;
 
-  UserProvider(
-      {required this.logger, required this.localStorage, this.mockUsersRef});
+  UserProvider({
+    required this.logger,
+    required this.localStorage,
+    required this.usersRef,
+  });
 
   final Logger logger;
   final SharedPreferences localStorage;
-  // TODO: Change to Mockito
-  final CollectionReference<UserModel>? mockUsersRef;
+  final CollectionReference<UserModel> usersRef;
 
-  CollectionReference<UserModel> _getUsersRef() {
-    // Return mock usersRef for testing purpose
-    return (mockUsersRef ?? usersRef);
+  // General user filed getter method from Firebase
+  Future<dynamic> _getField(String field) async {
+    final json = (await getCurrentUser())?.toJson();
+    return json != null ? json[field] : null;
   }
 
-  Future<void> createUser(UserModel user) async {
-    final ref = _getUsersRef().doc(user.uid);
-
-    _userDocRef = ref;
-    await ref.set(user);
-    await updateUserCache(user);
-
-    logger.d('New user (${user.email}) is created', time: DateTime.now());
-  }
-
-  Future<UserModel?> getCurrentUser() async {
-    return (await _userDocRef?.get())?.data();
-  }
-
-  Future<QuerySnapshot<UserModel>> getUserById(String? uid) async {
-    return _getUsersRef().where(UserFields.uid.name, isEqualTo: uid).get();
+  bool? _getBoolFieldCache(UserBoolFields field) {
+    return localStorage.getBool(field.name);
   }
 
   String? _getStringFieldCache(UserStringFields field) {
     return localStorage.getString(field.name);
   }
 
-  Future<String?> _getStringField(UserStringFields field) async {
-    final cached = _getStringFieldCache(field);
-
-    if (cached != null) {
-      return Future.value(cached);
-    }
-
-    final doc = await _userDocRef?.get();
-    final json = doc?.data()?.toJson();
-
-    return json != null ? json[field.name] : null;
-  }
-
-  bool? _getBoolFieldCache(UserBoolFields field) {
-    return localStorage.getBool(field.name);
+  List<String>? _getStringListFieldCache(UserStringListFields field) {
+    return localStorage.getStringList(field.name);
   }
 
   Future<bool?> _getBoolField(UserBoolFields field) async {
@@ -69,11 +45,218 @@ class UserProvider extends ChangeNotifier {
       return Future.value(cached);
     }
 
-    final doc = await _userDocRef?.get();
-    final json = doc?.data()?.toJson();
-
-    return json != null ? json[field.name] : null;
+    return await _getField(field.name);
   }
+
+  Future<String?> _getStringField(UserStringFields field) async {
+    final cached = _getStringFieldCache(field);
+
+    if (cached != null) {
+      return Future.value(cached);
+    }
+
+    return await _getField(field.name);
+  }
+
+  Future<List<String>?> _getStringListField(UserStringListFields field) async {
+    final cached = _getStringListFieldCache(field);
+
+    if (cached != null) {
+      return Future.value(cached);
+    }
+
+    return await _getField(field.name);
+  }
+
+  Future<bool?> _setStringField(UserStringFields field, String value,
+      {bool? silent, bool? localOnly}) async {
+    final result = await localStorage.setString(field.name, value);
+
+    if (localOnly != true) {
+      await _userDocRef?.update({field.name: value});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
+  Future<bool?> _setStingListField(
+      UserStringListFields field, List<String> list,
+      {bool? silent, bool? localOnly}) async {
+    final result = localStorage.setStringList(
+      field.name,
+      list.toList(),
+    );
+
+    if (localOnly != true) {
+      await _userDocRef?.update({field.name: list.toList()});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
+  Future<bool?> _setBoolField(UserBoolFields field, bool value,
+      {bool? silent, bool? localOnly}) async {
+    final result = localStorage.setBool(field.name, value);
+
+    if (localOnly != true) {
+      await _userDocRef?.update({field.name: value});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
+  ///
+  ///** External methods */
+  ///
+  Future<void> createUser(UserModel user) async {
+    final ref = usersRef.doc(user.uid);
+
+    _userDocRef = ref;
+    await ref.set(user);
+    await updateUserCache(user);
+
+    logger.d('New user (${user.email}) is created', time: DateTime.now());
+  }
+
+  Future<bool> purgeUserCache() async {
+    late bool result = true;
+
+    result &= await localStorage.remove(UserFields.uid.name);
+    result &= await localStorage.remove(UserFields.photoUrl.name);
+    result &= await localStorage.remove(UserFields.phoneNumber.name);
+    result &= await localStorage.remove(UserFields.firstName.name);
+    result &= await localStorage.remove(UserFields.lastName.name);
+    result &= await localStorage.remove(UserFields.displayName.name);
+    result &= await localStorage.remove(UserFields.dob.name);
+    result &= await localStorage.remove(UserFields.gender.name);
+    result &= await localStorage.remove(UserFields.genderFor.name);
+    result &= await localStorage.remove(UserFields.locality.name);
+    result &= await localStorage.remove(UserFields.phoneNumber.name);
+    result &= await localStorage.remove(UserFields.onboarded.name);
+    result &= await localStorage.remove(UserFields.verified.name);
+    result &= await localStorage.remove(UserFields.verifySubmitted.name);
+    result &= await localStorage.remove(UserFields.realTalk.name);
+    result &= await localStorage.remove(UserFields.redFlags.name);
+    result &= await localStorage.remove(UserFields.greenFlags.name);
+
+    logger.d('Local storage purged', time: DateTime.now());
+
+    return result;
+  }
+
+  Future<void> updateUserCache(UserModel user) async {
+    // Init _userDocRef if not existed yet
+    _userDocRef ??= usersRef.doc(user.uid);
+
+    final dob = user.dob;
+
+    await setId(user.uid);
+    await setEmail(user.email);
+    await setFirstName(user.firstName ?? "");
+    await setLastName(user.lastName ?? "");
+    await setDisplayName(user.displayName ?? "");
+    await setGender(user.gender ?? "");
+    await setLocality(user.locality ?? "");
+    await setPhotoUrl(user.photoUrl ?? "");
+    await setGenderFor(user.genderFor ?? []);
+    await setRealTalk(user.realTalk ?? {});
+    await setRedFlags(user.redFlags ?? []);
+    await setGreenFlags(user.greenFlags ?? []);
+    await setOnboarded(user.onboarded);
+
+    if (dob != null) {
+      await setDob(dob);
+    }
+
+    await localStorage.setBool(UserFields.verified.name, user.verified);
+    await localStorage.setBool(
+      UserFields.verifySubmitted.name,
+      user.verifySubmitted,
+    );
+
+    logger.d(
+      'Successfully update cached user (${user.email}) in local storage',
+      time: DateTime.now(),
+    );
+  }
+
+  ///
+  ///** External getter methods */
+  ///
+
+  ///
+  /// Common methods
+  ///
+  Future<UserModel?> getCurrentUser() async {
+    return (await _userDocRef?.get())?.data();
+  }
+
+  Future<QuerySnapshot<UserModel>> getUserById(String? uid) async {
+    return usersRef.where(UserFields.uid.name, isEqualTo: uid).get();
+  }
+
+  ///
+  /// String field getter functions catch-only (from SharedPreference)
+  ///
+  String? getIdCache() {
+    return _getStringFieldCache(UserStringFields.uid);
+  }
+
+  String? getFirstNameCache() {
+    return _getStringFieldCache(UserStringFields.firstName);
+  }
+
+  String? getLastNameCache() {
+    return _getStringFieldCache(UserStringFields.lastName);
+  }
+
+  String? getDisplayNameCache() {
+    return _getStringFieldCache(UserStringFields.displayName);
+  }
+
+  String? getGenderCache() {
+    return _getStringFieldCache(UserStringFields.gender);
+  }
+
+  String? getLocalityCache() {
+    return _getStringFieldCache(UserStringFields.locality);
+  }
+
+  String? getPhotoUrlCache() {
+    return _getStringFieldCache(UserStringFields.photoUrl);
+  }
+
+  ///
+  /// List<String> field getter functions catch-only (from SharedPreference)
+  ///
+
+  List<String>? getGenderForCache() {
+    return _getStringListFieldCache(UserStringListFields.genderFor);
+  }
+
+  List<String>? getRedFlagsCache() {
+    return _getStringListFieldCache(UserStringListFields.redFlags);
+  }
+
+  List<String>? getGreenFlagsCache() {
+    return _getStringListFieldCache(UserStringListFields.greenFlags);
+  }
+
+  ///
+  /// String field getter functions catch-first (fallback to Firebase DB)
+  ///
 
   Future<String?> getId() async {
     return await _getStringField(UserStringFields.uid);
@@ -107,32 +290,72 @@ class UserProvider extends ChangeNotifier {
     return await _getStringField(UserStringFields.locality);
   }
 
-  String? getIdCache() {
-    return _getStringFieldCache(UserStringFields.uid);
+  ///
+  /// List<String? getter functions catch-first (fallback to Firebase DB)
+  ///
+  Future<List<String>?> getGenderFor() async {
+    return await _getStringListField(UserStringListFields.genderFor);
   }
 
-  String? getFirstNameCache() {
-    return _getStringFieldCache(UserStringFields.firstName);
+  Future<List<String>?> getGreenFlags() async {
+    return await _getStringListField(UserStringListFields.greenFlags);
   }
 
-  String? getLastNameCache() {
-    return _getStringFieldCache(UserStringFields.lastName);
+  Future<List<String>?> getRedFlags() async {
+    return await _getStringListField(UserStringListFields.redFlags);
   }
 
-  String? getDisplayNameCache() {
-    return _getStringFieldCache(UserStringFields.displayName);
+  ///
+  /// Boolean field getter functions catch-only
+  ///
+  bool? getOnboardedCache() {
+    return _getBoolFieldCache(UserBoolFields.onboarded);
   }
 
-  String? getGenderCache() {
-    return _getStringFieldCache(UserStringFields.gender);
+  bool? getVerifiedCache() {
+    return _getBoolFieldCache(UserBoolFields.verified);
   }
 
-  String? getLocalityCache() {
-    return _getStringFieldCache(UserStringFields.locality);
+  bool? getVerifySubmittedCache() {
+    return _getBoolFieldCache(UserBoolFields.verifySubmitted);
   }
 
-  String? getPhotoUrlCache() {
-    return _getStringFieldCache(UserStringFields.photoUrl);
+  ///
+  /// Boolean field getter functions catch-first (fallback to Firebase DB)
+  ///
+  Future<bool?> getOnboarded() async {
+    return await _getBoolField(UserBoolFields.onboarded);
+  }
+
+  Future<bool?> getVerified() async {
+    return await _getBoolField(UserBoolFields.verified);
+  }
+
+  Future<bool?> getVerifySubmitted() async {
+    return await _getBoolField(UserBoolFields.verifySubmitted);
+  }
+
+  ///
+  /// Other types
+  ///
+  Future<DateTime?> getDob() async {
+    final cached = getDobCache();
+
+    if (cached != null) {
+      return Future.value(cached);
+    }
+
+    return await _getField(UserFields.dob.name);
+  }
+
+  DateTime? getDobCache() {
+    final timestamp = localStorage.getInt(UserFields.dob.name);
+
+    if (timestamp != null) {
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+
+    return null;
   }
 
   Map<String, String>? getRealTalkCache() {
@@ -153,83 +376,13 @@ class UserProvider extends ChangeNotifier {
     return null;
   }
 
-  Future<bool?> getOnboarded() async {
-    return await _getBoolField(UserBoolFields.onboarded);
-  }
+  ///
+  ///** External setters */
+  ///
 
-  Future<bool?> getVerified() async {
-    return await _getBoolField(UserBoolFields.verified);
-  }
-
-  Future<bool?> getVerifySubmitted() async {
-    return await _getBoolField(UserBoolFields.verifySubmitted);
-  }
-
-  bool? getVerifySubmittedCache() {
-    return _getBoolFieldCache(UserBoolFields.verifySubmitted);
-  }
-
-  DateTime? getDobCache() {
-    final timestamp = localStorage.getInt(UserFields.dob.name);
-
-    if (timestamp != null) {
-      return DateTime.fromMillisecondsSinceEpoch(timestamp);
-    }
-
-    return null;
-  }
-
-  Future<DateTime?> getDob() async {
-    final cached = getDobCache();
-
-    if (cached != null) {
-      return Future.value(cached);
-    }
-
-    final doc = await _userDocRef?.get();
-
-    return doc?.data()?.dob;
-  }
-
-  List<String>? getGenderForCache() {
-    return localStorage.getStringList(UserFields.genderFor.name);
-  }
-
-  List<String>? getRedFlagsCache() {
-    return localStorage.getStringList(UserFields.redFlags.name);
-  }
-
-  List<String>? getGreenFlagsCache() {
-    return localStorage.getStringList(UserFields.greenFlags.name);
-  }
-
-  Future<List<String>?> getGenderFor() async {
-    final cached = getGenderForCache();
-
-    if (cached != null) {
-      return Future.value(cached);
-    }
-
-    final doc = await _userDocRef?.get();
-
-    return doc?.data()?.genderFor;
-  }
-
-  Future<bool?> _setStringField(UserStringFields field, String value,
-      {bool? silent, bool? localOnly}) async {
-    final result = await localStorage.setString(field.name, value);
-
-    if (localOnly != true) {
-      await _userDocRef?.update({field.name: value});
-    }
-
-    if (silent != true) {
-      notifyListeners();
-    }
-
-    return result;
-  }
-
+  ///
+  /// String field setter functions
+  ///
   Future<bool?> setId(String value,
       {bool? silent = true, bool? localOnly = true}) {
     return _setStringField(UserStringFields.uid, value,
@@ -278,41 +431,9 @@ class UserProvider extends ChangeNotifier {
         silent: silent, localOnly: localOnly);
   }
 
-  Future<bool?> setDob(DateTime dob,
-      {bool? silent = true, bool? localOnly = true}) async {
-    final result =
-        localStorage.setInt(UserFields.dob.name, dob.millisecondsSinceEpoch);
-
-    if (localOnly != true) {
-      await _userDocRef?.update({UserFields.dob.name: dob});
-    }
-
-    if (silent != true) {
-      notifyListeners();
-    }
-
-    return result;
-  }
-
-  Future<bool?> _setStingListField(
-      UserStringListFields field, List<String> list,
-      {bool? silent, bool? localOnly}) async {
-    final result = localStorage.setStringList(
-      field.name,
-      list.toList(),
-    );
-
-    if (localOnly != true) {
-      await _userDocRef?.update({field.name: list.toList()});
-    }
-
-    if (silent != true) {
-      notifyListeners();
-    }
-
-    return result;
-  }
-
+  ///
+  /// List<String> field setter functions
+  ///
   Future<bool?> setGenderFor(List<String> genders,
       {bool? silent = true, bool? localOnly = true}) async {
     return _setStingListField(UserStringListFields.genderFor, genders,
@@ -331,12 +452,26 @@ class UserProvider extends ChangeNotifier {
         silent: silent, localOnly: localOnly);
   }
 
-  Future<bool?> _setBoolField(UserBoolFields field, bool value,
-      {bool? silent, bool? localOnly}) async {
-    final result = localStorage.setBool(field.name, value);
+  ///
+  /// Boolean field setter functions
+  ///
+
+  Future<bool?> setOnboarded(bool value,
+      {bool? silent = true, bool? localOnly = true}) {
+    return _setBoolField(UserBoolFields.onboarded, value,
+        localOnly: localOnly, silent: silent);
+  }
+
+  ///
+  /// Other types setter functions
+  ///
+  Future<bool?> setDob(DateTime dob,
+      {bool? silent = true, bool? localOnly = true}) async {
+    final result =
+        localStorage.setInt(UserFields.dob.name, dob.millisecondsSinceEpoch);
 
     if (localOnly != true) {
-      await _userDocRef?.update({field.name: value});
+      await _userDocRef?.update({UserFields.dob.name: dob});
     }
 
     if (silent != true) {
@@ -344,12 +479,6 @@ class UserProvider extends ChangeNotifier {
     }
 
     return result;
-  }
-
-  Future<bool?> setOnboarded(bool value,
-      {bool? silent = true, bool? localOnly = true}) {
-    return _setBoolField(UserBoolFields.onboarded, value,
-        localOnly: localOnly, silent: silent);
   }
 
   Future<bool?> setRealTalk(Map<String, String> realtalk,
@@ -376,67 +505,5 @@ class UserProvider extends ChangeNotifier {
     }
 
     return result;
-  }
-
-  Future<bool> purgeUserCache() async {
-    late bool result = true;
-
-    result &= await localStorage.remove(UserFields.uid.name);
-    result &= await localStorage.remove(UserFields.photoUrl.name);
-    result &= await localStorage.remove(UserFields.phoneNumber.name);
-    result &= await localStorage.remove(UserFields.firstName.name);
-    result &= await localStorage.remove(UserFields.lastName.name);
-    result &= await localStorage.remove(UserFields.displayName.name);
-    result &= await localStorage.remove(UserFields.dob.name);
-    result &= await localStorage.remove(UserFields.gender.name);
-    result &= await localStorage.remove(UserFields.genderFor.name);
-    result &= await localStorage.remove(UserFields.locality.name);
-    result &= await localStorage.remove(UserFields.phoneNumber.name);
-    result &= await localStorage.remove(UserFields.onboarded.name);
-    result &= await localStorage.remove(UserFields.verified.name);
-    result &= await localStorage.remove(UserFields.verifySubmitted.name);
-    result &= await localStorage.remove(UserFields.realTalk.name);
-    result &= await localStorage.remove(UserFields.redFlags.name);
-    result &= await localStorage.remove(UserFields.greenFlags.name);
-
-    logger.d('Local storage purged', time: DateTime.now());
-
-    return result;
-  }
-
-  Future<void> updateUserCache(UserModel user) async {
-    // Init _userDocRef if not existed yet
-    _userDocRef ??= _getUsersRef().doc(user.uid);
-
-    final dob = user.dob;
-
-    await setId(user.uid);
-    await setEmail(user.email);
-    await setFirstName(user.firstName ?? "");
-    await setLastName(user.lastName ?? "");
-    await setDisplayName(user.displayName ?? "");
-    await setGender(user.gender ?? "");
-    await setLocality(user.locality ?? "");
-    await setPhotoUrl(user.photoUrl ?? "");
-    await setGenderFor(user.genderFor ?? []);
-    await setRealTalk(user.realTalk ?? {});
-    await setRedFlags(user.redFlags ?? []);
-    await setGreenFlags(user.greenFlags ?? []);
-    await setOnboarded(user.onboarded);
-
-    if (dob != null) {
-      await setDob(dob);
-    }
-
-    await localStorage.setBool(UserFields.verified.name, user.verified);
-    await localStorage.setBool(
-      UserFields.verifySubmitted.name,
-      user.verifySubmitted,
-    );
-
-    logger.d(
-      'Successfully update cached user (${user.email}) in local storage',
-      time: DateTime.now(),
-    );
   }
 }

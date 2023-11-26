@@ -69,7 +69,7 @@ void main() {
           create: (_) => UserProvider(
             localStorage: localStorage,
             logger: loggerProvider.logger,
-            mockUsersRef: fakeUsersRef,
+            usersRef: fakeUsersRef,
           ),
         ),
         ChangeNotifierProvider<AuthProvider>(

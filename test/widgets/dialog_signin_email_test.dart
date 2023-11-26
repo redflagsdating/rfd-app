@@ -40,7 +40,7 @@ void main() {
       userProvider: UserProvider(
         localStorage: localStorage,
         logger: logger,
-        mockUsersRef: fakeUsersRef,
+        usersRef: fakeUsersRef,
       ),
       localStorage: localStorage,
     );

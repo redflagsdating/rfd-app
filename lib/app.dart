@@ -37,6 +37,7 @@ class App extends StatelessWidget {
         ),
         ChangeNotifierProvider<UserProvider>(
           create: (context) => UserProvider(
+            usersRef: usersRef,
             localStorage: localStorage,
             logger: context.read<LoggerProvider>().logger,
           ),
