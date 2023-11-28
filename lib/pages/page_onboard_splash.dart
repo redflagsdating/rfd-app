@@ -52,7 +52,7 @@ class _PageOnboardSplashState extends State<PageOnboardSplash> {
                   "assets/rf-logo-white.png",
                   width: 120,
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 40),
                 Text(widget.title ?? "",
                     style: theme.textTheme
                         .apply(

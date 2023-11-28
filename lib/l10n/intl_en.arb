@@ -57,7 +57,7 @@
   "questionEditorHintText": "At least 100 characters to keep your answer meaningful and short",
   "questionEditorEmptyErrorText": "Don't leave the answer empty, try other questions if you stuck.",
   "questionEditorShortErrorText": "Keep your answer informative and meaningful.",
-  "pgSignInTagLine": "Real talk. Real connection",
+  "scaffoldBrandingTagLine": "Real talk. Real connection",
   "pgSignInWithBtn": "Continue with {provider}",
   "@pgSignInWithBtn": {
     "description": "Sign-in page button label",
@@ -84,7 +84,7 @@
   "pgOnboardSplash2Btn": "Set my profile",
   "pgOnboardSplash3Title": "At {brandName}, we’re challenging the way we connect with others. Take it slow, be self-aware, and keep it real. We're firm believers that true connections lead to strong, lasting relationships.",
   "pgOnboardSplash3Btn": "Set my real talks",
-  "pgOnboardSplashCompleteHeadline": "All done {displayName}! We're now preparing your first 3 daily profiles",
+  "pgOnboardSplashCompleteTagline": "All done {displayName}! We're now preparing your first 3 daily profiles",
   "pgLocationSplashTitle": "Improving your chances of meeting someone nearby for a better match.",
   "pgLocationSplashBtn": "Turn on location",
   "pgFullNameHeadline": "What's your full name?",

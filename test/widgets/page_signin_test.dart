@@ -97,7 +97,7 @@ void main() {
   testWidgets('PageSignIn > Verify elements', (tester) async {
     await tester.pumpWidget(widget);
 
-    expect(find.text(l10n.pgSignInTagLine), findsOneWidget);
+    expect(find.text(l10n.scaffoldBrandingTagLine), findsOneWidget);
     expect(find.text(l10n.pgSignInWithBtn("Google")), findsOneWidget);
     expect(find.text(l10n.pgSignInWithBtn("Facebook")), findsOneWidget);
     expect(find.text(l10n.pgSignInWithBtn(l10n.email)), findsOneWidget);

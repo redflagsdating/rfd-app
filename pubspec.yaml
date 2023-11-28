@@ -65,6 +65,7 @@ dependencies:
   dotted_border: ^2.1.0
   textfield_tags: ^2.0.2
   font_awesome_flutter: ^10.6.0
+  permission_handler: ^11.1.0
 
 dev_dependencies:
   flutter_test:

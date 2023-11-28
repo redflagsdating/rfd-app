@@ -25,7 +25,7 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
+        Wrap(
           children: [
             Text(
               l10n!.pgGreenFlagsHeadline,

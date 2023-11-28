@@ -92,6 +92,18 @@ class _QuestionEditorState extends State<QuestionEditor> {
             enabled: isEnabled,
             controller: widget.controller,
             textCapitalization: TextCapitalization.sentences,
+            buildCounter: (context,
+                {required currentLength, required isFocused, maxLength}) {
+              return Container(
+                transform: Matrix4.translationValues(0, -175, 0),
+                child: Text(
+                  "$currentLength/$maxLength",
+                  style: theme.textTheme
+                      .apply(bodyColor: theme.colorScheme.outline)
+                      .labelMedium,
+                ),
+              );
+            },
             decoration: InputDecoration(
               errorMaxLines: 2,
               border: const OutlineInputBorder(
