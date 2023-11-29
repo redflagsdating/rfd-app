@@ -50,3 +50,9 @@ app.*.map.json
 # Secret files
 .env
 .env.dev
+
+# Firebase secrets
+android/app/src/dev/**/*
+android/app/src/prod/**/*
+ios/config/dev/**/*
+ios/config/prod/**/*
