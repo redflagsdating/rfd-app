@@ -72,7 +72,7 @@ Go to **Firebase** console > ***Project settings*** > ***Add fingerprint*** then
 
 #### `Set up client id`
 
-You can run `flutterfire configure` command to automatically update all the configurations (see [Sync Firebase configuration](../flutter/cheat-sheet.md#sync-firebase-configuration)) and only follow the below steps to manually check if you have problems to run Google Sign-In on iOS devices.
+You can run `flutterfire configure` command to automatically update all the configurations (see [Sync Firebase configuration](../firebase/cheat-sheet.md#sync-firebase-configuration)) and only follow the below steps to manually check if you have problems to run Google Sign-In on iOS devices.
 
 
 Open `ios/config/dev/GoogleService-Info.plist` or `ios/config/prod/GoogleService-Info.plist` file and go to [Firebase console](https://console.firebase.google.com/) > ***Project settings*** > ***iOS*** app.

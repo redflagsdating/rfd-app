@@ -3,6 +3,8 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -14,7 +16,7 @@ import 'package:flutter/foundation.dart'
 ///   options: DefaultFirebaseOptions.currentPlatform,
 /// );
 /// ```
-class FirebaseOptionsDev {
+class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
@@ -49,24 +51,24 @@ class FirebaseOptionsDev {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB5nIrW_Hq8QoSJtUdTE8CyyLMuVMur71s',
-    appId: '1:775764266894:android:3797c3595e512fdbb65edf',
-    messagingSenderId: '775764266894',
-    projectId: 'rf-app-dev-7145f',
-    storageBucket: 'rf-app-dev-7145f.appspot.com',
+  static FirebaseOptions android = FirebaseOptions(
+    apiKey: dotenv.get("FIREBASE_ANDROID_API_KEY"),
+    appId: FlavorConfig.instance.variables["firebaseAndroidAppId"],
+    messagingSenderId:
+        FlavorConfig.instance.variables["firebaseMessagingSenderId"],
+    projectId: FlavorConfig.instance.variables["firebaseProjectId"],
+    storageBucket: FlavorConfig.instance.variables["firebaseStorageBucket"],
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyCaIeWtNdZYtR4tVN2a-1GaIJIIIu6UTpA',
-    appId: '1:775764266894:ios:263869f4f788811db65edf',
-    messagingSenderId: '775764266894',
-    projectId: 'rf-app-dev-7145f',
-    storageBucket: 'rf-app-dev-7145f.appspot.com',
-    androidClientId:
-        '775764266894-h42irtjoedoeac0qh6a1p33l771l19i1.apps.googleusercontent.com',
-    iosClientId:
-        '775764266894-13qbr357ueqb9kmntphvh66r9rec467q.apps.googleusercontent.com',
-    iosBundleId: 'com.redflags.app.dev',
+  static FirebaseOptions ios = FirebaseOptions(
+    apiKey: dotenv.get("FIREBASE_IOS_API_KEY"),
+    appId: FlavorConfig.instance.variables["firebaseIOSAppId"],
+    messagingSenderId:
+        FlavorConfig.instance.variables["firebaseMessagingSenderId"],
+    projectId: FlavorConfig.instance.variables["firebaseProjectId"],
+    storageBucket: FlavorConfig.instance.variables["firebaseStorageBucket"],
+    androidClientId: FlavorConfig.instance.variables["firebaseAndroidClientId"],
+    iosClientId: FlavorConfig.instance.variables["firebaseIOSClientId"],
+    iosBundleId: FlavorConfig.instance.variables["bundleId"],
   );
 }

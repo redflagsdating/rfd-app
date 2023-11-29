@@ -46,3 +46,7 @@ app.*.map.json
 
 # Xcode build time copy the file from ios/config/dev/ or ios/config/prod/
 /ios/firebase_app_id_file.json
+
+# Secret files
+.env
+.env.dev

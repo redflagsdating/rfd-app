@@ -67,6 +67,7 @@ Follow the [Run](/README.md#run) guide to launch app in a specific environment.
 },
 ...
 ```
+
 so you can run via GUI
 
 <img src="../vscode-run-debug.png" width="300px" />
