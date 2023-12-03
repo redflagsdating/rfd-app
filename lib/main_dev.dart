@@ -25,6 +25,7 @@ void main() async {
     variables: {
       "longName": "Development",
       "bundleId": "com.redflags.app.dev",
+      "sumsubApiHost": "api.sumsub.com",
       "firebaseProjectId": "rf-app-dev-7145f",
       "firebaseStorageBucket": "rf-app-dev-7145f.appspot.com",
       "firebaseMessagingSenderId": "775764266894",

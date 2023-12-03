@@ -1,0 +1,68 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_flavor/flutter_flavor.dart';
+import 'package:flutter_idensic_mobile_sdk_plugin/flutter_idensic_mobile_sdk_plugin.dart';
+import 'package:http/http.dart' as http;
+
+class IdentityVerification {
+  final _token = dotenv.get("SUMSUB_APP_TOKEN");
+  final _secrets = dotenv.get("SUMSUB_SECRETS");
+  final _apiHost = FlavorConfig.instance.variables["sumsubApiHost"];
+  final Map<String, String> _defaultParams = {"levelName": "basic-kyc-level"};
+
+  IdentityVerification({required this.uid}) {
+    _defaultParams["userId"] = uid;
+  }
+
+  final String uid;
+
+  //
+  static bool isUploaded(SNSMobileSDKStatus? status) {
+    return status != null &&
+        [
+          SNSMobileSDKStatus.Pending,
+          SNSMobileSDKStatus.TemporarilyDeclined,
+          SNSMobileSDKStatus.FinallyRejected,
+          SNSMobileSDKStatus.Approved,
+          SNSMobileSDKStatus.ActionCompleted,
+        ].contains(status);
+  }
+
+  //
+  Uri _getUri(String path, [Map<String, String>? queryParameters]) {
+    return Uri.https(
+      _apiHost,
+      '/resources$path',
+      {..._defaultParams, ...(queryParameters ?? {})},
+    );
+  }
+
+  //
+  Map<String, String> _getHeaders(String method, Uri uri) {
+    /// See more details about required headers and specs
+    /// https://docs.sumsub.com/reference/authentication#sign-requests
+    final timestamp = (DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    final signedString = '$timestamp$method${uri.path}?${uri.query}';
+    final hmac = Hmac(sha256, utf8.encode(_secrets));
+    final signature = hmac.convert(utf8.encode(signedString));
+
+    /// See required request headers
+    /// https://docs.sumsub.com/reference/authentication#make-requests
+    return {
+      "X-App-Token": _token,
+      "X-App-Access-Sig": signature.toString(),
+      "X-App-Access-Ts": timestamp.toString(),
+    };
+  }
+
+  //
+  Future<String> fetchAccessToken() async {
+    final uri = _getUri('/accessTokens');
+    final response = await http.post(uri, headers: _getHeaders('POST', uri));
+    final data = json.decode(response.body);
+
+    return data['token'];
+  }
+}

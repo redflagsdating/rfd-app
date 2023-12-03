@@ -104,6 +104,7 @@
 	"cSpell.words": [
 		"autofocus",
 		"Cupertino",
+		"dotenv",
 		"Firestore",
 		"fullscreen",
 		"Geolocator",
@@ -117,6 +118,7 @@
 		"realtalk",
 		"redflags",
 		"signin",
+		"sumsub",
 		"Tmpl",
 		"wireframe"
 	]

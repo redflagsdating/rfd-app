@@ -7,6 +7,7 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_display_name.dart';
 import 'package:red_flags/widgets/profile/profile_full_name.dart';
+import 'package:red_flags/widgets/profile/profile_kyc.dart';
 import 'package:red_flags/widgets/scaffold_onboard.dart';
 
 /// Step 1 - First/Last name
@@ -84,7 +85,10 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
       onNextPressed: submitting
           ? null
           : () async {
-              if (!onboardForm.currentState!.validate()) {
+              final verifySubmitted = _userProvider.getVerifySubmittedCache();
+
+              if (!onboardForm.currentState!.validate() ||
+                  (step == 2 && verifySubmitted != true)) {
                 return;
               }
 
@@ -138,8 +142,7 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
                       enabled: !submitting,
                       controller: _displayNameCtrl,
                     )
-                  // TODO
-                  : const Text("KYC"),
+                  : const ProfileKyc(),
         ),
       ),
     );

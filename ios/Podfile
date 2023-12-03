@@ -5,7 +5,7 @@ source 'https://cdn.cocoapods.org/'
 source 'https://github.com/SumSubstance/Specs.git'
 
 # Enable MRTDReader (NFC) module
-#ENV['IDENSIC_WITH_MRTDREADER'] = 'true'
+ENV['IDENSIC_WITH_MRTDREADER'] = 'true'
 
 # Enable VideoIdent module
 #ENV['IDENSIC_WITH_VIDEOIDENT'] = 'true'

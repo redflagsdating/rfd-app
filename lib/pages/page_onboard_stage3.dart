@@ -93,7 +93,6 @@ class _PageOnboardStage3State extends State<PageOnboardStage3>
                 await _userProvider.setRedFlags(redFlags, localOnly: false);
               } else if (step == 2) {
                 await _userProvider.setGreenFlags(greenFlags, localOnly: false);
-                await _userProvider.setOnboarded(true, localOnly: false);
               }
 
               setSubmitting(false);

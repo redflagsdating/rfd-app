@@ -24,7 +24,11 @@ class _PageOnboardCompleteSplashState extends State<PageOnboardCompleteSplash> {
     }
 
     // Delay to show splash page for UX
-    Future.delayed(const Duration(seconds: 1), () {
+    Future.delayed(const Duration(milliseconds: 500), () async {
+      await Provider.of<UserProvider>(context, listen: false)
+          .setOnboarded(true, localOnly: false);
+
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacementNamed("/");
     });
   }

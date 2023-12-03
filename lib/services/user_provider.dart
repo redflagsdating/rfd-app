@@ -175,16 +175,12 @@ class UserProvider extends ChangeNotifier {
     await setRedFlags(user.redFlags ?? []);
     await setGreenFlags(user.greenFlags ?? []);
     await setOnboarded(user.onboarded);
+    await setVerified(user.verified);
+    await setVerifySubmitted(user.verifySubmitted);
 
     if (dob != null) {
       await setDob(dob);
     }
-
-    await localStorage.setBool(UserFields.verified.name, user.verified);
-    await localStorage.setBool(
-      UserFields.verifySubmitted.name,
-      user.verifySubmitted,
-    );
 
     logger.d(
       'Successfully update cached user (${user.email}) in local storage',
@@ -459,6 +455,18 @@ class UserProvider extends ChangeNotifier {
   Future<bool?> setOnboarded(bool value,
       {bool? silent = true, bool? localOnly = true}) {
     return _setBoolField(UserBoolFields.onboarded, value,
+        localOnly: localOnly, silent: silent);
+  }
+
+  Future<bool?> setVerified(bool value,
+      {bool? silent = true, bool? localOnly = true}) {
+    return _setBoolField(UserBoolFields.verified, value,
+        localOnly: localOnly, silent: silent);
+  }
+
+  Future<bool?> setVerifySubmitted(bool value,
+      {bool? silent = true, bool? localOnly = true}) {
+    return _setBoolField(UserBoolFields.verifySubmitted, value,
         localOnly: localOnly, silent: silent);
   }
 
