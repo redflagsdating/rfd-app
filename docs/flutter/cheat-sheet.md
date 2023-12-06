@@ -1,5 +1,6 @@
 # Flutter cheat sheet
 
+- [Dotenv](#dotenv)
 - [Detect build flavor/mode](#detect-build-flavormode)
 - [Access package info](#access-package-info)
 - [i18n & l10n](#i18n--l10n)
@@ -7,6 +8,13 @@
 - [Rename package name](#rename-package-name)
 - [Logging](./logger.md#logging)
 - [Add assets (images/fonts)](#add-assets)
+- [Icons](#icons)
+
+## Dotenv
+
+Leverage `flutter_dotenv` to separate secrets and tokens in `.env` and `.env.dev` from the submodule [rfd-app-config](https://github.com/redflagsdating/rfd-app-config) repo.
+
+> IMPORTANT! Only *secrets*, *keys* and *tokens* should be stored in env files, non-sensitive env variables should be stored in [flavor config](#detect-build-flavormode)
 
 ## Detect build flavor/mode
 
@@ -173,4 +181,21 @@ children: <Widget>[
     ),
     ...
 ],
+```
+
+## Icons
+
+**Flutter** has built-in icon set `Icons` can be used
+
+```dart
+const Icon(Icons.delete)
+const Icon(Icons.arrow_back_ios_new_rounded)
+...
+```
+
+You can also use **FontAwesome** icon set as an alternative option
+
+```dart
+const Icon(FontAwesomeIcons.addressCard)
+...
 ```

@@ -1,0 +1,3 @@
+[submodule "rfd-app-config"]
+	path = rfd-app-config
+	url = git@github.com:redflagsdating/rfd-app-config.git

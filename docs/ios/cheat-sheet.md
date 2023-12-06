@@ -1,9 +1,12 @@
 # iOS cheat sheet
 
+- [List of device permissions](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler/example/ios/Runner/Info.plist)
 - [(Xcode) Change the app icon and launch screen](#change-the-app-icon-and-launch-screen)
 - [(Xcode) Add/Remove dependency packages](#addremove-dependency-packages)
 - [CocoaPods dependency](#cocoapods-dependency)
 - [Image usage description](#image-usage-description)
+- [Build & Publish](#build--publish)
+
 
 ## Change the app icon and launch screen
 
@@ -19,7 +22,7 @@
 
 Open **Xcode** and select ***Runner*** > ***PROJECT - Runner*** > ***Package Dependencies*** tab.
 
-<img src="./xocde-package-dependency.png" width="800px" />
+<img src="./xcode-package-dependency.png" width="800px" />
 
 ## CocoaPods Dependency
 
@@ -40,3 +43,30 @@ As part of **iOS** security requirements to access photo library and camera on d
 <key>NSCameraUsageDescription</key>
 <string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
 ```
+
+## Build & Publish
+
+Bump the bundle version in `pubspec.yaml`
+
+```yaml
+# {version}+{build number}
+version: 0.0.2+3
+```
+
+Bump build version and number via **Xcode** > ***Target*** > ***Runner*** > ***General***
+
+<img src="./xcode-build-version.png" width="800px" />
+
+Build `ipa` and archive
+
+```bash
+flutter build ipa --flavor prod --target lib/main_prod.dart --release
+```
+
+Open `build/ios/archive/Red Flags.xcarchive` in **Xcode**.
+
+Click the **Validate App** button. If any issues are reported, address them and produce another build. You can reuse the same build ID until you upload an archive.
+
+After the archive has been successfully validated, click **Distribute App**.
+
+See more options in the [official guide](https://docs.flutter.dev/deployment/ios).

@@ -1,8 +1,10 @@
 # Android cheat sheet
 
+- [List of device permissions](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler/example/android/app/src/main/AndroidManifest.xml)
 - [Change the app icon](#change-the-app-icon)
 - [View & debug shared preferences (local storage)](#view-and-debug-shared-preference)
 - [Image crop](#image-crop)
+- [Build & Publish](#build--publish)
 
 ## Change the app icon
 
@@ -33,3 +35,22 @@ To view or debug local storage data (via `SharedPreferences` library), open **An
     android:screenOrientation="portrait"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 ```
+
+## Build & Publish
+
+Bump the bundle version in `pubspec.yaml`
+
+```yaml
+# {version}+{build number}
+version: 0.0.2+3
+```
+
+Build for production release
+
+```bash
+flutter build appbundle --flavor prod --target lib/main_prod.dart
+```
+
+Output bundle file `build/app/outputs/bundle/prodRelease/app-prod-release.aab`. For internal testing, you can upload directly via https://play.google.com/console/internal-app-sharing. 
+
+See more options in the [official guide](https://docs.flutter.dev/deployment/android).

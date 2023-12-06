@@ -25,19 +25,19 @@
 
 ```yml
     .
-    ├── lib/                               # Source code folder
+    ├── lib/                              # Source code folder
     │   ├── main_dev.dart                 # Flutter DEV target
     │   ├── main_prod.dart                # Flutter PROD target
-    │   ├── firebase_options_dev.dart     # Firebase DEV config
-    │   ├── firebase_options_prod.dart    # Firebase PROD config
+    │   ├── firebase_options.dart         # Firebase config
     │   ├── app.dart                      # App widget 
     │   ├── models/                       # Data models (Domain layer)
     │   │   ├── user.dart
     │   │   └── ...
     │   ├── widgets/                      # Flutter widgets (Presentation layer)
-    │   │   ├── page_home.dart
-    │   │   ├── page_signin.dart
-    │   │   ├── mixin_snackbar.dart
+    │   │   ├── scaffold_onboard.dart
+    │   │   ├── scafoold_branding.dart
+    │   │   ├── animation/
+    │   │   ├── profile/
     │   │   └── ...
     │   ├── services/                     # (Application layer)
     │   │   ├── auth_provider.dart
@@ -60,6 +60,8 @@
     ├── pubspec.yaml                      # Flutter/Dart package dependency file
     ├── ios                               # iOS Xcode project
     ├── android                           # Android Studio project
+    ├── l10n.yaml                         # l10n config
+    ├── rfd-config.sh                     # Script to setup config from rfd-app-config submodule
     ├── .vscode                           # VS Code workspace settings 
     ├── .githooks                         # Hoist .git/hooks folder for source control             
     └── ...
@@ -100,6 +102,8 @@ Follow [the Firebase official installation guide](https://firebase.google.com/do
 ### Setup
 
 - *Clone the repo*
+- *Clone config repo as submodule*
+- *Set up config*
 - *Install dependent packages*
 - *Change Git Hooks path*
 - *Config `git` user info*
@@ -110,8 +114,18 @@ git clone git@github.com:redflagsdating/rfd-app.git
 ```
 
 ```bash
-# Install dependent packages
+# Clone config repo as submodule
 cd rfd-app
+git submodule add git@github.com:redflagsdating/rfd-app-config.git
+```
+
+```bash
+# Set up config
+./rfd-config.sh ln
+```
+
+```bash
+# Install dependent packages
 flutter pub get
 ```
 
@@ -189,7 +203,9 @@ For **Android Studio**, click ***Build Variants*** at the bottom-left panel > se
 - ***Firebase***
   - [Cheat sheet](/docs/firebase/cheat-sheet.md)
   - [Environments](/docs/firebase/environments.md)
+  - [Firestore Database](/docs/firebase/database.md)
   - [Authentication](/docs/firebase/authentication.md)
+  - [Storage](/docs/firebase/storage.md)
   - [Crashlytics](/docs/firebase/crashlytics.md)
   - [Analytics](/docs/firebase/analytics.md)
 - ***Android***

@@ -11,8 +11,7 @@ Below are the **Firebase** related files for different environments.
 ```yml
     .
     ├── lib/                       
-    │   ├── firebase_options_dev.dart
-    │   └── firebase_options_prod.dart
+    │   ├── firebase_options.dart
     ├── android/        
     │   └── app/
     │       └── src/
@@ -35,11 +34,9 @@ Below are the **Firebase** related files for different environments.
     └── ...
 ```
 
-## `firebase_options_{flavor}.dart`
+## `firebase_options.dart`
 
-`firebase_options_dev.dart` and `firebase_options_prod.dart` are manually copied from `firebase_options.dart` that generated when run Firebase CLI to [Sync Firebase Configuration](/docs/firebase/cheat-sheet.md#sync-firebase-configuration). They are using to initialize *Firebase* in `lib/main_dev.dart` and `lib/main_prod.dart` respectively.
-
-> ***Important!***  Ensure you manually update `firebase_options_dev.dart` or `firebase_options_prod.dart` file accordingly whenever you run `flutterfire configure` to sync the changes as it generates `firebase_options.dart` file.
+`firebase_options.dart` is generated from Firebase CLI [Sync Firebase Configuration](/docs/firebase/cheat-sheet.md#sync-firebase-configuration). They are using to initialize *Firebase* service in `lib/main_dev.dart` and `lib/main_prod.dart`.
 
 ## `google-services.json` and `GoogleService-Info.plist`
 
