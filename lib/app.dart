@@ -7,8 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
-import 'package:red_flags/pages/page_home.dart';
 import 'package:red_flags/pages/page_onboard_home.dart';
+import 'package:red_flags/pages/page_onboard_stage1.dart';
 import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/pages/page_signin_splash.dart';
@@ -124,7 +124,7 @@ class App extends StatelessWidget {
                         : false,
                     child: authProvider.isAuthenticated()
                         ? (isOnboard
-                            ? const PageHome()
+                            ? const PageOnboardStage1(initStep: 2)
                             : const PageOnboardHome())
                         : authProvider.isAuthenticating()
                             ? PageSignInSplash(authProvider: authProvider)
