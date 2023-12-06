@@ -57,3 +57,6 @@ android/app/src/dev/**/*
 android/app/src/prod/**/*
 ios/config/dev/**/*
 ios/config/prod/**/*
+
+# Ignore submodule folder at root
+rfd-app-config
