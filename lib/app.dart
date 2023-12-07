@@ -44,7 +44,6 @@ class App extends StatelessWidget {
         ),
         Provider<FireStorageProvider>(
           create: (context) => FireStorageProvider(
-            context: context,
             userProvider: context.read<UserProvider>(),
           ),
         ),

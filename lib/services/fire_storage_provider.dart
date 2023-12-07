@@ -1,5 +1,4 @@
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -7,11 +6,10 @@ class FireStorageProvider {
   final _uuid = const Uuid();
   late Reference _rootRef;
 
-  FireStorageProvider({required this.context, required this.userProvider}) {
+  FireStorageProvider({required this.userProvider}) {
     _rootRef = FirebaseStorage.instance.ref();
   }
 
-  final BuildContext context;
   final UserProvider userProvider;
 
   // Storage references of the current authenticated user id
