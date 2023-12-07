@@ -1,11 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:red_flags/services/auth_provider.dart';
-import 'package:red_flags/services/user_provider.dart';
+import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({super.key});
@@ -15,48 +10,88 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
-  File? _img;
-  late AuthProvider authProvider;
-
-  void setImageFile() async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final appDocDir = await getApplicationDocumentsDirectory();
-    final spotlightPhoto = userProvider.getPhotoUrlCache();
-
-    // TODO: Download photo url for different devices
-
-    _img = File('${appDocDir.path}/$spotlightPhoto');
-    setState(() {});
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    authProvider = context.read<AuthProvider>();
-  }
+  bool _reverse = false;
+  int _currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
-    setImageFile();
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (_img != null)
-          Image.file(
-            _img as File,
-            width: 300,
-            height: 300,
-            fit: BoxFit.cover,
+    return Scaffold(
+      body: SlideTransitionSwitcher(
+        reverse: _reverse,
+        child: _currentIndex == 0
+            ? Container(
+                key: ValueKey(_currentIndex),
+                alignment: Alignment.center,
+                child: Text(l10n!.calendar),
+              )
+            : _currentIndex == 2
+                ? Container(
+                    key: ValueKey(_currentIndex),
+                    alignment: Alignment.center,
+                    child: Text(l10n!.account),
+                  )
+                : Container(
+                    key: ValueKey(_currentIndex),
+                    alignment: Alignment.center,
+                    child: Text(l10n!.home),
+                  ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        currentIndex: _currentIndex,
+        unselectedItemColor: theme.colorScheme.primary.withOpacity(0.2),
+        selectedIconTheme: IconThemeData(
+          shadows: [
+            Shadow(
+              color: theme.colorScheme.outlineVariant,
+              offset: const Offset(0, 1),
+              // blurRadius: 2,
+            )
+          ],
+        ),
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.calendar_month,
+              semanticLabel: l10n.calendar,
+            ),
+            label: l10n.calendar,
           ),
-        const SizedBox(height: 40),
-        FilledButton(
-          onPressed: () {
-            authProvider.handleSignOut();
-          },
-          child: Text(AppLocalizations.of(context)!.signOut),
-        )
-      ],
+          BottomNavigationBarItem(
+            activeIcon: Image.asset(
+              "assets/rf-logo-red.png",
+              width: 52,
+              semanticLabel: l10n.home,
+            ),
+            icon: Image.asset(
+              "assets/rf-logo-red.png",
+              width: 52,
+              semanticLabel: l10n.home,
+              opacity: const AlwaysStoppedAnimation(.2),
+            ),
+            label: l10n.home,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.perm_contact_cal_rounded,
+              semanticLabel: l10n.account,
+            ),
+            label: l10n.account,
+          ),
+        ],
+        onTap: (index) {
+          if (_currentIndex != index) {
+            setState(() {
+              _reverse = index < _currentIndex;
+              _currentIndex = index;
+            });
+          }
+        },
+      ),
     );
   }
 }
