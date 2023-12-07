@@ -1,44 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:red_flags/models/user.dart';
 
-const uid = "akUecK0mXeNop2a4nTSdTVRExoA2";
+import '../global.dart' as global;
 
 void main() {
-  late CollectionReference<UserModel> users;
-
-  setUpAll(() {
-    users =
-        FakeFirebaseFirestore().collection('users').withConverter<UserModel>(
-              fromFirestore: (snapshots, _) =>
-                  UserModel.fromJson(snapshots.data()!),
-              toFirestore: (user, _) => user.toJson(),
-            );
-  });
   test("UserModel read/write converter", () async {
-    final userModel = UserModel(
-      uid: uid,
-      email: "example@email.com",
-      createdAt: DateTime.now(),
-      onboarded: false,
-      verified: false,
-      verifySubmitted: false,
-      photoUrl: "https://picsum.photos/200/300",
-      firstName: "John",
-      lastName: "Smith",
-      displayName: "Johnny",
-      dob: DateTime.now(),
-      gender: Gender.man.name,
-      genderFor: [Gender.woman.name],
-      phoneNumber: "+61411111111",
-    );
+    final listEq = const ListEquality().equals;
+    final userModel = global.userModel;
 
-    await users.doc(uid).set(userModel);
+    await global.fakeUsersRef.doc(global.uid).set(userModel);
 
-    final user = await users.where(UserFields.uid.name, isEqualTo: uid).get();
+    final user = await global.fakeUsersRef
+        .where(UserFields.uid.name, isEqualTo: global.uid)
+        .get();
     expect(user.docs.isEmpty, isFalse);
-
     final userData = user.docs.first.data();
 
     expect(userData.email == userModel.email, isTrue);
@@ -52,8 +29,11 @@ void main() {
     expect(userData.displayName == userModel.displayName, isTrue);
     expect(userData.dob == userModel.dob, isTrue);
     expect(userData.gender == userModel.gender, isTrue);
-    expect(const ListEquality().equals(userData.genderFor, userModel.genderFor),
-        isTrue);
+    expect(listEq(userData.genderFor, userModel.genderFor), isTrue);
     expect(userData.phoneNumber == userModel.phoneNumber, isTrue);
+    expect(userData.locality == userModel.locality, isTrue);
+    expect(listEq(userData.redFlags, userModel.redFlags), isTrue);
+    expect(listEq(userData.greenFlags, userModel.greenFlags), isTrue);
+    expect(mapEquals(userData.realTalk, userModel.realTalk), isTrue);
   });
 }

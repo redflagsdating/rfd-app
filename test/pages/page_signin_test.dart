@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,12 +5,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/models/user.dart' show UserModel, UserFields;
+import 'package:red_flags/models/user.dart' show UserFields;
 import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../global.dart' as global;
 
 void main() {
   const gKey = Key("page_signin_google");
@@ -25,31 +25,10 @@ void main() {
   const dialogSendKey = Key("dialog_email_signin_send");
 
   late AuthProvider authProvider;
-  late LoggerProvider loggerProvider;
-  late AppLocalizations l10n;
   late Widget widget;
-  late SharedPreferences localStorage;
   late MockFirebaseAuth firebaseAuth;
-  late CollectionReference<UserModel> fakeUsersRef;
-
-  setUpAll(
-    () async {
-      l10n = await AppLocalizations.delegate.load(const Locale("en"));
-    },
-  );
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues({});
-    SharedPreferences.setPrefix("red.flags.dev");
-
-    localStorage = await SharedPreferences.getInstance();
-    loggerProvider = LoggerProvider(silent: true);
-    fakeUsersRef =
-        FakeFirebaseFirestore().collection('users').withConverter<UserModel>(
-              fromFirestore: (snapshots, _) =>
-                  UserModel.fromJson(snapshots.data()!),
-              toFirestore: (user, _) => user.toJson(),
-            );
     firebaseAuth = MockFirebaseAuth(
       mockUser: MockUser(
         email: "test@email.com",
@@ -61,15 +40,15 @@ void main() {
     // Create a new root widget for each test
     widget = MultiProvider(
       providers: [
-        Provider<SharedPreferences>(create: (_) => localStorage),
+        Provider<SharedPreferences>(create: (_) => global.localStorage),
         Provider<LoggerProvider>(
-          create: (_) => loggerProvider,
+          create: (_) => global.loggerProvider,
         ),
         ChangeNotifierProvider<UserProvider>(
           create: (_) => UserProvider(
-            localStorage: localStorage,
-            logger: loggerProvider.logger,
-            usersRef: fakeUsersRef,
+            localStorage: global.localStorage,
+            logger: global.loggerProvider.logger,
+            usersRef: global.fakeUsersRef,
           ),
         ),
         ChangeNotifierProvider<AuthProvider>(
@@ -77,9 +56,9 @@ void main() {
             authProvider = AuthProvider(
               gSignIn: MockGoogleSignIn(),
               firebaseAuth: firebaseAuth,
-              logger: loggerProvider.logger,
+              logger: global.loggerProvider.logger,
               userProvider: context.read<UserProvider>(),
-              localStorage: localStorage,
+              localStorage: global.localStorage,
             );
 
             return authProvider;
@@ -97,10 +76,11 @@ void main() {
   testWidgets('PageSignIn > Verify elements', (tester) async {
     await tester.pumpWidget(widget);
 
-    expect(find.text(l10n.scaffoldBrandingTagLine), findsOneWidget);
-    expect(find.text(l10n.pgSignInWithBtn("Google")), findsOneWidget);
-    expect(find.text(l10n.pgSignInWithBtn("Facebook")), findsOneWidget);
-    expect(find.text(l10n.pgSignInWithBtn(l10n.email)), findsOneWidget);
+    expect(find.text(global.l10n.scaffoldBrandingTagLine), findsOneWidget);
+    expect(find.text(global.l10n.pgSignInWithBtn("Google")), findsOneWidget);
+    expect(find.text(global.l10n.pgSignInWithBtn("Facebook")), findsOneWidget);
+    expect(find.text(global.l10n.pgSignInWithBtn(global.l10n.email)),
+        findsOneWidget);
   });
 
   testWidgets('PageSignIn > Verify Google sign-in', (tester) async {
@@ -111,7 +91,7 @@ void main() {
     expect(authProvider.isAuthenticated(), isTrue);
 
     // Ensure user data is created in the Firestore
-    final result = await fakeUsersRef
+    final result = await global.fakeUsersRef
         .where(UserFields.email.name, isEqualTo: 'test@email.com')
         .get();
 
@@ -160,7 +140,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 100));
     expect(authProvider.isPending(), isTrue);
     // TODO: Found 2 widgets but should be one
-    expect(find.text(l10n.pgSignInEmailSent), findsWidgets);
+    expect(find.text(global.l10n.pgSignInEmailSent), findsWidgets);
 
     // TODO: Test scenario after receive email link
   });

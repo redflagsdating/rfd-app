@@ -210,6 +210,10 @@ class UserProvider extends ChangeNotifier {
     return _getStringFieldCache(UserStringFields.uid);
   }
 
+  String getEmailCache() {
+    return _getStringFieldCache(UserStringFields.email);
+  }
+
   String getFirstNameCache() {
     return _getStringFieldCache(UserStringFields.firstName);
   }
