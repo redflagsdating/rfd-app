@@ -9,8 +9,9 @@ class FireStorageProvider {
   FireStorageProvider({required this.userProvider}) {
     _rootRef = FirebaseStorage.instance.ref();
   }
-
   final UserProvider userProvider;
+
+  Reference get rootRef => _rootRef;
 
   // Storage references of the current authenticated user id
   Reference get imgStorageRef => _rootRef.child(_getImagesPath());

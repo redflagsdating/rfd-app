@@ -28,7 +28,7 @@
   "month": "{count, plural, =1{month} other{months}}",
   "year": "{count, plural, =1{year} other{years}}",
   "nonBinary": "Non-Binary",
-  "signOut": "Sign out",
+  "logout": "Log out",
   "brandName": "Red Flags",
   "brandTagLine": "Real talk",
   "termOfService": "Terms of Service",
@@ -126,5 +126,13 @@
   "pgRealTalkBody": "Be real, be vulnerable, be your true self.",
   "pgRedFlagsHeadline": "What are your red flags?",
   "pgGreenFlagsHeadline": "What are your green flags?",
-  "pgSelectFlagsBody": "Add or select from the list up to 3 maximum"
+  "pgSelectFlagsBody": "Add or select from the list up to 3 maximum",
+  "pgAccountViewProfileBtn": "View Profile",
+  "pgAccountMenuProfile": "My Profile",
+  "pgAccountMenuVerify": "Verification",
+  "pgAccountMenuLocation": "My Location",
+  "pgAccountMenuReport": "Report",
+  "pgAccountMenuSupport": "Support",
+  "pgAccountMenuFaq": "FAQs",
+  "pgAccountMenuLegal": "Legal"
 }

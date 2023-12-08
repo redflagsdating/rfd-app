@@ -8,8 +8,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/mixins/mixin_file.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
@@ -31,7 +31,7 @@ class CardImagePicker extends StatefulWidget {
   State<CardImagePicker> createState() => _CardImagePickerState();
 }
 
-class _CardImagePickerState extends State<CardImagePicker> {
+class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
   File? _file;
   XFile? _xFile;
   Reference? _imageRef;
@@ -54,19 +54,6 @@ class _CardImagePickerState extends State<CardImagePicker> {
     });
   }
 
-  Future<String> _getLocalFilePath() async {
-    final appDocDir = await getApplicationDocumentsDirectory();
-    final dir = Directory(
-      '${appDocDir.path}/${_imageRef?.parent?.fullPath}',
-    );
-
-    if (!await dir.exists()) {
-      await dir.create(recursive: true);
-    }
-
-    return "${dir.path}/${_imageRef?.name}";
-  }
-
   Future<void> _setSpotlightPhoto() async {
     await context.read<UserProvider>().setPhotoUrl(
           _imageRef!.fullPath,
@@ -75,7 +62,8 @@ class _CardImagePickerState extends State<CardImagePicker> {
         );
 
     // Async write to app doc directory as no dependency
-    _imageRef!.writeToFile(File(await _getLocalFilePath()));
+    _imageRef!
+        .writeToFile(await createFileObject(_imageRef?.fullPath as String));
   }
 
   Future<bool> _isSpotlightPhoto() async {
@@ -92,7 +80,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
     await _file?.delete();
 
     // Ensure to delete cache version in application document directory
-    final file = File(await _getLocalFilePath());
+    final file = await createFileObject(_imageRef?.fullPath as String);
 
     if (file.existsSync()) {
       await file.delete();
@@ -120,7 +108,7 @@ class _CardImagePickerState extends State<CardImagePicker> {
     }
 
     _imageRef = widget.imageRef;
-    _file = File(await _getLocalFilePath());
+    _file = await createFileObject(_imageRef?.fullPath as String);
 
     final downloadTask = widget.imageRef!.writeToFile(_file!);
     downloadTask.snapshotEvents.listen((taskSnapshot) {

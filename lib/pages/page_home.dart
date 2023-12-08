@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:red_flags/pages/page_account_settings.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
 class PageHome extends StatefulWidget {
@@ -17,24 +18,22 @@ class _PageHomeState extends State<PageHome> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    // For animation mainly
+    final bodyKey = ValueKey(_currentIndex);
 
     return Scaffold(
       body: SlideTransitionSwitcher(
         reverse: _reverse,
         child: _currentIndex == 0
             ? Container(
-                key: ValueKey(_currentIndex),
+                key: bodyKey,
                 alignment: Alignment.center,
                 child: Text(l10n!.calendar),
               )
             : _currentIndex == 2
-                ? Container(
-                    key: ValueKey(_currentIndex),
-                    alignment: Alignment.center,
-                    child: Text(l10n!.account),
-                  )
+                ? PageAccountSettings(key: bodyKey)
                 : Container(
-                    key: ValueKey(_currentIndex),
+                    key: bodyKey,
                     alignment: Alignment.center,
                     child: Text(l10n!.home),
                   ),
@@ -57,7 +56,7 @@ class _PageHomeState extends State<PageHome> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.calendar_month,
-              semanticLabel: l10n.calendar,
+              semanticLabel: l10n!.calendar,
             ),
             label: l10n.calendar,
           ),

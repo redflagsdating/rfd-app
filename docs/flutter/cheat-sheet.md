@@ -88,9 +88,9 @@ Localized message in the language App Resource Bundle file, e.g. `app_en.arb`
 ```json
 {
   "send": "Send",
-  "signOut": "Sign out",
-  "@signOut": {
-    "description": "Sign out button text"
+  "logout": "Log out",
+  "@logout": {
+    "description": "Log out button text"
   }
 }
 ```

@@ -68,6 +68,7 @@ class App extends StatelessWidget {
               theme: ThemeData(
                 fontFamily: 'Nunito',
                 textTheme: typographyTheme,
+                splashColor: lightColorScheme.inversePrimary.withOpacity(0.1),
                 inputDecorationTheme: const InputDecorationTheme(
                   hintStyle: TextStyle(
                     fontStyle: FontStyle.italic,
@@ -78,6 +79,11 @@ class App extends StatelessWidget {
                 badgeTheme: BadgeThemeData(
                   textColor: lightColorScheme.onTertiary,
                   backgroundColor: darkColorScheme.tertiary,
+                ),
+                outlinedButtonTheme: OutlinedButtonThemeData(
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: lightColorScheme.primary),
+                  ),
                 ),
                 floatingActionButtonTheme: FloatingActionButtonThemeData(
                   foregroundColor: lightColorScheme.onPrimary,

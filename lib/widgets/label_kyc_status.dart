@@ -29,7 +29,7 @@ class _LabelKycStatusState extends State<LabelKycStatus> {
 
       case SNSMobileSDKStatus.Pending:
         color = theme.colorScheme.tertiary;
-        icon = Icon(Icons.pending, color: color);
+        icon = Icon(Icons.access_time_filled_rounded, color: color);
         label = l10n.pending;
         break;
 
