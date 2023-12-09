@@ -25,10 +25,10 @@ class _PageSignInIntroState extends State<PageSignInIntro>
     Navigator.of(context).pop();
   }
 
-  void _navigate() {
+  void _navigate([bool? skip]) {
     if (step < maxSteps - 1) {
       next();
-    } else {
+    } else if (skip != false) {
       _skip();
     }
   }
@@ -56,8 +56,10 @@ class _PageSignInIntroState extends State<PageSignInIntro>
         },
         onHorizontalDragEnd: (details) {
           if (_dragDx >= MediaQuery.of(context).size.width / 2) {
-            _navigate();
+            // No skip to prevent swipe gesture to exist intro
+            _navigate(false);
           } else {
+            // Backward
             next(true);
           }
 

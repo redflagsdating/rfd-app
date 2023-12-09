@@ -9,7 +9,7 @@ import 'package:red_flags/widgets/profile/profile_birthday.dart';
 import 'package:red_flags/widgets/profile/profile_gender.dart';
 import 'package:red_flags/widgets/profile/profile_locality.dart';
 import 'package:red_flags/widgets/profile/profile_photos.dart';
-import 'package:red_flags/widgets/scaffold_onboard.dart';
+import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 
 /// Step 1 - Gender
 /// Step 2 - Gender to meet
@@ -72,10 +72,9 @@ class _PageOnboardStage2State extends State<PageOnboardStage2>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ScaffoldOnboard(
+    return ScaffoldPageOnboard(
       step: step,
       maxSteps: maxSteps,
-      appBarBackground: theme.colorScheme.background,
       stepIndicatorColor: theme.colorScheme.primaryContainer,
       onBackPressed: submitting
           ? null

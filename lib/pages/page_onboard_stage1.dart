@@ -8,7 +8,7 @@ import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_display_name.dart';
 import 'package:red_flags/widgets/profile/profile_full_name.dart';
 import 'package:red_flags/widgets/profile/profile_kyc.dart';
-import 'package:red_flags/widgets/scaffold_onboard.dart';
+import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 
 /// Step 1 - First/Last name
 /// Step 2 - Preferred (display) name
@@ -68,10 +68,9 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ScaffoldOnboard(
+    return ScaffoldPageOnboard(
       step: step,
       maxSteps: maxSteps,
-      appBarBackground: theme.colorScheme.background,
       stepIndicatorColor: theme.colorScheme.primaryContainer,
       onBackPressed: submitting
           ? null

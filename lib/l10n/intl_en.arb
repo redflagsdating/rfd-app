@@ -1,5 +1,6 @@
 {
   "sent": "Sent",
+  "save": "Save",
   "and": "and",
   "home": "Home",
   "done": "Done",
@@ -134,5 +135,6 @@
   "pgAccountMenuReport": "Report",
   "pgAccountMenuSupport": "Support",
   "pgAccountMenuFaq": "FAQs",
-  "pgAccountMenuLegal": "Legal"
+  "pgAccountMenuLegal": "Legal",
+  "pgAccountLocalitySaved": "Location updated successfully."
 }

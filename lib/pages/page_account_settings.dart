@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_file.dart';
+import 'package:red_flags/pages/page_account_locality.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
@@ -18,12 +19,19 @@ class PageAccountSettings extends StatefulWidget {
 
 class _PageAccountSettingsState extends State<PageAccountSettings>
     with MixinFile {
+  bool? _verified;
   File? _avatarImgFile;
 
-  void _initAvatar() async {
+  void _initState() async {
     final userProvider = context.read<UserProvider>();
     final storageProvider = context.read<FireStorageProvider>();
     final photoUrl = await userProvider.getPhotoUrl();
+
+    userProvider.getVerified().then((value) {
+      setState(() {
+        _verified = value;
+      });
+    });
 
     if (photoUrl != null) {
       _avatarImgFile = await createFileObject(photoUrl);
@@ -43,7 +51,7 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
 
   @override
   void initState() {
-    _initAvatar();
+    _initState();
     super.initState();
   }
 
@@ -65,7 +73,13 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
       },
       {
         "icon": const Icon(Icons.location_on_rounded, size: 28),
-        "label": l10n.pgAccountMenuLocation
+        "label": l10n.pgAccountMenuLocation,
+        "page": PageAccountLocality(
+          title: Text(
+            l10n.pgAccountMenuLocation,
+            style: theme.textTheme.titleMedium,
+          ),
+        ),
       },
       {
         "icon": const Icon(Icons.error_outline_sharp, size: 28),
@@ -95,7 +109,6 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
           ListenableBuilder(
             listenable: userProvider,
             builder: (context, _) {
-              final verified = userProvider.getVerifiedCache();
               final verifySubmitted = userProvider.getVerifySubmittedCache();
 
               return Badge(
@@ -104,18 +117,23 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
                 alignment: Alignment.bottomRight,
                 label: verifySubmitted != true
                     ? const Icon(
-                        Icons.error,
+                        Icons.person_search,
                         color: Colors.black26,
                       )
-                    : verified == true
+                    : _verified == true
                         ? Icon(
                             Icons.verified,
                             color: Colors.green.shade400,
                           )
-                        : Icon(
-                            Icons.access_time_filled_rounded,
-                            color: theme.colorScheme.tertiary,
-                          ),
+                        : _verified == false
+                            ? Icon(
+                                Icons.cancel,
+                                color: theme.colorScheme.error,
+                              )
+                            : Icon(
+                                Icons.access_time_filled_rounded,
+                                color: theme.colorScheme.tertiary,
+                              ),
                 child: _avatarImgFile != null
                     ? CircleAvatar(
                         maxRadius: 60,
@@ -178,7 +196,15 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
                       return Material(
                         child: InkWell(
                           onTap: () {
-                            // TODO
+                            final page = menuItems[index]['page'];
+
+                            if (page is Widget) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => page,
+                                ),
+                              );
+                            }
                           },
                           child: Container(
                             height: 50,
@@ -204,6 +230,7 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
           TextButton(
             onPressed: () {
               authProvider.handleSignOut();
+              setState(() {});
             },
             child: Text(l10n.logout),
           )

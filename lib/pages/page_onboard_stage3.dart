@@ -7,7 +7,7 @@ import 'package:red_flags/widgets/animation/slide_animated_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_greenflags.dart';
 import 'package:red_flags/widgets/profile/profile_realtalk.dart';
 import 'package:red_flags/widgets/profile/profile_redflags.dart';
-import 'package:red_flags/widgets/scaffold_onboard.dart';
+import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 
 /// Step 1 - Real talk
 /// Step 2 - Redflags
@@ -58,10 +58,9 @@ class _PageOnboardStage3State extends State<PageOnboardStage3>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return ScaffoldOnboard(
+    return ScaffoldPageOnboard(
       step: step,
       maxSteps: maxSteps,
-      appBarBackground: theme.colorScheme.background,
       stepIndicatorColor: theme.colorScheme.primaryContainer,
       onBackPressed: submitting
           ? null

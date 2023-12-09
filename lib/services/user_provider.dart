@@ -328,7 +328,8 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<bool?> getVerified() async {
-    return await _getBoolField(UserBoolFields.verified);
+    /// Always get from database to ensure up-to-date since 3rd-party async
+    return await _getField(UserBoolFields.verified.name);
   }
 
   Future<bool?> getVerifySubmitted() async {
