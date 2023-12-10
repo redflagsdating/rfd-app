@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/profile/profile_locality.dart';
+import 'package:red_flags/widgets/profile/profile_display_name.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
-class PageProfileSettingsLocality extends StatefulWidget {
-  const PageProfileSettingsLocality({Key? key, this.title}) : super(key: key);
+class PageProfileSettingsDisplayName extends StatefulWidget {
+  const PageProfileSettingsDisplayName({Key? key, this.title})
+      : super(key: key);
   final Widget? title;
 
   @override
-  State<PageProfileSettingsLocality> createState() =>
-      _PageProfileSettingsLocalityState();
+  State<PageProfileSettingsDisplayName> createState() =>
+      _PageProfileSettingsDisplayNameState();
 }
 
-class _PageProfileSettingsLocalityState
-    extends State<PageProfileSettingsLocality> {
+class _PageProfileSettingsDisplayNameState
+    extends State<PageProfileSettingsDisplayName> {
   bool _enabled = true;
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
@@ -28,7 +29,7 @@ class _PageProfileSettingsLocalityState
 
   @override
   void didChangeDependencies() {
-    _controller.text = Provider.of<UserProvider>(context).getLocalityCache();
+    _controller.text = context.read<UserProvider>().getDisplayNameCache();
     super.didChangeDependencies();
   }
 
@@ -47,19 +48,21 @@ class _PageProfileSettingsLocalityState
               return;
             }
 
-            final current = userProvider.getLocalityCache();
-            final locality = _controller.text;
+            final current = userProvider.getDisplayNameCache();
+            final displayName = _controller.text;
 
-            if (current == locality) {
+            if (current == displayName) {
               return;
             }
 
             _setEnabled(false);
 
-            final result = await userProvider.setLocality(
-              locality,
+            final result = await userProvider.setDisplayName(
+              displayName,
               localOnly: false,
+              silent: false,
             );
+
             // ignore: use_build_context_synchronously
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -76,7 +79,10 @@ class _PageProfileSettingsLocalityState
       ],
       content: Form(
         key: _form,
-        child: ProfileLocality(enabled: _enabled, controller: _controller),
+        child: ProfileDisplayName(
+          controller: _controller,
+          enabled: _enabled,
+        ),
       ),
       onBackPressed: () {
         Navigator.of(context).pop();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/pages/page_profile_settings_display_name.dart';
 import 'package:red_flags/pages/page_profile_settings_full_name.dart';
 import 'package:red_flags/pages/page_profile_settings_locality.dart';
 import 'package:red_flags/services/auth_provider.dart';
@@ -47,19 +48,26 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
               title: l10n.pgProfileMenuAboutMeTitle,
               children: [
                 ProfileSettingsMenuItem(
-                    label: l10n.fullName,
-                    leadingIcon: Icons.person,
-                    trailingIcon: Icons.arrow_forward_ios_rounded,
-                    page: PageProfileSettingsFullName(
-                      title: Text(
-                        l10n.fullName,
-                        style: theme.textTheme.titleMedium,
-                      ),
-                    )),
+                  label: l10n.fullName,
+                  leadingIcon: Icons.person,
+                  trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsFullName(
+                    title: Text(
+                      l10n.fullName,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
+                ),
                 ProfileSettingsMenuItem(
                   label: l10n.displayName,
                   leadingIcon: FontAwesomeIcons.signature,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsDisplayName(
+                    title: Text(
+                      l10n.displayName,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.gender,
