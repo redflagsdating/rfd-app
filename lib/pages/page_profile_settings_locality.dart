@@ -5,15 +5,17 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/profile/profile_locality.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
-class PageAccountLocality extends StatefulWidget {
-  const PageAccountLocality({Key? key, this.title}) : super(key: key);
+class PageProfileSettingsLocality extends StatefulWidget {
+  const PageProfileSettingsLocality({Key? key, this.title}) : super(key: key);
   final Widget? title;
 
   @override
-  State<PageAccountLocality> createState() => _PageAccountLocalityState();
+  State<PageProfileSettingsLocality> createState() =>
+      _PageProfileSettingsLocalityState();
 }
 
-class _PageAccountLocalityState extends State<PageAccountLocality> {
+class _PageProfileSettingsLocalityState
+    extends State<PageProfileSettingsLocality> {
   bool _enabled = true;
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
@@ -54,16 +56,17 @@ class _PageAccountLocalityState extends State<PageAccountLocality> {
 
             _setEnabled(false);
 
-            if (await userProvider.setLocality(locality, localOnly: false) ==
-                true) {
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: const Duration(seconds: 2),
-                  content: Text(l10n.pgAccountLocalitySaved),
-                ),
-              );
-            }
+            final result =
+                await userProvider.setLocality(locality, localOnly: false);
+            // ignore: use_build_context_synchronously
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 2),
+                content: Text(result == true
+                    ? l10n.pgProfileSuccessfulUpdated
+                    : l10n.pgProfileFailedUpdated),
+              ),
+            );
 
             _setEnabled(true);
           },

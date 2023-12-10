@@ -32,7 +32,7 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
               style: theme.textTheme.headlineSmall,
             ),
             Icon(
-              Icons.flag_rounded,
+              Icons.flag_circle_sharp,
               size: 32,
               shadows: [
                 Shadow(

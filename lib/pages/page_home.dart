@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:red_flags/pages/page_account_settings.dart';
+import 'package:red_flags/pages/page_profile_settings.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
 class PageHome extends StatefulWidget {
@@ -31,7 +31,7 @@ class _PageHomeState extends State<PageHome> {
                 child: Text(l10n!.calendar),
               )
             : _currentIndex == 2
-                ? PageAccountSettings(key: bodyKey)
+                ? PageProfileSettings(key: bodyKey)
                 : Container(
                     key: bodyKey,
                     alignment: Alignment.center,
@@ -77,9 +77,9 @@ class _PageHomeState extends State<PageHome> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.perm_contact_cal_rounded,
-              semanticLabel: l10n.account,
+              semanticLabel: l10n.profile,
             ),
-            label: l10n.account,
+            label: l10n.profile,
           ),
         ],
         onTap: (index) {
