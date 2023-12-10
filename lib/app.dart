@@ -1,4 +1,3 @@
-import 'package:animations/animations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -108,12 +107,7 @@ class App extends StatelessWidget {
                 useMaterial3: true,
                 pageTransitionsTheme: const PageTransitionsTheme(
                   builders: {
-                    TargetPlatform.android: SharedAxisPageTransitionsBuilder(
-                      transitionType: SharedAxisTransitionType.horizontal,
-                    ),
-                    TargetPlatform.iOS: SharedAxisPageTransitionsBuilder(
-                      transitionType: SharedAxisTransitionType.horizontal,
-                    ),
+                    TargetPlatform.android: CupertinoPageTransitionsBuilder()
                   },
                 ),
               ),

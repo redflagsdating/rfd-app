@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/pages/page_onboard_complete_splash.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/animation/slide_animated_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_greenflags.dart';
 import 'package:red_flags/widgets/profile/profile_realtalk.dart';
 import 'package:red_flags/widgets/profile/profile_redflags.dart';
@@ -97,14 +96,28 @@ class _PageOnboardStage3State extends State<PageOnboardStage3>
               setSubmitting(false);
               _next();
             },
-      content: SlideAnimatedSwitcher(
+      // TODO: Resovle SlideTransitionSwitcher shifting issue
+      content: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
-        reverse: slideTransitionReverse,
+        reverseDuration: const Duration(milliseconds: 0),
         child: step == 0
             ? const ProfileRealTalk()
             : step == 1
                 ? const ProfileRedFlags()
                 : const ProfileGreenFlags(),
+        transitionBuilder: (child, animation) {
+          var tween = Tween(
+                  begin: slideTransitionReverse
+                      ? const Offset(-1.0, 0.0)
+                      : const Offset(1.0, 0.0),
+                  end: Offset.zero)
+              .chain(CurveTween(curve: Curves.easeInCubic));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: child,
+          );
+        },
       ),
     );
   }

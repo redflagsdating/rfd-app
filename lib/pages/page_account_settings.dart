@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,40 +20,30 @@ class PageAccountSettings extends StatefulWidget {
 
 class _PageAccountSettingsState extends State<PageAccountSettings>
     with MixinFile {
-  bool? _verified;
-  File? _avatarImgFile;
+  Future<File?> _fetchAvatar() async {
+    File? avatarImgFile;
 
-  void _initState() async {
     final userProvider = context.read<UserProvider>();
     final storageProvider = context.read<FireStorageProvider>();
     final photoUrl = await userProvider.getPhotoUrl();
 
-    userProvider.getVerified().then((value) {
-      setState(() {
-        _verified = value;
-      });
-    });
-
     if (photoUrl != null) {
-      _avatarImgFile = await createFileObject(photoUrl);
+      avatarImgFile = await createFileObject(photoUrl);
 
       /// Download photo from Firebase storage when photo is cached at local,
       /// such as logged in on a different device.
-      if (_avatarImgFile?.lengthSync() == 0) {
-        storageProvider.rootRef
+      if (avatarImgFile.lengthSync() == 0) {
+        return storageProvider.rootRef
             .child(photoUrl)
-            .writeToFile(_avatarImgFile!)
-            .whenComplete(() => setState(() {}));
+            .writeToFile(avatarImgFile)
+            .whenComplete(() => avatarImgFile)
+            .then((value) => avatarImgFile);
       } else {
-        setState(() {});
+        return avatarImgFile;
       }
     }
-  }
 
-  @override
-  void initState() {
-    _initState();
-    super.initState();
+    return null;
   }
 
   @override
@@ -120,41 +111,60 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
                         Icons.person_search,
                         color: Colors.black26,
                       )
-                    : _verified == true
-                        ? Icon(
-                            Icons.verified,
-                            color: Colors.green.shade400,
-                          )
-                        : _verified == false
-                            ? Icon(
-                                Icons.cancel,
-                                color: theme.colorScheme.error,
-                              )
-                            : Icon(
-                                Icons.access_time_filled_rounded,
-                                color: theme.colorScheme.tertiary,
-                              ),
-                child: _avatarImgFile != null
-                    ? CircleAvatar(
-                        maxRadius: 60,
-                        minRadius: 60,
-                        backgroundImage: FileImage(_avatarImgFile as File),
-                        onBackgroundImageError: (exception, stackTrace) {
-                          logger.e(exception, time: DateTime.now());
+                    : FutureBuilder(
+                        future: userProvider.getVerified(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return snapshot.data == true
+                                ? Icon(
+                                    Icons.verified,
+                                    color: Colors.green.shade400,
+                                  )
+                                : snapshot.data == false
+                                    ? Icon(
+                                        Icons.cancel,
+                                        color: theme.colorScheme.error,
+                                      )
+                                    : Icon(
+                                        Icons.access_time_filled_rounded,
+                                        color: theme.colorScheme.tertiary,
+                                      );
+                          }
+
+                          return Icon(
+                            Icons.circle_outlined,
+                            color:
+                                theme.colorScheme.onSecondary.withOpacity(0.8),
+                          );
                         },
-                      )
-                    : CircleAvatar(
-                        maxRadius: 60,
-                        minRadius: 60,
-                        backgroundColor:
-                            theme.colorScheme.outlineVariant.withOpacity(0.2),
-                        child: Icon(
-                          Icons.person,
-                          color:
-                              theme.colorScheme.outlineVariant.withOpacity(0.6),
-                          size: 60,
-                        ),
                       ),
+                child: FutureBuilder(
+                  future: _fetchAvatar(),
+                  builder: (context, snapshot) {
+                    final file = snapshot.data;
+                    return snapshot.hasData && file != null
+                        ? CircleAvatar(
+                            maxRadius: 60,
+                            minRadius: 60,
+                            backgroundImage: FileImage(file),
+                            onBackgroundImageError: (exception, stackTrace) {
+                              logger.e(exception, time: DateTime.now());
+                            },
+                          )
+                        : CircleAvatar(
+                            maxRadius: 60,
+                            minRadius: 60,
+                            backgroundColor: theme.colorScheme.outlineVariant
+                                .withOpacity(0.2),
+                            child: Icon(
+                              Icons.person,
+                              color: theme.colorScheme.outlineVariant
+                                  .withOpacity(0.6),
+                              size: 60,
+                            ),
+                          );
+                  },
+                ),
               );
             },
           ),
@@ -199,11 +209,14 @@ class _PageAccountSettingsState extends State<PageAccountSettings>
                             final page = menuItems[index]['page'];
 
                             if (page is Widget) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => page,
-                                ),
-                              );
+                              Future.delayed(const Duration(milliseconds: 150),
+                                  () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => page,
+                                  ),
+                                );
+                              });
                             }
                           },
                           child: Container(
