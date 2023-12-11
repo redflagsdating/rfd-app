@@ -2,7 +2,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/pages/page_onboard_splash.dart';
+import 'package:red_flags/pages/onboard/page_onboard_splash.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/card_image_picker.dart';

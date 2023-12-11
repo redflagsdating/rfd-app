@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:red_flags/pages/page_profile_settings.dart';
+import 'package:red_flags/pages/profile/page_profile_settings.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
 class PageHome extends StatefulWidget {

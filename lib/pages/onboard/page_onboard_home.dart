@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/pages/page_onboard_splash.dart';
-import 'package:red_flags/pages/page_onboard_stage1.dart';
-import 'package:red_flags/pages/page_onboard_stage2.dart';
-import 'package:red_flags/pages/page_onboard_stage3.dart';
+import 'package:red_flags/pages/onboard/page_onboard_splash.dart';
+import 'package:red_flags/pages/onboard/page_onboard_stage1.dart';
+import 'package:red_flags/pages/onboard/page_onboard_stage2.dart';
+import 'package:red_flags/pages/onboard/page_onboard_stage3.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 

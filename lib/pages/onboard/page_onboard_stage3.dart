@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
-import 'package:red_flags/pages/page_onboard_complete_splash.dart';
+import 'package:red_flags/pages/onboard/page_onboard_complete_splash.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/profile/profile_greenflags.dart';
 import 'package:red_flags/widgets/profile/profile_realtalk.dart';

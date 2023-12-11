@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/pages/page_profile_settings.photos.dart';
-import 'package:red_flags/pages/page_profile_settings_age.dart';
-import 'package:red_flags/pages/page_profile_settings_display_name.dart';
-import 'package:red_flags/pages/page_profile_settings_full_name.dart';
-import 'package:red_flags/pages/page_profile_settings_gender.dart';
-import 'package:red_flags/pages/page_profile_settings_locality.dart';
+import 'package:red_flags/pages/profile/page_profile_settings.photos.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_age.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_display_name.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_full_name.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_gender.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_greenflags.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_locality.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_realtalk.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu_item.dart';
@@ -143,18 +146,36 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   label: l10n.brandTagLine,
                   leadingIcon: Icons.question_answer_outlined,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsRealtalk(
+                    title: Text(
+                      l10n.brandTagLine,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.brandName,
                   leadingIcon: Icons.flag_circle_sharp,
                   leadingIconColor: theme.colorScheme.primary,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsRedFlags(
+                    title: Text(
+                      l10n.brandName,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.pgProfileMenuItemGreenFlags,
                   leadingIcon: Icons.flag_circle_sharp,
                   leadingIconColor: Colors.green,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsGreenFlags(
+                    title: Text(
+                      l10n.pgProfileMenuItemGreenFlags,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
               ],
             ),
