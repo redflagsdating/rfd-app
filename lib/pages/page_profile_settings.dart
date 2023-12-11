@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/pages/page_profile_settings.photos.dart';
 import 'package:red_flags/pages/page_profile_settings_display_name.dart';
 import 'package:red_flags/pages/page_profile_settings_full_name.dart';
+import 'package:red_flags/pages/page_profile_settings_gender.dart';
 import 'package:red_flags/pages/page_profile_settings_locality.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
@@ -74,6 +75,12 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   label: l10n.gender,
                   leadingIcon: FontAwesomeIcons.marsAndVenus,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsGender(
+                    title: Text(
+                      l10n.gender,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.age,

@@ -10,10 +10,12 @@ class ProfileGender extends StatefulWidget {
   const ProfileGender({
     Key? key,
     this.enabled,
+    this.required,
     this.genderFor,
   }) : super(key: key);
 
   final bool? enabled;
+  final bool? required;
   final bool? genderFor;
 
   @override
@@ -27,6 +29,8 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
 
   void _setGender(Gender? gender) {
     setState(() {
+      final isRequired = widget.required ?? false;
+
       if (gender != null) {
         // genderFor List<String>
         if (widget.genderFor == true) {
@@ -35,14 +39,22 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
           } else {
             _genderFor.add(gender.name);
           }
-          _userProvider.setGenderFor(_genderFor);
+          _userProvider.setGenderFor(
+            _genderFor,
+            localOnly: !isRequired,
+            silent: !isRequired,
+          );
         }
         // gender String
         else {
           _gender = gender.name;
-          _userProvider.setGender(_gender);
+          _userProvider.setGender(
+            _gender,
+            localOnly: !isRequired,
+            silent: !isRequired,
+          );
         }
-      } else {
+      } else if (!isRequired) {
         _gender = "";
         _userProvider.setGender("");
       }
