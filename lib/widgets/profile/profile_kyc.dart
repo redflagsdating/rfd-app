@@ -46,14 +46,14 @@ class _ProfileKycState extends State<ProfileKyc> {
 
     final accessToken = await _api.fetchAccessToken();
     final snsMobileSDK = SNSMobileSDK.init(accessToken, _api.fetchAccessToken)
-        .withTheme({
-          // TODO: Customise theme
-          "universal": {
-            "colors": {
-              "primaryButtonBackground": "0xFFFF0049",
-            },
-          }
-        })
+        // .withTheme({
+        //   // TODO: Customise theme
+        //   "universal": {
+        //     "colors": {
+        //       "primaryButtonBackground": "0xFFFF0049",
+        //     },
+        //   }
+        // })
         .withHandlers(
           onStatusChanged: (status, prevStatus) {
             _updateUserStatus(status);
