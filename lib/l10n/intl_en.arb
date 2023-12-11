@@ -27,7 +27,7 @@
   "gender": "Gender",
   "age": "Age",
   "verification": "Verification",
-  "photo": "{count, plural, =1{photo} other{photos}}",
+  "photo": "{count, plural, =1{Photo} other{Photos}}",
   "contactUs": "Contact us",
   "man": "{count, plural, =1{man} other{men}}",
   "woman": "{count, plural, =1{woman} other{women}}",

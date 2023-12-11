@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/pages/page_profile_settings.photos.dart';
 import 'package:red_flags/pages/page_profile_settings_display_name.dart';
 import 'package:red_flags/pages/page_profile_settings_full_name.dart';
 import 'package:red_flags/pages/page_profile_settings_locality.dart';
@@ -94,6 +95,12 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   label: l10n.photo(2),
                   leadingIcon: Icons.photo,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsPhotos(
+                    title: Text(
+                      l10n.photo(2),
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.verification,

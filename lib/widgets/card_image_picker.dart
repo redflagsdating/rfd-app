@@ -42,16 +42,24 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
   late Logger _logger;
   late FireStorageProvider _fireStorage;
 
-  void setUploading(bool value) {
+  void _setUploading(bool value) {
     setState(() {
       _uploading = value;
     });
   }
 
-  void setDeleting(bool value) {
+  void _setDeleting(bool value) {
     setState(() {
       _deleting = value;
     });
+  }
+
+  void _setXFile() {
+    if (_file != null) {
+      setState(() {
+        _xFile = XFile(_file!.path);
+      });
+    }
   }
 
   Future<void> _setSpotlightPhoto() async {
@@ -74,7 +82,7 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
   Future<void> _delete() async {
     final isPrimary = await _isSpotlightPhoto();
 
-    setDeleting(true);
+    _setDeleting(true);
 
     await _imageRef!.delete();
     await _file?.delete();
@@ -99,7 +107,7 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
           );
     }
 
-    setDeleting(false);
+    _setDeleting(false);
   }
 
   Future<void> _download() async {
@@ -110,26 +118,24 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
     _imageRef = widget.imageRef;
     _file = await createFileObject(_imageRef?.fullPath as String);
 
+    // Skip download if photo file exists
+    if (_file != null && _file!.existsSync() && _file!.lengthSync() > 0) {
+      _setXFile();
+      return;
+    }
+
     final downloadTask = widget.imageRef!.writeToFile(_file!);
     downloadTask.snapshotEvents.listen((taskSnapshot) {
       switch (taskSnapshot.state) {
         case TaskState.running:
-          // TODO: Handle this case.
-          break;
         case TaskState.paused:
-          // TODO: Handle this case.
-          break;
-        case TaskState.success:
-          _xFile = XFile(_file!.path);
-          setState(() {});
-
-          break;
         case TaskState.canceled:
-          // TODO: Handle this case.
-          break;
         case TaskState.error:
           // TODO: Handle this case.
+          break;
 
+        case TaskState.success:
+          _setXFile();
           break;
       }
     });
@@ -167,7 +173,7 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
         _file = File(croppedFile.path);
         _imageRef ??= _fireStorage.newImgStorageRef;
 
-        setUploading(true);
+        _setUploading(true);
 
         try {
           await _imageRef!.putFile(_file as File);
@@ -181,7 +187,7 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
           _logger.e(e, time: DateTime.now());
         }
 
-        setUploading(false);
+        _setUploading(false);
       } else {
         setState(() {});
       }
