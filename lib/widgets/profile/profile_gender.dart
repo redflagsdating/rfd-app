@@ -35,7 +35,9 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
         // genderFor List<String>
         if (widget.genderFor == true) {
           if (_genderFor.contains(gender.name)) {
-            _genderFor.remove(gender.name);
+            if (!isRequired || _genderFor.length > 1) {
+              _genderFor.remove(gender.name);
+            }
           } else {
             _genderFor.add(gender.name);
           }

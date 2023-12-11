@@ -3,8 +3,10 @@ import 'package:red_flags/widgets/profile/profile_gender.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsGender extends StatefulWidget {
-  const PageProfileSettingsGender({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsGender({Key? key, this.title, this.genderFor})
+      : super(key: key);
   final Widget? title;
+  final bool? genderFor;
 
   @override
   State<PageProfileSettingsGender> createState() =>
@@ -16,7 +18,11 @@ class _PageProfileSettingsGenderState extends State<PageProfileSettingsGender> {
   Widget build(BuildContext context) {
     return ScaffoldPageBasic(
       title: widget.title,
-      content: const ProfileGender(enabled: true, required: true),
+      content: ProfileGender(
+        enabled: true,
+        required: true,
+        genderFor: widget.genderFor,
+      ),
       onBackPressed: () {
         Navigator.of(context).pop();
       },

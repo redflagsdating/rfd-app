@@ -131,6 +131,13 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   label: l10n.gender,
                   leadingIcon: FontAwesomeIcons.marsAndVenus,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsGender(
+                    genderFor: true,
+                    title: Text(
+                      l10n.gender,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.brandTagLine,
