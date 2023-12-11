@@ -58,11 +58,49 @@ class IdentityVerification {
   }
 
   //
-  Future<String> fetchAccessToken() async {
+  Future<String?> fetchAccessToken() async {
     final uri = _getUri('/accessTokens');
     final response = await http.post(uri, headers: _getHeaders('POST', uri));
     final data = json.decode(response.body);
 
-    return data['token'];
+    return data?['token'];
+  }
+
+  //
+  Future<String?> fetchApplicantId() async {
+    final uri = _getUri('/applicants/-;externalUserId=$uid/one');
+    final response = await http.get(uri, headers: _getHeaders('GET', uri));
+    final data = json.decode(response.body);
+
+    return data?["id"];
+  }
+
+  //
+  Future<SNSMobileSDKStatus?> fetchReviewStatus(String applicantId) async {
+    final uri = _getUri('/applicants/$applicantId/status');
+    final response = await http.get(uri, headers: _getHeaders('GET', uri));
+    final data = json.decode(response.body);
+    final status = data?['reviewStatus'];
+    final result = data?['reviewResult'];
+
+    if (status == 'init') {
+      return SNSMobileSDKStatus.Initial;
+    }
+
+    // TODO: Revisit to justify status mapping
+    if (status != null &&
+        ['pending', 'prechecked', 'queued', 'onHold'].contains(status)) {
+      return SNSMobileSDKStatus.Pending;
+    }
+
+    if (status == 'completed') {
+      if (result?['reviewAnswer'] == 'GREEN') {
+        return SNSMobileSDKStatus.Approved;
+      } else if (result?['reviewAnswer'] == 'RED') {
+        return SNSMobileSDKStatus.FinallyRejected;
+      }
+    }
+
+    return null;
   }
 }

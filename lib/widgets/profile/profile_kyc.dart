@@ -12,7 +12,9 @@ import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dar
 import 'package:red_flags/widgets/label_kyc_status.dart';
 
 class ProfileKyc extends StatefulWidget {
-  const ProfileKyc({Key? key}) : super(key: key);
+  const ProfileKyc({Key? key, this.onboarding}) : super(key: key);
+
+  final bool? onboarding;
 
   @override
   State<ProfileKyc> createState() => _ProfileKycState();
@@ -30,10 +32,10 @@ class _ProfileKycState extends State<ProfileKyc> {
 
     if (isVerifySubmitted != true) {
       if (IdentityVerification.isUploaded(status)) {
-        userProvider.setVerifySubmitted(true, localOnly: false);
+        userProvider.setVerifySubmitted(true, localOnly: false, silent: false);
       }
     } else if (isVerified != true && status == SNSMobileSDKStatus.Approved) {
-      userProvider.setVerified(true, localOnly: false);
+      userProvider.setVerified(true, localOnly: false, silent: false);
     }
   }
 
@@ -71,7 +73,7 @@ class _ProfileKycState extends State<ProfileKyc> {
 
   @override
   void didChangeDependencies() {
-    final uid = Provider.of<UserProvider>(context, listen: false).getIdCache();
+    final uid = context.read<UserProvider>().getIdCache();
     _api = IdentityVerification(uid: uid);
 
     super.didChangeDependencies();
@@ -123,7 +125,9 @@ class _ProfileKycState extends State<ProfileKyc> {
                             child:
                                 const CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Icon(Icons.fact_check_outlined),
+                        : Icon(widget.onboarding == true
+                            ? Icons.fact_check_outlined
+                            : Icons.refresh),
                     onPressed: _verifying
                         ? null
                         : () {
@@ -188,7 +192,9 @@ class _ProfileKycState extends State<ProfileKyc> {
                               }
                             });
                           },
-                    label: Text(l10n.pgKycBtn),
+                    label: Text(widget.onboarding == true
+                        ? l10n.pgKycOnboardBtn
+                        : l10n.pgKycBtn),
                   ),
           ),
         ),

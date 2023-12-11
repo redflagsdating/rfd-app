@@ -8,6 +8,7 @@ import 'package:red_flags/pages/profile/page_profile_settings_display_name.dart'
 import 'package:red_flags/pages/profile/page_profile_settings_full_name.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_gender.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_greenflags.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_kyc.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_locality.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_realtalk.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
@@ -123,6 +124,12 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   label: l10n.verification,
                   leadingIcon: Icons.badge_outlined,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
+                  page: PageProfileSettingsKyc(
+                    title: Text(
+                      l10n.verification,
+                      style: theme.textTheme.titleMedium,
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -215,7 +222,6 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
             TextButton(
               onPressed: () {
                 authProvider.handleSignOut();
-                setState(() {});
               },
               child: Text(l10n.logout),
             )

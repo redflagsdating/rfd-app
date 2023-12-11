@@ -157,8 +157,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> updateUserCache(UserModel user) async {
-    // Init _userDocRef if not existed yet
-    _userDocRef ??= usersRef.doc(user.uid);
+    _userDocRef = usersRef.doc(user.uid);
 
     final dob = user.dob;
 

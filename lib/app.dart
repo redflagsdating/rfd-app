@@ -119,7 +119,7 @@ class App extends StatelessWidget {
                   final showIntro =
                       !(localStorage.getBool(sharedPrefKey) ?? false);
                   final isOnboard =
-                      localStorage.getBool(UserFields.onboarded.name) ?? false;
+                      context.read<UserProvider>().getOnboardedCache();
 
                   return SlideTransitionSwitcher(
                     reverse: !authProvider.isAuthenticated() &&
@@ -127,7 +127,7 @@ class App extends StatelessWidget {
                         ? true
                         : false,
                     child: authProvider.isAuthenticated()
-                        ? (isOnboard
+                        ? (isOnboard == true
                             ? const PageHome()
                             : const PageOnboardHome())
                         : authProvider.isAuthenticating()

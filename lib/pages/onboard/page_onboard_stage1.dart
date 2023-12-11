@@ -141,7 +141,7 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
                       enabled: !submitting,
                       controller: _displayNameCtrl,
                     )
-                  : const ProfileKyc(),
+                  : const ProfileKyc(onboarding: true),
         ),
       ),
     );

@@ -467,7 +467,7 @@ class AuthProvider extends ChangeNotifier {
 
     if (user.docs.isEmpty) {
       logger.d('New user logged in', time: DateTime.now());
-      userProvider.createUser(UserModel(
+      await userProvider.createUser(UserModel(
         uid: firebaseUser.uid,
         email: firebaseUser.email ?? "",
         createdAt: DateTime.now(),
@@ -479,7 +479,7 @@ class AuthProvider extends ChangeNotifier {
       ));
     } else {
       logger.d('Existing user logged in', time: DateTime.now());
-      userProvider.updateUserCache(user.docs.first.data());
+      await userProvider.updateUserCache(user.docs.first.data());
     }
 
     _status = AuthStatus.authenticated;
