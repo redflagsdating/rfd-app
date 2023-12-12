@@ -6,7 +6,6 @@ import 'package:red_flags/pages/onboard/page_onboard_stage1.dart';
 import 'package:red_flags/pages/onboard/page_onboard_stage2.dart';
 import 'package:red_flags/pages/onboard/page_onboard_stage3.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 
 /// Entry page for onboarding to encapsulate business logic and better
 /// transition UX.
@@ -118,21 +117,17 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
 
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
-        PageFadeRouteBuilder(
-          reverseTransitionDuration: const Duration(seconds: 0),
-          transitionDuration: const Duration(milliseconds: 500),
-          page: Builder(
-            builder: (context) => PageOnboardSplash(
-              title: title,
-              buttonLabel: buttonLabel,
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => builder,
-                  ),
-                );
-              },
-            ),
+        MaterialPageRoute(
+          builder: (context) => PageOnboardSplash(
+            title: title,
+            buttonLabel: buttonLabel,
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => builder,
+                ),
+              );
+            },
           ),
         ),
       );

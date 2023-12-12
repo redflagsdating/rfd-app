@@ -130,6 +130,24 @@ class UserProvider extends ChangeNotifier {
     logger.d('New user (${user.email}) is created', time: DateTime.now());
   }
 
+  /// ******************** Dangerous **********************
+  /// ****** For delete user account feature mainly *******
+  /// Delete user document in Firebase storage permanently and clear local
+  /// cache (SharedPreference)
+  Future<void> deleteUser() async {
+    if (_userDocRef != null) {
+      final uid = getIdCache();
+      final email = getEmailCache();
+
+      await usersRef.doc(uid).delete();
+      await localStorage.clear();
+
+      logger.d('Deleted user $email successfully', time: DateTime.now());
+    }
+  }
+
+  /// Alternative to localStorage.clear() that purges user fields except email,
+  ///  intro, providerId and createdAt fields.
   Future<bool> purgeUserCache() async {
     late bool result = true;
 

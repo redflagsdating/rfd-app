@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
@@ -42,6 +43,13 @@ void main() async {
     // Unique name is required to avoid using "Default" and clash with dev
     name: 'rfd-firebase-prod',
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // ** Firebase App Check */
+  await FirebaseAppCheck.instance.activate(
+    androidProvider:
+        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
   );
 
   //** Firebase Crashlytics init for release mode only */

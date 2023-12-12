@@ -23,6 +23,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
 
   @override
   Widget build(context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final enabled = widget.authProvider.status != AuthStatus.initializing;
 
@@ -33,6 +34,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
       body: Dialog.fullscreen(
         child: SingleChildScrollView(
           child: Container(
+            color: theme.colorScheme.background,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Form(
               key: _emailForm,

@@ -10,6 +10,7 @@ class ProfileSettingsMenuItem extends StatefulWidget {
     required this.label,
     this.labelColor,
     this.page,
+    this.onTap,
   }) : super(key: key);
 
   final IconData? leadingIcon;
@@ -19,6 +20,7 @@ class ProfileSettingsMenuItem extends StatefulWidget {
   final String label;
   final Color? labelColor;
   final Widget? page;
+  final void Function()? onTap;
 
   @override
   State<ProfileSettingsMenuItem> createState() =>
@@ -29,23 +31,25 @@ class _ProfileSettingsMenuItemState extends State<ProfileSettingsMenuItem> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final onTap = widget.onTap;
 
     return Material(
       child: InkWell(
-        onTap: () {
-          final page = widget.page;
+        onTap: onTap ??
+            () {
+              final page = widget.page;
 
-          if (page != null) {
-            // Delay for UX transition
-            Future.delayed(const Duration(milliseconds: 150), () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => page,
-                ),
-              );
-            });
-          }
-        },
+              if (page != null) {
+                // Delay for UX transition
+                Future.delayed(const Duration(milliseconds: 150), () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => page,
+                    ),
+                  );
+                });
+              }
+            },
         child: Container(
           height: 50,
           padding: const EdgeInsets.symmetric(horizontal: 24),

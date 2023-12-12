@@ -74,7 +74,7 @@ class _TextFieldChipsState extends State<TextFieldChips> {
                       runSpacing: 0,
                       alignment: WrapAlignment.start,
                       children: [
-                        ...tags.map(
+                        ...(widget.initialChips ?? []).map(
                           (String tag) {
                             final value = tag.capitalize();
 

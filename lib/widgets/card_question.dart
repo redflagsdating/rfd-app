@@ -72,7 +72,7 @@ class _CardQuestionState extends State<CardQuestion> {
         builder: (context) {
           return AlertDialog(
             icon: Icon(
-              size: 40,
+              size: 50,
               Icons.warning_amber_rounded,
               color: theme.colorScheme.error,
             ),

@@ -70,6 +70,8 @@ dependencies:
   flutter_dotenv: ^5.1.0
   http: ^1.1.2
   crypto: ^3.0.3
+  loading_animation_widget: ^1.2.0+4
+  firebase_app_check: ^0.2.0+1
 
 dev_dependencies:
   flutter_test:

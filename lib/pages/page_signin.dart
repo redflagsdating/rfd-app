@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/extensions/string_extension.dart';
 import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
@@ -73,12 +74,30 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
 
   @override
   Widget build(context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final authProvider = context.read<AuthProvider>();
+    final loggedInProvider = authProvider.getLastLoggedInAuthProvider();
 
     return ScaffoldBranding(
       decoration: const AssetImage("assets/signin-bg.jpg"),
       content: Column(
         children: <Widget>[
+          if (loggedInProvider != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
+              child: Text(
+                l10n!.pgSignInWithHintText(
+                  l10n.pgSignInWithBtn(loggedInProvider.name.capitalize()),
+                ),
+                textAlign: TextAlign.center,
+                style: theme.textTheme
+                    .apply(
+                      displayColor: Colors.white,
+                    )
+                    .bodySmall,
+              ),
+            ),
           FilledButton(
             key: const Key("page_signin_google"),
             style: FilledButton.styleFrom(

@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,6 +14,7 @@ import 'package:red_flags/pages/profile/page_profile_settings_locality.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_realtalk.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/widgets/profile/dialog_delete_account.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu_item.dart';
 import 'package:red_flags/widgets/user_circle_avatar.dart';
@@ -44,7 +46,7 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
             const SizedBox(height: 16),
             UserTextFullName(style: theme.textTheme.titleLarge),
             const SizedBox(height: 2),
-            OutlinedButton(
+            FilledButton(
               onPressed: () {
                 // TODO
               },
@@ -210,21 +212,42 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   leadingIcon: Icons.policy,
                   trailingIcon: Icons.open_in_new,
                 ),
+              ],
+            ),
+            const SizedBox(height: 28),
+            ProfileSettingsMenu(
+              title: l10n.pgProfileMenuAccountTitle,
+              children: [
+                ProfileSettingsMenuItem(
+                    label: l10n.pgProfileMenuItemSignOut,
+                    leadingIcon: Icons.logout,
+                    onTap: () async {
+                      await authProvider.handleSignOut();
+                    }),
                 ProfileSettingsMenuItem(
                   label: l10n.pgProfileMenuItemDeleteAccount,
                   labelColor: theme.colorScheme.error,
-                  leadingIcon: Icons.delete,
+                  leadingIcon: Icons.delete_forever_rounded,
                   leadingIconColor: theme.colorScheme.error,
+                  onTap: () {
+                    showGeneralDialog(
+                      context: context,
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const DialogDeleteAccount(),
+                      transitionBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return SharedAxisTransition(
+                          animation: animation,
+                          secondaryAnimation: secondaryAnimation,
+                          transitionType: SharedAxisTransitionType.vertical,
+                          child: child,
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
             ),
-            const SizedBox(height: 40),
-            TextButton(
-              onPressed: () {
-                authProvider.handleSignOut();
-              },
-              child: Text(l10n.logout),
-            )
           ],
         ),
       ),

@@ -129,6 +129,17 @@ class AuthProvider extends ChangeNotifier {
     return _status == AuthStatus.authenticateError;
   }
 
+  SocialAuthProvider? getLastLoggedInAuthProvider() {
+    final providerId = localStorage.getString('providerId');
+
+    if (providerId != null) {
+      return SocialAuthProvider.values
+          .firstWhere((element) => element.providerId == providerId);
+    }
+
+    return null;
+  }
+
   /// A simple wrapper of `FirebaseAuth.instance.signInWithCredential` to handle errors.
   Future<UserCredential?> _signInWithCredential(
       AuthCredential credential) async {
@@ -140,6 +151,21 @@ class AuthProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<UserCredential?> _reauthenticateWithCredential(
+      AuthCredential credential) async {
+    final currentUser = firebaseAuth.currentUser;
+
+    if (currentUser != null) {
+      try {
+        return await currentUser.reauthenticateWithCredential(credential);
+      } catch (e) {
+        await _onErrorOrException(e);
+      }
+    }
+
+    return null;
+  }
+
   /// Widget requires to call `sendSignInLinkToEmail(email)` first to send an
   /// email with `emailLink` then Widget need to catch `emailLink` inside
   /// `didChangeAppLifecycleState` then call this function.
@@ -147,14 +173,23 @@ class AuthProvider extends ChangeNotifier {
   /// The function default reads the current sign-in email address from
   /// **SharedPreferences** and call `FirebaseAuth.instance.signInWithEmailLink`
   /// along with the `emailLink` to get `UserCredential`.
-  Future<UserCredential?> _signInWithEmailLink(String emailLink) async {
-    _status = AuthStatus.authenticating;
-    notifyListeners();
+  Future<UserCredential?> signInWithEmailLink(String emailLink,
+      {bool? reauthenticate}) async {
+    if (reauthenticate != true) {
+      _status = AuthStatus.authenticating;
+      notifyListeners();
+    }
 
     try {
-      final email = await userProvider.getEmail();
-
-      if (email != null) {
+      final email = userProvider.getEmailCache();
+      if (reauthenticate == true) {
+        return await _reauthenticateWithCredential(
+          EmailAuthProvider.credentialWithLink(
+            email: email,
+            emailLink: emailLink,
+          ),
+        );
+      } else {
         return await firebaseAuth.signInWithEmailLink(
           email: email,
           emailLink: emailLink,
@@ -169,7 +204,7 @@ class AuthProvider extends ChangeNotifier {
 
   /// **Note:** `_signInWithFacebook` with a **Gmail** provider will be silently
   /// overwrite if `_signInWithGoogle` again with the same email address.
-  Future<UserCredential?> _signInWithGoogle() async {
+  Future<UserCredential?> _signInWithGoogle({bool? reauthenticate}) async {
     GoogleSignInAccount? gUser;
 
     try {
@@ -178,8 +213,10 @@ class AuthProvider extends ChangeNotifier {
       if (gUser == null) {
         logger.w('Google sign-in is cancelled', time: DateTime.now());
 
-        _status = AuthStatus.authenticateCanceled;
-        notifyListeners();
+        if (reauthenticate != true) {
+          _status = AuthStatus.authenticateCanceled;
+          notifyListeners();
+        }
 
         return null;
       }
@@ -207,13 +244,17 @@ class AuthProvider extends ChangeNotifier {
       time: DateTime.now(),
     );
 
-    _status = AuthStatus.authenticating;
-    notifyListeners();
+    if (reauthenticate != true) {
+      _status = AuthStatus.authenticating;
+      notifyListeners();
+    }
 
-    return await _signInWithCredential(credential);
+    return reauthenticate == true
+        ? await _reauthenticateWithCredential(credential)
+        : await _signInWithCredential(credential);
   }
 
-  Future<UserCredential?> _signInWithFacebook() async {
+  Future<UserCredential?> _signInWithFacebook({bool? reauthenticate}) async {
     final LoginResult fbAuth = await fbSignIn!.login();
 
     switch (fbAuth.status) {
@@ -223,8 +264,10 @@ class AuthProvider extends ChangeNotifier {
           time: DateTime.now(),
         );
 
-        _status = AuthStatus.authenticateCanceled;
-        notifyListeners();
+        if (reauthenticate != true) {
+          _status = AuthStatus.authenticateCanceled;
+          notifyListeners();
+        }
         break;
 
       case LoginStatus.failed:
@@ -254,10 +297,14 @@ class AuthProvider extends ChangeNotifier {
             time: DateTime.now(),
           );
 
-          _status = AuthStatus.authenticating;
-          notifyListeners();
+          if (reauthenticate != true) {
+            _status = AuthStatus.authenticating;
+            notifyListeners();
+          }
 
-          return _signInWithCredential(credential);
+          return reauthenticate == true
+              ? await _reauthenticateWithCredential(credential)
+              : await _signInWithCredential(credential);
         }
 
         logger.e(
@@ -382,9 +429,12 @@ class AuthProvider extends ChangeNotifier {
   }
 
   ///
-  Future<void> sendSignInLinkToEmail(String email) async {
-    _status = AuthStatus.initializing;
-    notifyListeners();
+  Future<void> sendSignInLinkToEmail(String email,
+      {bool? reauthenticate}) async {
+    if (reauthenticate != true) {
+      _status = AuthStatus.initializing;
+      notifyListeners();
+    }
 
     final packageInfo = await PackageInfo.fromPlatform();
     final dynamicLinkDomain =
@@ -406,8 +456,10 @@ class AuthProvider extends ChangeNotifier {
       );
       await userProvider.setEmail(email);
 
-      _status = AuthStatus.pending;
-      notifyListeners();
+      if (reauthenticate != true) {
+        _status = AuthStatus.pending;
+        notifyListeners();
+      }
     } catch (e) {
       await _onErrorOrException(e);
     }
@@ -439,7 +491,7 @@ class AuthProvider extends ChangeNotifier {
     } else if (providerId == SocialAuthProvider.facebook.providerId) {
       credential = await _signInWithFacebook();
     } else if (emailLink.isNotEmpty) {
-      credential = await _signInWithEmailLink(emailLink);
+      credential = await signInWithEmailLink(emailLink);
     }
 
     User? firebaseUser = credential?.user;
@@ -488,6 +540,29 @@ class AuthProvider extends ChangeNotifier {
     return true;
   }
 
+  ///
+  Future<bool> handleReAuthenticate(dynamic input) async {
+    late UserCredential? credential;
+
+    final providerId = input is SocialAuthProvider ? input.providerId : null;
+    final emailLink = input is! SocialAuthProvider ? input : '';
+
+    logger.d(
+      'Re-authenticate with ${providerId ?? (emailLink != null ? 'emailLink' : '')}',
+      time: DateTime.now(),
+    );
+
+    if (providerId == SocialAuthProvider.google.providerId) {
+      credential = await _signInWithGoogle(reauthenticate: true);
+    } else if (providerId == SocialAuthProvider.facebook.providerId) {
+      credential = await _signInWithFacebook(reauthenticate: true);
+    } else if (emailLink.isNotEmpty) {
+      credential = await signInWithEmailLink(emailLink, reauthenticate: true);
+    }
+
+    return credential?.user != null;
+  }
+
   /// The main sign-out function relies on currentUser.providerData of Firebase
   /// Authentication to invoke corresponding provider's sing-out func.
   Future<void> handleSignOut() async {
@@ -521,5 +596,38 @@ class AuthProvider extends ChangeNotifier {
     // TODO: Revisit, delay to avoid content flickering
     Future.delayed(
         const Duration(milliseconds: 300), () => userProvider.purgeUserCache());
+  }
+
+  /// ******************** Dangerous **********************
+  /// ****** For delete user account feature mainly *******
+  /// Delete user auth record in Firebase Authentication. Suggest to call
+  ///  handleReAuthenticate() first to ensure user is re-authenticated before
+  /// performing security-sensitive operation to prevent "requires-recent-login"
+  /// exception
+  Future<void> deleteUser() async {
+    final currentUser = firebaseAuth.currentUser;
+
+    if (currentUser != null) {
+      try {
+        _code = null;
+        _message = '';
+
+        await userProvider.deleteUser();
+        await currentUser.delete();
+
+        logger.d(
+          'User auth record and database document has been erased successfully',
+          time: DateTime.now(),
+        );
+      } catch (e) {
+        _onErrorOrException(e);
+        rethrow;
+      }
+    } else {
+      logger.d(
+        "No authenticated user can be deleted",
+        time: DateTime.now(),
+      );
+    }
   }
 }

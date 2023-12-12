@@ -1,4 +1,5 @@
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:logger/logger.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:uuid/uuid.dart';
 
@@ -6,9 +7,10 @@ class FireStorageProvider {
   final _uuid = const Uuid();
   late Reference _rootRef;
 
-  FireStorageProvider({required this.userProvider}) {
+  FireStorageProvider({required this.logger, required this.userProvider}) {
     _rootRef = FirebaseStorage.instance.ref();
   }
+  final Logger logger;
   final UserProvider userProvider;
 
   Reference get rootRef => _rootRef;
@@ -28,5 +30,23 @@ class FireStorageProvider {
     final u = uid ?? userProvider.getIdCache();
 
     return u.isEmpty ? 'images' : 'images/$u';
+  }
+
+  Future<void> deleteImgStorage([String? uid]) async {
+    final ref = uid != null ? imgStorageForRef(uid) : imgStorageRef;
+    final files = await ref.listAll();
+
+    try {
+      for (var file in files.items) {
+        await file.delete();
+      }
+
+      logger.d(
+        "Successfully erase user storage of images",
+        time: DateTime.now(),
+      );
+    } catch (e) {
+      logger.e(e, time: DateTime.now());
+    }
   }
 }

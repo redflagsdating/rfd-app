@@ -75,6 +75,14 @@ class IdentityVerification {
     return data?["id"];
   }
 
+  Future<bool?> deactivateApplicant(String applicantId) async {
+    final uri = _getUri('/applicants/$applicantId/presence/deactivated');
+    final response = await http.patch(uri, headers: _getHeaders('PATCH', uri));
+    final data = json.decode(response.body);
+
+    return data["deleted"];
+  }
+
   //
   Future<SNSMobileSDKStatus?> fetchReviewStatus(String applicantId) async {
     final uri = _getUri('/applicants/$applicantId/status');

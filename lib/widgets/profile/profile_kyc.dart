@@ -23,7 +23,7 @@ class ProfileKyc extends StatefulWidget {
 class _ProfileKycState extends State<ProfileKyc> {
   SNSMobileSDKStatus? _status;
   bool _verifying = false;
-  late IdentityVerification _api;
+  late IdentityVerification _kycApi;
 
   void _updateUserStatus(SNSMobileSDKStatus status) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -44,23 +44,24 @@ class _ProfileKycState extends State<ProfileKyc> {
       _verifying = true;
     });
 
-    final accessToken = await _api.fetchAccessToken();
-    final snsMobileSDK = SNSMobileSDK.init(accessToken, _api.fetchAccessToken)
-        // .withTheme({
-        //   // TODO: Customise theme
-        //   "universal": {
-        //     "colors": {
-        //       "primaryButtonBackground": "0xFFFF0049",
-        //     },
-        //   }
-        // })
-        .withHandlers(
-          onStatusChanged: (status, prevStatus) {
-            _updateUserStatus(status);
-          },
-        )
-        .withDebug(kDebugMode)
-        .build();
+    final accessToken = await _kycApi.fetchAccessToken();
+    final snsMobileSDK =
+        SNSMobileSDK.init(accessToken, _kycApi.fetchAccessToken)
+            // .withTheme({
+            //   // TODO: Customise theme
+            //   "universal": {
+            //     "colors": {
+            //       "primaryButtonBackground": "0xFFFF0049",
+            //     },
+            //   }
+            // })
+            .withHandlers(
+              onStatusChanged: (status, prevStatus) {
+                _updateUserStatus(status);
+              },
+            )
+            .withDebug(kDebugMode)
+            .build();
     final SNSMobileSDKResult result = await snsMobileSDK.launch();
 
     setState(() {
@@ -74,7 +75,7 @@ class _ProfileKycState extends State<ProfileKyc> {
   @override
   void didChangeDependencies() {
     final uid = context.read<UserProvider>().getIdCache();
-    _api = IdentityVerification(uid: uid);
+    _kycApi = IdentityVerification(uid: uid);
 
     super.didChangeDependencies();
   }
