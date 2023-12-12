@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class ProfileSettingsMenu extends StatefulWidget {
   const ProfileSettingsMenu({
-    Key? key,
+    super.key,
     this.title,
     required this.children,
-  }) : super(key: key);
+  });
 
   final String? title;
   final List<Widget> children;

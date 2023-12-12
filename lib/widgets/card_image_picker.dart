@@ -17,11 +17,11 @@ import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dar
 
 class CardImagePicker extends StatefulWidget {
   const CardImagePicker({
-    Key? key,
+    super.key,
     this.imageRef,
     required this.size,
     required this.enabled,
-  }) : super(key: key);
+  });
 
   final double size;
   final bool enabled;

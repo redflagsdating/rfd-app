@@ -9,9 +9,9 @@ import 'package:red_flags/widgets/card_image_picker.dart';
 
 class ProfilePhotos extends StatefulWidget {
   const ProfilePhotos({
-    Key? key,
+    super.key,
     required this.enabled,
-  }) : super(key: key);
+  });
 
   final bool enabled;
 

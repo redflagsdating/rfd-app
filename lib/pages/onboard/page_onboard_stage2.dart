@@ -19,10 +19,7 @@ import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 const maxSteps = 5;
 
 class PageOnboardStage2 extends StatefulWidget {
-  const PageOnboardStage2({
-    Key? key,
-    required this.initStep,
-  }) : super(key: key);
+  const PageOnboardStage2({super.key, required this.initStep});
 
   final int initStep;
 

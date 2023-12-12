@@ -5,7 +5,7 @@ import 'package:textfield_tags/textfield_tags.dart';
 
 class TextFieldChips extends StatefulWidget {
   const TextFieldChips({
-    Key? key,
+    super.key,
     this.readOnly,
     this.labelText,
     this.hintText,
@@ -13,7 +13,7 @@ class TextFieldChips extends StatefulWidget {
     this.initialChips,
     this.validator,
     this.onDeleted,
-  }) : super(key: key);
+  });
 
   final bool? readOnly;
   final String? labelText;

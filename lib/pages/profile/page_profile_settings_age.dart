@@ -7,7 +7,7 @@ import 'package:red_flags/widgets/profile/profile_birthday.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsAge extends StatefulWidget {
-  const PageProfileSettingsAge({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsAge({super.key, this.title});
   final Widget? title;
 
   @override

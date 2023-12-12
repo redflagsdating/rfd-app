@@ -6,8 +6,7 @@ import 'package:red_flags/widgets/profile/profile_display_name.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsDisplayName extends StatefulWidget {
-  const PageProfileSettingsDisplayName({Key? key, this.title})
-      : super(key: key);
+  const PageProfileSettingsDisplayName({super.key, this.title});
   final Widget? title;
 
   @override

@@ -3,8 +3,7 @@ import 'package:red_flags/widgets/profile/profile_gender.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsGender extends StatefulWidget {
-  const PageProfileSettingsGender({Key? key, this.title, this.genderFor})
-      : super(key: key);
+  const PageProfileSettingsGender({super.key, this.title, this.genderFor});
   final Widget? title;
   final bool? genderFor;
 

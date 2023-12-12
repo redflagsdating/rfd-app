@@ -16,10 +16,10 @@ enum GeolocatorError {
 
 class TextFormFieldLocation extends StatefulWidget {
   const TextFormFieldLocation({
-    Key? key,
+    super.key,
     this.enabled,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final bool? enabled;
   final TextEditingController controller;

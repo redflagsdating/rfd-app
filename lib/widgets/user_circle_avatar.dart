@@ -8,7 +8,7 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 
 class UserCircleAvatar extends StatefulWidget {
-  const UserCircleAvatar({Key? key}) : super(key: key);
+  const UserCircleAvatar({super.key});
 
   @override
   State<UserCircleAvatar> createState() => _UserCircleAvatarState();

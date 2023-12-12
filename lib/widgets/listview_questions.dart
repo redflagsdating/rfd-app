@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class ListViewQuestions extends StatelessWidget {
   const ListViewQuestions({
-    Key? key,
+    super.key,
     required this.questions,
     this.selected,
     this.onSelect,
-  }) : super(key: key);
+  });
 
   final List<String> questions;
   final List<String>? selected;

@@ -11,7 +11,7 @@ import 'package:red_flags/pages/page_home.dart';
 import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/pages/page_signin_splash.dart';
-import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/auth_provider.dart' as rfd;
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
@@ -47,8 +47,8 @@ class App extends StatelessWidget {
             userProvider: context.read<UserProvider>(),
           ),
         ),
-        ChangeNotifierProvider<AuthProvider>(
-          create: (context) => AuthProvider(
+        ChangeNotifierProvider<rfd.AuthProvider>(
+          create: (context) => rfd.AuthProvider(
             localStorage: localStorage,
             gSignIn: GoogleSignIn(),
             fbSignIn: FacebookAuth.instance,
@@ -61,7 +61,7 @@ class App extends StatelessWidget {
       // Automatically switch to material or cupertino base on the platform
       child: Builder(
         builder: (context) {
-          final authProvider = Provider.of<AuthProvider>(context);
+          final authProvider = Provider.of<rfd.AuthProvider>(context);
 
           return FlavorBanner(
             child: MaterialApp(

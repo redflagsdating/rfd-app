@@ -21,7 +21,7 @@ import 'package:red_flags/widgets/user_circle_avatar.dart';
 import 'package:red_flags/widgets/user_text_full_name.dart';
 
 class PageProfileSettings extends StatefulWidget {
-  const PageProfileSettings({Key? key}) : super(key: key);
+  const PageProfileSettings({super.key});
 
   @override
   State<PageProfileSettings> createState() => _PageProfileSettingsState();

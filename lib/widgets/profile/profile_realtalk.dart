@@ -6,7 +6,7 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/card_question.dart';
 
 class ProfileRealTalk extends StatefulWidget {
-  const ProfileRealTalk({Key? key}) : super(key: key);
+  const ProfileRealTalk({super.key});
 
   @override
   State<ProfileRealTalk> createState() => _ProfileRealTalkState();

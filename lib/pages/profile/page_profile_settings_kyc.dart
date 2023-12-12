@@ -3,7 +3,7 @@ import 'package:red_flags/widgets/profile/profile_kyc.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsKyc extends StatefulWidget {
-  const PageProfileSettingsKyc({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsKyc({super.key, this.title});
 
   final Widget? title;
 

@@ -8,11 +8,11 @@ import 'package:red_flags/services/user_provider.dart';
 /// ProfileGender is reused for gender and genderFor fields during onboarding
 class ProfileGender extends StatefulWidget {
   const ProfileGender({
-    Key? key,
+    super.key,
     this.enabled,
     this.required,
     this.genderFor,
-  }) : super(key: key);
+  });
 
   final bool? enabled;
   final bool? required;

@@ -6,7 +6,7 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/scaffold_branding.dart';
 
 class PageOnboardCompleteSplash extends StatefulWidget {
-  const PageOnboardCompleteSplash({Key? key}) : super(key: key);
+  const PageOnboardCompleteSplash({super.key});
 
   @override
   State<PageOnboardCompleteSplash> createState() =>

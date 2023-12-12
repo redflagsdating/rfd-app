@@ -66,8 +66,6 @@ post_install do |installer|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
 
-        'IPHONEOS_DEPLOYMENT_TARGET=12'
-
         ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (iOS 16 and below)]
         # 'PERMISSION_EVENTS=1',
   

@@ -6,7 +6,7 @@ import 'package:red_flags/widgets/profile/profile_locality.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsLocality extends StatefulWidget {
-  const PageProfileSettingsLocality({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsLocality({super.key, this.title});
   final Widget? title;
 
   @override

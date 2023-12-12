@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 
 class ProfileBirthday extends StatefulWidget {
   const ProfileBirthday({
-    Key? key,
+    super.key,
     this.enabled,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final bool? enabled;
   final TextEditingController controller;

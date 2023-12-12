@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ListFlagChoiceChips extends StatefulWidget {
   const ListFlagChoiceChips({
-    Key? key,
+    super.key,
     required this.labels,
     this.enabled,
     this.spacing,
@@ -11,7 +11,7 @@ class ListFlagChoiceChips extends StatefulWidget {
     this.selected,
     this.onAdded,
     this.onDeleted,
-  }) : super(key: key);
+  });
 
   final bool? enabled;
   final List<String> labels;

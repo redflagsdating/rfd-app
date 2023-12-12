@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_idensic_mobile_sdk_plugin/flutter_idensic_mobile_sdk_plugin.dart';
 
 class LabelKycStatus extends StatefulWidget {
-  const LabelKycStatus({Key? key, this.status}) : super(key: key);
+  const LabelKycStatus({super.key, this.status});
   final SNSMobileSDKStatus? status;
 
   @override

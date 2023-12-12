@@ -12,7 +12,7 @@ import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dar
 import 'package:red_flags/widgets/label_kyc_status.dart';
 
 class ProfileKyc extends StatefulWidget {
-  const ProfileKyc({Key? key, this.onboarding}) : super(key: key);
+  const ProfileKyc({super.key, this.onboarding});
 
   final bool? onboarding;
 

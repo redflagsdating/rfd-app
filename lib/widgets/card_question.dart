@@ -9,7 +9,7 @@ import 'package:red_flags/widgets/question_editor.dart';
 
 class CardQuestion extends StatefulWidget {
   const CardQuestion({
-    Key? key,
+    super.key,
     required this.listQuestions,
     this.selectedQuestions,
     this.initialQuestion,
@@ -18,7 +18,7 @@ class CardQuestion extends StatefulWidget {
     this.icon,
     this.onAdded,
     this.onDeleted,
-  }) : super(key: key);
+  });
 
   final List<String> listQuestions;
   final List<String>? selectedQuestions;

@@ -7,7 +7,7 @@ import 'package:red_flags/widgets/profile/profile_greenflags.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsGreenFlags extends StatefulWidget {
-  const PageProfileSettingsGreenFlags({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsGreenFlags({super.key, this.title});
 
   final Widget? title;
 

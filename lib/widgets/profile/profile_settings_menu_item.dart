@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ProfileSettingsMenuItem extends StatefulWidget {
   const ProfileSettingsMenuItem({
-    Key? key,
+    super.key,
     this.leadingIcon,
     this.leadingIconColor,
     this.trailingIcon,
@@ -11,7 +11,7 @@ class ProfileSettingsMenuItem extends StatefulWidget {
     this.labelColor,
     this.page,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final IconData? leadingIcon;
   final Color? leadingIconColor;

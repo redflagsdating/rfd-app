@@ -3,7 +3,7 @@ import 'package:red_flags/widgets/profile/profile_photos.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsPhotos extends StatefulWidget {
-  const PageProfileSettingsPhotos({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsPhotos({super.key, this.title});
   final Widget? title;
 
   @override

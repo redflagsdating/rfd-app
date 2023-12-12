@@ -10,7 +10,7 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 
 class DialogDeleteAccount extends StatefulWidget {
-  const DialogDeleteAccount({Key? key}) : super(key: key);
+  const DialogDeleteAccount({super.key});
 
   @override
   State<DialogDeleteAccount> createState() => _DialogDeleteAccountState();

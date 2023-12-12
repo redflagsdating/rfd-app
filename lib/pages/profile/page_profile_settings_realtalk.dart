@@ -7,7 +7,7 @@ import 'package:red_flags/widgets/profile/profile_realtalk.dart';
 import 'package:red_flags/widgets/scaffold_page_basic.dart';
 
 class PageProfileSettingsRealtalk extends StatefulWidget {
-  const PageProfileSettingsRealtalk({Key? key, this.title}) : super(key: key);
+  const PageProfileSettingsRealtalk({super.key, this.title});
 
   final Widget? title;
 

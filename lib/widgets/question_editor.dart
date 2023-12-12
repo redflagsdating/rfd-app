@@ -3,14 +3,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuestionEditor extends StatefulWidget {
   const QuestionEditor({
-    Key? key,
+    super.key,
     this.enabled,
     this.onBack,
     this.onDelete,
     this.onEditingComplete,
     required this.question,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final bool? enabled;
   final void Function()? onBack;

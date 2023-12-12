@@ -9,7 +9,7 @@ import 'package:red_flags/widgets/list_flag_choice_chips.dart';
 import 'package:red_flags/widgets/text_field_chips.dart';
 
 class ProfileRedFlags extends StatefulWidget {
-  const ProfileRedFlags({Key? key}) : super(key: key);
+  const ProfileRedFlags({super.key});
 
   @override
   State<ProfileRedFlags> createState() => _ProfileRedFlagsState();

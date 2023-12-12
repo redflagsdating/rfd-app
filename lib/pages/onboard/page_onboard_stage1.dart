@@ -17,10 +17,7 @@ const maxSteps = 3;
 
 /// Onboarding stage 1 Account verification Scaffold
 class PageOnboardStage1 extends StatefulWidget {
-  const PageOnboardStage1({
-    Key? key,
-    required this.initStep,
-  }) : super(key: key);
+  const PageOnboardStage1({super.key, required this.initStep});
 
   final int initStep;
 

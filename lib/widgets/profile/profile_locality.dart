@@ -4,10 +4,10 @@ import 'package:red_flags/widgets/text_form_field_location.dart';
 
 class ProfileLocality extends StatefulWidget {
   const ProfileLocality({
-    Key? key,
+    super.key,
     this.enabled,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final bool? enabled;
   final TextEditingController controller;

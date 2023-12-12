@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 
 class UserTextFullName extends StatefulWidget {
-  const UserTextFullName({Key? key, this.style}) : super(key: key);
+  const UserTextFullName({super.key, this.style});
   final TextStyle? style;
 
   @override
