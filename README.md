@@ -206,6 +206,7 @@ For **Android Studio**, click ***Build Variants*** at the bottom-left panel > se
   - [Firestore Database](/docs/firebase/database.md)
   - [Authentication](/docs/firebase/authentication.md)
   - [Storage](/docs/firebase/storage.md)
+  - [App Check](/docs/firebase/app-check.md)
   - [Crashlytics](/docs/firebase/crashlytics.md)
   - [Analytics](/docs/firebase/analytics.md)
 - ***Android***

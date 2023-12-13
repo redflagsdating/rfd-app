@@ -5,6 +5,7 @@
 - [View & debug shared preferences (local storage)](#view-and-debug-shared-preference)
 - [Image crop](#image-crop)
 - [Build & Publish](#build--publish)
+- [Firebase App Check](/docs/firebase/app-check.md#android)
 
 ## Change the app icon
 

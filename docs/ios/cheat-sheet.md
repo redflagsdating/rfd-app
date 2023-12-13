@@ -6,6 +6,7 @@
 - [CocoaPods dependency](#cocoapods-dependency)
 - [Image usage description](#image-usage-description)
 - [Build & Publish](#build--publish)
+- [Firebase App Check](/docs/firebase/app-check.md#ios)
 
 
 ## Change the app icon and launch screen

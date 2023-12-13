@@ -583,6 +583,7 @@ class AuthProvider extends ChangeNotifier {
 
       if (providerId == SocialAuthProvider.google.providerId) {
         await gSignIn.signOut();
+        await gSignIn.disconnect();
 
         logger.d('Google signed out successfully', time: DateTime.now());
       } else if (providerId == SocialAuthProvider.facebook.providerId) {
