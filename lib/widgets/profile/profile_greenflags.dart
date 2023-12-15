@@ -27,10 +27,6 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
       children: [
         Wrap(
           children: [
-            Text(
-              l10n!.pgGreenFlagsHeadline,
-              style: theme.textTheme.headlineSmall,
-            ),
             Icon(
               Icons.flag_circle_sharp,
               size: 32,
@@ -42,7 +38,12 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
                 )
               ],
               color: Colors.green,
-            )
+            ),
+            const SizedBox(width: 4),
+            Text(
+              l10n!.pgGreenFlagsHeadline,
+              style: theme.textTheme.headlineSmall,
+            ),
           ],
         ),
         const SizedBox(height: 10),

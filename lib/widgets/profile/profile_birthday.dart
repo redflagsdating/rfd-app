@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:red_flags/services/user_provider.dart';
 
 class ProfileBirthday extends StatefulWidget {
   const ProfileBirthday({
@@ -26,14 +28,11 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
     });
   }
 
-  int _getAge(DateTime dob) {
-    return (DateTime.now().difference(dob).inDays / 365).floor();
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final userProvider = context.read<UserProvider>();
     final currentYear = DateTime.now().year;
     final firstYear = DateTime(currentYear - 80);
     final lastYear = DateTime(currentYear - 18);
@@ -44,7 +43,8 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
         initialValue ?? lastYear.subtract(const Duration(days: 1));
 
     if (initialValue != null) {
-      _setHelperText(l10n!.fieldBirthdayHelperText(_getAge(initialValue)));
+      _setHelperText(
+          l10n!.fieldBirthdayHelperText(userProvider.getAge(initialValue)));
     }
 
     return Column(
@@ -76,7 +76,8 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
           },
           onChanged: (value) {
             if (value != null) {
-              _setHelperText(l10n.fieldBirthdayHelperText(_getAge(value)));
+              _setHelperText(
+                  l10n.fieldBirthdayHelperText(userProvider.getAge(value)));
             } else {
               _setHelperText("");
             }

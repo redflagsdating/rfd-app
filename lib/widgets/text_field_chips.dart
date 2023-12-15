@@ -82,6 +82,7 @@ class _TextFieldChipsState extends State<TextFieldChips> {
                               selected: true,
                               showCheckmark: false,
                               label: Text(value),
+                              visualDensity: VisualDensity.compact,
                               deleteIcon: const Icon(
                                 Icons.cancel,
                                 size: 20,
@@ -90,9 +91,6 @@ class _TextFieldChipsState extends State<TextFieldChips> {
                                 onTagDelete(value);
                                 widget.onDeleted!(value);
                               },
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
                             );
                           },
                         ),

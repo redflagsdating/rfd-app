@@ -5,25 +5,29 @@ class ScaffoldPageBasic extends Scaffold {
     super.key,
     super.floatingActionButton,
     required this.content,
+    this.leadingIcon,
     this.title,
     this.actions,
+    this.padding,
     this.onBackPressed,
   }) : super(
           appBar: AppBar(
             centerTitle: true,
             leading: IconButton(
-                onPressed: onBackPressed,
-                icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+              onPressed: onBackPressed,
+              icon: Icon(leadingIcon ?? Icons.arrow_back_ios_new_rounded),
+            ),
             title: title,
             actions: actions,
           ),
           body: Builder(
             builder: (context) {
               return SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 36,
-                ),
+                padding: padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 36,
+                    ),
                 child: content,
               );
             },
@@ -31,7 +35,9 @@ class ScaffoldPageBasic extends Scaffold {
         );
 
   final Widget content;
+  final IconData? leadingIcon;
   final Widget? title;
   final List<Widget>? actions;
+  final EdgeInsetsGeometry? padding;
   final void Function()? onBackPressed;
 }

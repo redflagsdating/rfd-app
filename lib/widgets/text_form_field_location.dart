@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/services/logger_provider.dart';
-
-enum GeolocatorError {
-  disabled,
-  rejected,
-  denied,
-}
 
 class TextFormFieldLocation extends StatefulWidget {
   const TextFormFieldLocation({
@@ -28,7 +24,8 @@ class TextFormFieldLocation extends StatefulWidget {
   State<TextFormFieldLocation> createState() => _TextFormFieldLocationState();
 }
 
-class _TextFormFieldLocationState extends State<TextFormFieldLocation> {
+class _TextFormFieldLocationState extends State<TextFormFieldLocation>
+    with MixinPermissions {
   bool _loading = false;
   Position? _pos;
   Timer? _throttle;
@@ -68,32 +65,6 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation> {
     }
   }
 
-  // Use mobile phone GPS to get current coordinates
-  Future<bool> _requestLocationPermissions() async {
-    LocationPermission permission;
-
-    if (!await Geolocator.isLocationServiceEnabled()) {
-      return Future.error(GeolocatorError.disabled);
-    }
-
-    permission = await Geolocator.checkPermission();
-
-    if (permission == LocationPermission.denied) {
-      // Attempt to request permissions when it is currently not allowed
-      permission = await Geolocator.requestPermission();
-
-      if (permission == LocationPermission.denied) {
-        return Future.error(GeolocatorError.rejected);
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(GeolocatorError.denied);
-    }
-
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -102,7 +73,7 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation> {
 
     Future<void> getCurrentLocation() async {
       try {
-        await _requestLocationPermissions();
+        await requestLocationPermissions();
 
         setLoading(true);
         // ignore: use_build_context_synchronously
@@ -137,7 +108,10 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation> {
               setLoading(true);
 
               try {
-                List<Location> locations = await locationFromAddress(value);
+                List<Location> locations = await locationFromAddress(
+                  value,
+                  localeIdentifier: Platform.localeName,
+                );
 
                 _errorText = locations.isEmpty
                     ? l10n.fieldLocationResolvedErrorText

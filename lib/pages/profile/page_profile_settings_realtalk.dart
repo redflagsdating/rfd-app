@@ -39,6 +39,14 @@ class _PageProfileSettingsRealtalkState
           onPressed: () async {
             final realtalk = userProvider.getRealTalkCache();
 
+            if (realtalk?.isEmpty != false) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(l10n.pgRealTalkEmptyErrorText),
+                ),
+              );
+            }
+
             if (!mapEquals(realtalk, _initialValue)) {
               final result = await userProvider.setRealTalk(
                 realtalk!,

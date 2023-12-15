@@ -140,6 +140,9 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
           Container(
             margin: const EdgeInsets.only(bottom: 16),
             child: ChoiceChip(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
               key: Key((chip["key"] as Gender).name),
               selected: chip["selected"] as bool,
               showCheckmark: false,

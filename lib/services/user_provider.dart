@@ -38,6 +38,16 @@ class UserProvider extends ChangeNotifier {
     return localStorage.getStringList(field.name) ?? [];
   }
 
+  DateTime? _getDateTimeFieldCache(UserDateTimeFields field) {
+    final timestamp = localStorage.getInt(field.name);
+
+    if (timestamp != null) {
+      return DateTime.fromMillisecondsSinceEpoch(timestamp);
+    }
+
+    return null;
+  }
+
   Future<bool?> _getBoolField(UserBoolFields field) async {
     final cached = _getBoolFieldCache(field);
 
@@ -117,6 +127,22 @@ class UserProvider extends ChangeNotifier {
     return result;
   }
 
+  Future<bool?> _setDateTimeField(UserDateTimeFields field, DateTime value,
+      {bool? silent = true, bool? localOnly = true}) async {
+    final result =
+        localStorage.setInt(field.name, value.millisecondsSinceEpoch);
+
+    if (localOnly != true) {
+      await _userDocRef?.update({field.name: value});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
   ///
   ///** External methods */
   ///
@@ -178,6 +204,7 @@ class UserProvider extends ChangeNotifier {
     _userDocRef = usersRef.doc(user.uid);
 
     final dob = user.dob;
+    final createdAt = user.createdAt;
 
     await setId(user.uid);
     await setEmail(user.email);
@@ -199,9 +226,35 @@ class UserProvider extends ChangeNotifier {
       await setDob(dob);
     }
 
+    if (createdAt != null) {
+      await setCreatedAt(createdAt);
+    }
+
     logger.d(
       'Successfully update cached user (${user.email}) in local storage',
       time: DateTime.now(),
+    );
+  }
+
+  UserModel getUserCache() {
+    return UserModel(
+      uid: getIdCache(),
+      email: getEmailCache(),
+      createdAt: getCreatedAtCache(),
+      onboarded: getOnboardedCache() ?? false,
+      verified: getVerifiedCache() ?? false,
+      verifySubmitted: getVerifySubmittedCache() ?? false,
+      photoUrl: getPhotoUrlCache(),
+      firstName: getFirstNameCache(),
+      lastName: getLastNameCache(),
+      displayName: getDisplayNameCache(),
+      dob: getDobCache(),
+      gender: getGenderCache(),
+      genderFor: getGenderForCache(),
+      locality: getLocalityCache(),
+      realTalk: getRealTalkCache(),
+      redFlags: getRedFlagsCache(),
+      greenFlags: getGreenFlagsCache(),
     );
   }
 
@@ -354,6 +407,18 @@ class UserProvider extends ChangeNotifier {
   }
 
   ///
+  /// DateTime field
+  ///
+
+  DateTime? getDobCache() {
+    return _getDateTimeFieldCache(UserDateTimeFields.dob);
+  }
+
+  DateTime? getCreatedAtCache() {
+    return _getDateTimeFieldCache(UserDateTimeFields.createdAt);
+  }
+
+  ///
   /// Other types
   ///
   Future<DateTime?> getDob() async {
@@ -366,14 +431,8 @@ class UserProvider extends ChangeNotifier {
     return await _getField(UserFields.dob.name);
   }
 
-  DateTime? getDobCache() {
-    final timestamp = localStorage.getInt(UserFields.dob.name);
-
-    if (timestamp != null) {
-      return DateTime.fromMillisecondsSinceEpoch(timestamp);
-    }
-
-    return null;
+  int getAge(DateTime dob) {
+    return (DateTime.now().difference(dob).inDays / 365).floor();
   }
 
   Map<String, String>? getRealTalkCache() {
@@ -403,50 +462,82 @@ class UserProvider extends ChangeNotifier {
   ///
   Future<bool?> setId(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.uid, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.uid,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setEmail(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.email, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.email,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setFirstName(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.firstName, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.firstName,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setLastName(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.lastName, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.lastName,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setDisplayName(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.displayName, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.displayName,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setPhotoUrl(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.photoUrl, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.photoUrl,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setGender(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.gender, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.gender,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setLocality(String value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setStringField(UserStringFields.locality, value,
-        silent: silent, localOnly: localOnly);
+    return _setStringField(
+      UserStringFields.locality,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   ///
@@ -454,20 +545,32 @@ class UserProvider extends ChangeNotifier {
   ///
   Future<bool?> setGenderFor(List<String> genders,
       {bool? silent = true, bool? localOnly = true}) async {
-    return _setStingListField(UserStringListFields.genderFor, genders,
-        silent: silent, localOnly: localOnly);
+    return _setStingListField(
+      UserStringListFields.genderFor,
+      genders,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setRedFlags(List<String> flags,
       {bool? silent = true, bool? localOnly = true}) async {
-    return _setStingListField(UserStringListFields.redFlags, flags,
-        silent: silent, localOnly: localOnly);
+    return _setStingListField(
+      UserStringListFields.redFlags,
+      flags,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   Future<bool?> setGreenFlags(List<String> flags,
       {bool? silent = true, bool? localOnly = true}) async {
-    return _setStingListField(UserStringListFields.greenFlags, flags,
-        silent: silent, localOnly: localOnly);
+    return _setStingListField(
+      UserStringListFields.greenFlags,
+      flags,
+      silent: silent,
+      localOnly: localOnly,
+    );
   }
 
   ///
@@ -476,41 +579,60 @@ class UserProvider extends ChangeNotifier {
 
   Future<bool?> setOnboarded(bool value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setBoolField(UserBoolFields.onboarded, value,
-        localOnly: localOnly, silent: silent);
+    return _setBoolField(
+      UserBoolFields.onboarded,
+      value,
+      localOnly: localOnly,
+      silent: silent,
+    );
   }
 
   Future<bool?> setVerified(bool value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setBoolField(UserBoolFields.verified, value,
-        localOnly: localOnly, silent: silent);
+    return _setBoolField(
+      UserBoolFields.verified,
+      value,
+      localOnly: localOnly,
+      silent: silent,
+    );
   }
 
   Future<bool?> setVerifySubmitted(bool value,
       {bool? silent = true, bool? localOnly = true}) {
-    return _setBoolField(UserBoolFields.verifySubmitted, value,
-        localOnly: localOnly, silent: silent);
+    return _setBoolField(
+      UserBoolFields.verifySubmitted,
+      value,
+      localOnly: localOnly,
+      silent: silent,
+    );
+  }
+
+  ///
+  /// DateTime field setter functions
+  ///
+  Future<bool?> setDob(DateTime value,
+      {bool? silent = true, bool? localOnly = true}) async {
+    return _setDateTimeField(
+      UserDateTimeFields.dob,
+      value,
+      localOnly: localOnly,
+      silent: silent,
+    );
+  }
+
+  Future<bool?> setCreatedAt(DateTime value,
+      {bool? silent = true, bool? localOnly = true}) async {
+    return _setDateTimeField(
+      UserDateTimeFields.createdAt,
+      value,
+      localOnly: localOnly,
+      silent: silent,
+    );
   }
 
   ///
   /// Other types setter functions
   ///
-  Future<bool?> setDob(DateTime dob,
-      {bool? silent = true, bool? localOnly = true}) async {
-    final result =
-        localStorage.setInt(UserFields.dob.name, dob.millisecondsSinceEpoch);
-
-    if (localOnly != true) {
-      await _userDocRef?.update({UserFields.dob.name: dob});
-    }
-
-    if (silent != true) {
-      notifyListeners();
-    }
-
-    return result;
-  }
-
   Future<bool?> setRealTalk(Map<String, String> realtalk,
       {bool? silent = true, bool? localOnly = true}) async {
     String? realTalkStr;

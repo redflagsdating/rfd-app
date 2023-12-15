@@ -46,6 +46,7 @@ class _ListFlagChoiceChipsState extends State<ListFlagChoiceChips> {
 
           return ChoiceChip(
             showCheckmark: false,
+            visualDensity: VisualDensity.compact,
             label: Text(sorted[index]),
             selected: isSelected,
             onSelected: isEnabled
@@ -59,9 +60,6 @@ class _ListFlagChoiceChipsState extends State<ListFlagChoiceChips> {
                     });
                   }
                 : null,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
           );
         },
       ),

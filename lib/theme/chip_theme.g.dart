@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:red_flags/theme/color_schemes.g.dart';
 
 final chipTheme = ChipThemeData(
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20),
+  ),
   side: MaterialStateBorderSide.resolveWith(
     (states) {
       if (!states.contains(MaterialState.selected)) {
@@ -20,7 +23,7 @@ final chipTheme = ChipThemeData(
         MaterialState.selected,
       };
       if (states.any(interactiveStates.contains)) {
-        return lightColorScheme.primaryContainer;
+        return lightColorScheme.inversePrimary.withOpacity(0.6);
       }
 
       return null;

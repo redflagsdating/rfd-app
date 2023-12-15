@@ -27,10 +27,6 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
       children: [
         Wrap(
           children: [
-            Text(
-              l10n!.pgRedFlagsHeadline,
-              style: theme.textTheme.headlineSmall,
-            ),
             Icon(
               Icons.flag_circle_sharp,
               size: 32,
@@ -42,7 +38,12 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
                 )
               ],
               color: theme.colorScheme.primary,
-            )
+            ),
+            const SizedBox(width: 4),
+            Text(
+              l10n!.pgRedFlagsHeadline,
+              style: theme.textTheme.headlineSmall,
+            ),
           ],
         ),
         const SizedBox(height: 10),

@@ -13,7 +13,11 @@ import 'package:red_flags/pages/profile/page_profile_settings_kyc.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_locality.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_realtalk.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
+import 'package:red_flags/pages/profile/page_profile_view.dart';
 import 'package:red_flags/services/auth_provider.dart';
+import 'package:red_flags/services/fire_storage_provider.dart';
+import 'package:red_flags/services/user_provider.dart';
+import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/profile/dialog_delete_account.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu_item.dart';
@@ -28,6 +32,25 @@ class PageProfileSettings extends StatefulWidget {
 }
 
 class _PageProfileSettingsState extends State<PageProfileSettings> {
+  String? _photoUrl;
+
+  @override
+  void initState() {
+    final photoUrl = context.read<UserProvider>().getUserCache().photoUrl;
+    final storageProvider = context.read<FireStorageProvider>();
+
+    if (photoUrl != null) {
+      // Return from cache first or fetch from Firebase Storage
+      storageProvider.cacheImage(photoUrl).then((value) {
+        setState(() {
+          _photoUrl = value;
+        });
+      });
+    }
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -42,13 +65,22 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
         child: Column(
           children: [
             const SizedBox(height: 32),
-            const UserCircleAvatar(),
+            UserCircleAvatar(photoUrl: _photoUrl),
             const SizedBox(height: 16),
             UserTextFullName(style: theme.textTheme.titleLarge),
             const SizedBox(height: 2),
             FilledButton(
               onPressed: () {
-                // TODO
+                Navigator.of(context).push(
+                  PageFadeRouteBuilder(
+                    page: Builder(
+                      builder: (context) => PageProfileView(
+                        photoUrl: _photoUrl,
+                        userModel: context.read<UserProvider>().getUserCache(),
+                      ),
+                    ),
+                  ),
+                );
               },
               child: Text(l10n!.pgProfileViewProfileBtn),
             ),
@@ -175,13 +207,13 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
                   ),
                 ),
                 ProfileSettingsMenuItem(
-                  label: l10n.pgProfileMenuItemGreenFlags,
+                  label: l10n.greenFlags,
                   leadingIcon: Icons.flag_circle_sharp,
                   leadingIconColor: Colors.green,
                   trailingIcon: Icons.arrow_forward_ios_rounded,
                   page: PageProfileSettingsGreenFlags(
                     title: Text(
-                      l10n.pgProfileMenuItemGreenFlags,
+                      l10n.greenFlags,
                       style: theme.textTheme.titleMedium,
                     ),
                   ),

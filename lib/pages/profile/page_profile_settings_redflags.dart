@@ -39,6 +39,16 @@ class _PageProfileSettingsRedFlagsState
           onPressed: () async {
             final redflags = userProvider.getRedFlagsCache();
 
+            if (redflags.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(l10n.pgSelectFlagsEmptyErrorText),
+                ),
+              );
+
+              return;
+            }
+
             if (!const ListEquality().equals(redflags, _initialValue)) {
               final result = await userProvider.setRedFlags(
                 redflags,

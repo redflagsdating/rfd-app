@@ -170,7 +170,7 @@ class _CardQuestionState extends State<CardQuestion> {
                 width: double.infinity,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
+                  color: theme.colorScheme.inversePrimary.withOpacity(0.6),
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(

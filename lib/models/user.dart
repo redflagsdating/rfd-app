@@ -20,6 +20,11 @@ enum UserStringListFields {
   greenFlags,
 }
 
+enum UserDateTimeFields {
+  dob,
+  createdAt,
+}
+
 enum UserStringFields {
   uid,
   email,
@@ -59,10 +64,10 @@ class UserModel {
   const UserModel({
     required this.uid,
     required this.email,
-    required this.createdAt,
     required this.onboarded,
     required this.verified,
     required this.verifySubmitted,
+    this.createdAt,
     this.photoUrl,
     this.firstName,
     this.lastName,
@@ -79,10 +84,10 @@ class UserModel {
 
   final String uid;
   final String email;
-  final DateTime createdAt;
   final bool onboarded;
   final bool verified;
   final bool verifySubmitted;
+  final DateTime? createdAt;
   final String? photoUrl;
   final String? firstName;
   final String? lastName;

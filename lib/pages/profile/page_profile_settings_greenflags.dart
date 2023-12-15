@@ -39,6 +39,16 @@ class _PageProfileSettingsGreenFlagsState
           onPressed: () async {
             final greenFlags = userProvider.getGreenFlagsCache();
 
+            if (greenFlags.isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(l10n.pgSelectFlagsEmptyErrorText),
+                ),
+              );
+
+              return;
+            }
+
             if (!const ListEquality().equals(greenFlags, _initialValue)) {
               final result = await userProvider.setGreenFlags(
                 greenFlags,

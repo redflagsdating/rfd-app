@@ -1,4 +1,5 @@
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:logger/logger.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:uuid/uuid.dart';
@@ -6,6 +7,7 @@ import 'package:uuid/uuid.dart';
 class FireStorageProvider {
   final _uuid = const Uuid();
   late Reference _rootRef;
+  final _defaultCacheManager = DefaultCacheManager();
 
   FireStorageProvider({required this.logger, required this.userProvider}) {
     _rootRef = FirebaseStorage.instance.ref();
@@ -32,6 +34,27 @@ class FireStorageProvider {
     return u.isEmpty ? 'images' : 'images/$u';
   }
 
+  // Cache images from Firebase Storage to prevent unnecessary API calls
+  Future<String> cacheImage(String path) async {
+    final Reference ref = rootRef.child(path);
+    final imageUrl = await ref.getDownloadURL();
+
+    // Only fetch image from Firebase Storage if not in the cache
+    if ((await _defaultCacheManager.getFileFromCache(imageUrl))?.file == null) {
+      final imageBytes = await ref.getData();
+
+      if (imageBytes != null) {
+        await _defaultCacheManager.putFile(
+          imageUrl,
+          imageBytes,
+        );
+      }
+    }
+
+    return imageUrl;
+  }
+
+  // Purge images in Firebase storage for delete account scenario mainly
   Future<void> deleteImgStorage([String? uid]) async {
     final ref = uid != null ? imgStorageForRef(uid) : imgStorageRef;
     final files = await ref.listAll();

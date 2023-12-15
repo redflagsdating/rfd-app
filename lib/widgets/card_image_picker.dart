@@ -74,14 +74,7 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
         .writeToFile(await createFileObject(_imageRef?.fullPath as String));
   }
 
-  Future<bool> _isSpotlightPhoto() async {
-    return await (context.read<UserProvider>().getPhotoUrl()) ==
-        _imageRef!.fullPath;
-  }
-
   Future<void> _delete() async {
-    final isPrimary = await _isSpotlightPhoto();
-
     _setDeleting(true);
 
     await _imageRef!.delete();
@@ -97,15 +90,6 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
     _file = null;
     _xFile = null;
     _imageRef = null;
-
-    if (isPrimary) {
-      // ignore: use_build_context_synchronously
-      await context.read<UserProvider>().setPhotoUrl(
-            '',
-            localOnly: false,
-            silent: false,
-          );
-    }
 
     _setDeleting(false);
   }
@@ -213,6 +197,8 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
     final isDisabled = !widget.enabled || _uploading || _deleting;
+    final isSpotlightPhoto = _imageRef != null &&
+        userProvider.getPhotoUrlCache() == _imageRef?.fullPath;
 
     return GestureDetector(
       onLongPress: () async {
@@ -263,6 +249,11 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
                                   onPressed: () async {
                                     Navigator.pop(context);
 
+                                    if (!isSpotlightPhoto) {
+                                      _delete();
+                                      return;
+                                    }
+
                                     showDialog(
                                       context: context,
                                       builder: (context) {
@@ -288,6 +279,11 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
                                             FilledButton(
                                               onPressed: () {
                                                 _delete();
+                                                userProvider.setPhotoUrl(
+                                                  '',
+                                                  localOnly: false,
+                                                  silent: false,
+                                                );
                                                 Navigator.pop(context);
                                               },
                                               child: Text(l10n.delete),
