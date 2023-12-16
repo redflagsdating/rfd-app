@@ -64,7 +64,7 @@ class _PageProfileViewState extends State<PageProfileView>
                   top: 28,
                   child: IconButton.filled(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                    icon: const Icon(Icons.keyboard_arrow_left_rounded),
                   ),
                 ),
               ],

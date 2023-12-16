@@ -23,7 +23,7 @@ final chipTheme = ChipThemeData(
         MaterialState.selected,
       };
       if (states.any(interactiveStates.contains)) {
-        return lightColorScheme.inversePrimary.withOpacity(0.6);
+        return lightColorScheme.inversePrimary;
       }
 
       return null;

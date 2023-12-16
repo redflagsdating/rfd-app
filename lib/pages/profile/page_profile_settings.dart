@@ -251,11 +251,28 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
               title: l10n.pgProfileMenuAccountTitle,
               children: [
                 ProfileSettingsMenuItem(
-                    label: l10n.pgProfileMenuItemSignOut,
-                    leadingIcon: Icons.logout,
-                    onTap: () async {
-                      await authProvider.handleSignOut();
-                    }),
+                  label: l10n.pgProfileMenuItemSignOut,
+                  leadingIcon: Icons.logout,
+                  onTap: () async {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            strokeCap: StrokeCap.round,
+                          ),
+                        );
+                      },
+                    );
+
+                    /// Due to race condition of handleSignOut notify, highly
+                    /// likely dialog won't be closed before navigation if
+                    /// move this after handleSignOut(). Thus, pop() right after
+                    /// dialog is opened at least having UX for transition.
+                    Navigator.of(context).pop();
+                    await authProvider.handleSignOut();
+                  },
+                ),
                 ProfileSettingsMenuItem(
                   label: l10n.pgProfileMenuItemDeleteAccount,
                   labelColor: theme.colorScheme.error,

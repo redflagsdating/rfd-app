@@ -36,7 +36,7 @@ class _ImagePlaceholderState extends State<ImagePlaceholder> {
         width: widget.width,
         color: hasError
             ? theme.colorScheme.errorContainer
-            : theme.colorScheme.surfaceVariant,
+            : theme.colorScheme.surfaceVariant.withOpacity(0.5),
         child: widget.loading == true
             ? LoadingAnimationWidget.fourRotatingDots(
                 color: theme.colorScheme.surface,
@@ -45,6 +45,13 @@ class _ImagePlaceholderState extends State<ImagePlaceholder> {
             : Icon(
                 hasError ? Icons.error_outline_outlined : Icons.photo_library,
                 size: widget.iconSize ?? 60,
+                shadows: [
+                  BoxShadow(
+                    offset: const Offset(-1, 1),
+                    blurRadius: 2,
+                    color: theme.colorScheme.outlineVariant,
+                  )
+                ],
                 color: hasError
                     ? theme.colorScheme.error
                     : theme.colorScheme.surface,

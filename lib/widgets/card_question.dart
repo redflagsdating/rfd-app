@@ -170,13 +170,13 @@ class _CardQuestionState extends State<CardQuestion> {
                 width: double.infinity,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.inversePrimary.withOpacity(0.6),
+                  color: theme.colorScheme.inversePrimary,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      offset: Offset.zero,
+                      offset: const Offset(0, 2),
                       blurRadius: 4,
-                      color: theme.colorScheme.surfaceVariant,
+                      color: theme.colorScheme.outlineVariant,
                     )
                   ],
                 ),
@@ -218,6 +218,13 @@ class _CardQuestionState extends State<CardQuestion> {
                         size: 32,
                         widget.icon ?? Icons.question_answer_outlined,
                         color: placeholderColor,
+                        shadows: [
+                          BoxShadow(
+                            offset: const Offset(1, 1),
+                            blurRadius: 2,
+                            color: theme.colorScheme.outlineVariant,
+                          )
+                        ],
                       ),
                       if (widget.hintText != null)
                         Text(

@@ -66,7 +66,8 @@ class _UserProfileBannerState extends State<UserProfileBanner>
     final displayName = widget.userModel.displayName;
     final firstName = widget.userModel.firstName;
     final lastName = widget.userModel.lastName;
-    final locality = widget.userModel.locality;
+    // Split to cater long location string and prevent overflow
+    final locality = (widget.userModel.locality ?? '-').split(',');
 
     return Column(
       children: [
@@ -125,7 +126,20 @@ class _UserProfileBannerState extends State<UserProfileBanner>
             const SizedBox(width: 16),
             const Icon(Icons.home),
             const SizedBox(width: 2),
-            Text(locality ?? '-'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                locality.length,
+                (index) => Text(
+                  locality[index].trim(),
+                  textHeightBehavior: const TextHeightBehavior(
+                    applyHeightToFirstAscent: false,
+                    applyHeightToLastDescent: false,
+                    leadingDistribution: TextLeadingDistribution.even,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ],

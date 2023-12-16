@@ -26,19 +26,27 @@ class _UserProfileState extends State<UserProfile> {
     final userImgRef = storageProvider.imgStorageForRef(widget.userModel.uid);
 
     userImgRef.listAll().then((images) {
-      images.items.where((element) {
+      final photos = images.items.where((element) {
         return element.fullPath != widget.userModel.photoUrl;
-      }).forEach((element) {
-        storageProvider.cacheImage(element.fullPath).then((value) {
-          setState(() {
-            _photoUrls.add(value);
+      });
 
-            if (_loading) {
-              _loading = false;
-            }
+      if (photos.isNotEmpty) {
+        photos.toList().forEach((element) {
+          storageProvider.cacheImage(element.fullPath).then((value) {
+            setState(() {
+              _photoUrls.add(value);
+
+              if (_loading) {
+                _loading = false;
+              }
+            });
           });
         });
-      });
+      } else {
+        setState(() {
+          _loading = false;
+        });
+      }
     });
 
     super.initState();
@@ -164,14 +172,13 @@ class _UserProfileState extends State<UserProfile> {
                             width: double.infinity,
                             margin: const EdgeInsets.only(bottom: 12),
                             decoration: BoxDecoration(
-                              color: theme.colorScheme.inversePrimary
-                                  .withOpacity(0.6),
+                              color: theme.colorScheme.inversePrimary,
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
                                 BoxShadow(
-                                  offset: Offset.zero,
+                                  offset: const Offset(0, 2),
                                   blurRadius: 4,
-                                  color: theme.colorScheme.surfaceVariant,
+                                  color: theme.colorScheme.outlineVariant,
                                 )
                               ],
                             ),
@@ -210,12 +217,14 @@ class _UserProfileState extends State<UserProfile> {
               2,
               (index) {
                 final imageUrl = _photoUrls.elementAtOrNull(index + 3);
+                final size = ((MediaQuery.of(context).size.width - 68) / 2)
+                    .floorToDouble();
 
                 return imageUrl != null
                     ? CachedNetworkImage(
                         imageUrl: imageUrl,
-                        width: 160,
-                        height: 160,
+                        width: size,
+                        height: size,
                         useOldImageOnUrlChange: true,
                         errorWidget: (context, url, error) {
                           return ImagePlaceholder(error: error);
@@ -233,8 +242,8 @@ class _UserProfileState extends State<UserProfile> {
                     : ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: ImagePlaceholder(
-                          height: 160,
-                          width: 160,
+                          height: size,
+                          width: size,
                           iconSize: 32,
                           loading: _loading,
                         ),

@@ -572,7 +572,6 @@ class AuthProvider extends ChangeNotifier {
     /// is triggered after firebaseAuth.signOut() success.
     _code = null;
     _message = '';
-    _status = AuthStatus.uninitialized;
 
     if (providerId != null) {
       logger.d('Start sign out $providerId', time: DateTime.now());
@@ -582,8 +581,8 @@ class AuthProvider extends ChangeNotifier {
       logger.d('Firebase signed out successfully', time: DateTime.now());
 
       if (providerId == SocialAuthProvider.google.providerId) {
-        await gSignIn.signOut();
         await gSignIn.disconnect();
+        await gSignIn.signOut();
 
         logger.d('Google signed out successfully', time: DateTime.now());
       } else if (providerId == SocialAuthProvider.facebook.providerId) {
@@ -592,6 +591,8 @@ class AuthProvider extends ChangeNotifier {
         logger.d('Facebook logged out successfully', time: DateTime.now());
       }
     }
+
+    _status = AuthStatus.uninitialized;
     notifyListeners();
 
     // TODO: Revisit, delay to avoid content flickering

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/services/logger_provider.dart';
@@ -135,8 +136,9 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
               width: 20,
               margin: const EdgeInsets.only(right: 10),
               child: _loading
-                  ? const CircularProgressIndicator(
-                      strokeWidth: 2,
+                  ? LoadingAnimationWidget.beat(
+                      color: theme.colorScheme.primary,
+                      size: 24,
                     )
                   : null,
             ),
