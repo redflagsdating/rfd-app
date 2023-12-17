@@ -39,10 +39,10 @@ class _PageProfileSettingsGreenFlagsState
           onPressed: () async {
             final greenFlags = userProvider.getGreenFlagsCache();
 
-            if (greenFlags.isEmpty) {
+            if (greenFlags.length < 3) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(l10n.pgSelectFlagsEmptyErrorText),
+                  content: Text(l10n.pgSelectFlagsErrorText),
                 ),
               );
 

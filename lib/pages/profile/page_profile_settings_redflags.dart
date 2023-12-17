@@ -39,10 +39,10 @@ class _PageProfileSettingsRedFlagsState
           onPressed: () async {
             final redflags = userProvider.getRedFlagsCache();
 
-            if (redflags.isEmpty) {
+            if (redflags.length < 3) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(l10n.pgSelectFlagsEmptyErrorText),
+                  content: Text(l10n.pgSelectFlagsErrorText),
                 ),
               );
 

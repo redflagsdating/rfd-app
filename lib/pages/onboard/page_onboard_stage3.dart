@@ -75,8 +75,8 @@ class _PageOnboardStage3State extends State<PageOnboardStage3>
               final greenFlags = _userProvider.getGreenFlagsCache();
 
               if ((step == 0 && (realTalk == null || realTalk.isEmpty)) ||
-                  (step == 1 && redFlags.isEmpty) ||
-                  (step == 2 && greenFlags.isEmpty)) {
+                  (step == 1 && redFlags.length < 3) ||
+                  (step == 2 && greenFlags.length < 3)) {
                 return;
               }
 

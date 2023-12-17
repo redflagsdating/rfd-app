@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/mixins/mixin_kyc_state.dart';
 import 'package:red_flags/pages/profile/page_profile_settings.photos.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_age.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_display_name.dart';
@@ -22,7 +23,6 @@ import 'package:red_flags/widgets/profile/dialog_delete_account.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu_item.dart';
 import 'package:red_flags/widgets/user_circle_avatar.dart';
-import 'package:red_flags/widgets/user_text_full_name.dart';
 
 class PageProfileSettings extends StatefulWidget {
   const PageProfileSettings({super.key});
@@ -31,7 +31,8 @@ class PageProfileSettings extends StatefulWidget {
   State<PageProfileSettings> createState() => _PageProfileSettingsState();
 }
 
-class _PageProfileSettingsState extends State<PageProfileSettings> {
+class _PageProfileSettingsState extends State<PageProfileSettings>
+    with MixinKycState {
   String? _photoUrl;
 
   @override
@@ -48,6 +49,7 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
       });
     }
 
+    updateKycStatus();
     super.initState();
   }
 
@@ -56,6 +58,7 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final authProvider = context.read<AuthProvider>();
+    final userProvider = context.read<UserProvider>();
 
     return SingleChildScrollView(
       child: Container(
@@ -67,7 +70,17 @@ class _PageProfileSettingsState extends State<PageProfileSettings> {
             const SizedBox(height: 32),
             UserCircleAvatar(photoUrl: _photoUrl),
             const SizedBox(height: 16),
-            UserTextFullName(style: theme.textTheme.titleLarge),
+            ListenableBuilder(
+              listenable: userProvider,
+              builder: (context, _) {
+                final displayName = userProvider.getDisplayNameCache();
+
+                return Text(
+                  displayName,
+                  style: theme.textTheme.titleLarge,
+                );
+              },
+            ),
             const SizedBox(height: 2),
             FilledButton(
               onPressed: () {
