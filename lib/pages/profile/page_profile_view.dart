@@ -42,7 +42,7 @@ class _PageProfileViewState extends State<PageProfileView>
                     ? CachedNetworkImage(
                         imageUrl: photoUrl,
                         width: double.infinity,
-                        height: 300,
+                        height: 360,
                         useOldImageOnUrlChange: true,
                         errorWidget: (context, url, error) {
                           return ImagePlaceholder(error: error);
@@ -56,12 +56,12 @@ class _PageProfileViewState extends State<PageProfileView>
                       )
                     : const ImagePlaceholder(
                         loading: true,
-                        height: 300,
+                        height: 360,
                         width: double.infinity,
                       ),
                 Positioned(
                   left: 16,
-                  top: 28,
+                  top: 48,
                   child: IconButton.filled(
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.keyboard_arrow_left_rounded),
