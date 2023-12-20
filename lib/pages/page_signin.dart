@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
@@ -22,8 +24,10 @@ class PageSignIn extends StatefulWidget {
 }
 
 class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
-  late Logger logger;
-  late AuthProvider authProvider;
+  bool _showDialogSigninEmail = false;
+  late Logger _logger;
+  late AuthProvider _authProvider;
+  late StreamSubscription<PendingDynamicLinkData> _subscription;
 
   @override
   void initState() {
@@ -48,27 +52,24 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    logger = Provider.of<LoggerProvider>(context).logger;
-    authProvider = Provider.of<AuthProvider>(context);
+    _logger = Provider.of<LoggerProvider>(context).logger;
+    _authProvider = Provider.of<AuthProvider>(context);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     try {
-      final subscription = FirebaseDynamicLinks.instance.onLink.listen(
-        (event) {
-          if (authProvider.isPending()) {
+      _subscription = FirebaseDynamicLinks.instance.onLink.listen(
+        (event) async {
+          if (_authProvider.isPending()) {
             Navigator.pop(context);
-            authProvider.handleSignIn(event.link.toString());
+            await _authProvider.handleSignIn(event.link.toString());
+            await _subscription.cancel();
           }
         },
       );
-
-      if (authProvider.isAuthenticated()) {
-        subscription.cancel();
-      }
     } catch (e) {
-      logger.e(e, time: DateTime.now());
+      _logger.e(e, time: DateTime.now());
     }
   }
 
@@ -83,7 +84,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       decoration: const AssetImage("assets/signin-bg.jpg"),
       content: Column(
         children: <Widget>[
-          if (loggedInProvider != null)
+          if (loggedInProvider != null && !_showDialogSigninEmail)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
               child: Text(
@@ -153,19 +154,32 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
             style: FilledButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
-            onPressed: () => showGeneralDialog(
-              context: context,
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  DialogSigninEmail(authProvider: authProvider),
-              transitionBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                return FadeThroughTransition(
-                  animation: animation,
-                  secondaryAnimation: secondaryAnimation,
-                  child: child,
-                );
-              },
-            ),
+            onPressed: () {
+              setState(() {
+                _showDialogSigninEmail = true;
+              });
+
+              showGeneralDialog(
+                context: context,
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    DialogSigninEmail(authProvider: authProvider),
+                transitionBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeThroughTransition(
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    child: child,
+                  );
+                },
+              ).whenComplete(() {
+                // A workaround to prevent overflow
+                Future.delayed(const Duration(milliseconds: 100), () {
+                  setState(() {
+                    _showDialogSigninEmail = false;
+                  });
+                });
+              });
+            },
             child: Text(
               l10n.pgSignInWithBtn(l10n.email),
               textAlign: TextAlign.center,

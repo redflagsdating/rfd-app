@@ -26,6 +26,12 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     final dob = context.read<UserProvider>().getDobCache();
     if (dob != null) {

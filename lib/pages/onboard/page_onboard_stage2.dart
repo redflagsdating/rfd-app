@@ -52,6 +52,13 @@ class _PageOnboardStage2State extends State<PageOnboardStage2>
   }
 
   @override
+  void dispose() {
+    _birthdayCtrl.dispose();
+    _localityCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 

@@ -27,6 +27,12 @@ class _PageProfileSettingsLocalityState
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _controller.text = Provider.of<UserProvider>(context).getLocalityCache();
     super.didChangeDependencies();

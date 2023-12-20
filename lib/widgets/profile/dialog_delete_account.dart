@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
@@ -20,7 +23,9 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
     with WidgetsBindingObserver {
   bool _enabled = false;
   bool _deleting = false;
+  late Logger _logger;
   late IdentityVerification _kycApi;
+  late StreamSubscription<PendingDynamicLinkData> _subscription;
 
   Future<bool?> _deleteAccount() async {
     final userProvider = context.read<UserProvider>();
@@ -79,6 +84,7 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
 
   @override
   void didChangeDependencies() {
+    _logger = context.read<LoggerProvider>().logger;
     _kycApi =
         IdentityVerification(uid: context.read<UserProvider>().getIdCache());
     super.didChangeDependencies();
@@ -87,28 +93,24 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
   /// Re-authenticate via email link
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    final logger = context.read<LoggerProvider>().logger;
-    final authProvider = context.read<AuthProvider>();
-    final storageProvider = context.read<FireStorageProvider>();
-
     try {
-      final subscription = FirebaseDynamicLinks.instance.onLink.listen(
+      _subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) async {
+          final authProvider = context.read<AuthProvider>();
+          final storageProvider = context.read<FireStorageProvider>();
+
           if (await authProvider.handleReAuthenticate(event.link.toString())) {
             await storageProvider.deleteImgStorage();
             await authProvider.deleteUser();
+            await _subscription.cancel();
 
             // ignore: use_build_context_synchronously
             Navigator.pop(context);
           }
         },
       );
-
-      if (authProvider.isUninitialized()) {
-        subscription.cancel();
-      }
     } catch (e) {
-      logger.e(e, time: DateTime.now());
+      _logger.e(e, time: DateTime.now());
     }
   }
 

@@ -51,6 +51,14 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
   }
 
   @override
+  void dispose() {
+    _firstNameCtrl.dispose();
+    _lastNameCtrl.dispose();
+    _displayNameCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _userProvider = Provider.of<UserProvider>(context, listen: false);
 

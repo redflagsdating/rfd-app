@@ -27,6 +27,12 @@ class _PageProfileSettingsDisplayNameState
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _controller.text = context.read<UserProvider>().getDisplayNameCache();
     super.didChangeDependencies();

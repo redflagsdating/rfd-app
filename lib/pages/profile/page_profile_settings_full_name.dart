@@ -34,6 +34,13 @@ class _PageProfileSettingsFullNameState
   }
 
   @override
+  void dispose() {
+    _firstNameCtrl.dispose();
+    _lastNameCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     final fullName = _getFullName();
 

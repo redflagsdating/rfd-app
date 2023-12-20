@@ -67,14 +67,7 @@ class AuthProvider extends ChangeNotifier {
     );
 
     // Init status and check if user has signed in already
-    isSignedIn().then(
-      (isTrue) {
-        if (isTrue) {
-          _status = AuthStatus.authenticated;
-          notifyListeners();
-        }
-      },
-    );
+    isSignedIn();
   }
 
   final Logger logger;
@@ -421,9 +414,14 @@ class AuthProvider extends ChangeNotifier {
       if (user.docs.isNotEmpty) {
         userProvider.updateUserCache(user.docs.first.data());
       }
+      _status = AuthStatus.authenticated;
+      notifyListeners();
 
       return true;
     } else {
+      _status = AuthStatus.uninitialized;
+      notifyListeners();
+
       return false;
     }
   }
