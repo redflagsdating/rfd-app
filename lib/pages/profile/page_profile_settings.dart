@@ -33,32 +33,12 @@ class PageProfileSettings extends StatefulWidget {
 
 class _PageProfileSettingsState extends State<PageProfileSettings>
     with MixinKycState {
-  String? _photoUrl;
-
-  @override
-  void initState() {
-    final photoUrl = context.read<UserProvider>().getUserCache().photoUrl;
-    final storageProvider = context.read<FireStorageProvider>();
-
-    if (photoUrl != null) {
-      // Return from cache first or fetch from Firebase Storage
-      storageProvider.cacheImage(photoUrl).then((value) {
-        setState(() {
-          _photoUrl = value;
-        });
-      });
-    }
-
-    updateKycStatus();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final authProvider = context.read<AuthProvider>();
-    final userProvider = context.read<UserProvider>();
+    final userProvider = Provider.of<UserProvider>(context);
 
     return SingleChildScrollView(
       child: Container(
@@ -68,38 +48,57 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
         child: Column(
           children: [
             const SizedBox(height: 32),
-            UserCircleAvatar(photoUrl: _photoUrl),
-            const SizedBox(height: 16),
             ListenableBuilder(
               listenable: userProvider,
               builder: (context, _) {
+                final photoUrl = userProvider.getPhotoUrlCache();
                 final displayName = userProvider.getDisplayNameCache();
+                final future =
+                    context.read<FireStorageProvider>().cacheImage(photoUrl);
 
-                return Text(
-                  displayName,
-                  style: theme.textTheme.titleLarge,
-                );
-              },
-            ),
-            const SizedBox(height: 2),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  PageFadeRouteBuilder(
-                    page: Builder(
-                      builder: (context) => PageProfileView(
-                        photoUrl: _photoUrl,
-                        userModel: context.read<UserProvider>().getUserCache(),
-                      ),
+                updateKycStatus();
+
+                return Column(
+                  children: [
+                    FutureBuilder(
+                      future: future,
+                      builder: (context, snapshot) {
+                        return UserCircleAvatar(photoUrl: snapshot.data);
+                      },
                     ),
-                  ),
+                    const SizedBox(height: 16),
+                    Text(
+                      displayName,
+                      style: theme.textTheme.titleLarge,
+                    ),
+                    const SizedBox(height: 2),
+                    FutureBuilder(
+                      future: future,
+                      builder: (context, snapshot) {
+                        return FilledButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              PageFadeRouteBuilder(
+                                page: Builder(
+                                  builder: (context) => PageProfileView(
+                                    photoUrl: snapshot.data,
+                                    userModel: userProvider.getUserCache(),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Text(l10n!.pgProfileViewProfileBtn),
+                        );
+                      },
+                    ),
+                  ],
                 );
               },
-              child: Text(l10n!.pgProfileViewProfileBtn),
             ),
             const SizedBox(height: 24),
             ProfileSettingsMenu(
-              title: l10n.pgProfileMenuAboutMeTitle,
+              title: l10n!.pgProfileMenuAboutMeTitle,
               children: [
                 ProfileSettingsMenuItem(
                   label: l10n.fullName,

@@ -133,22 +133,23 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
       final croppedFile = await ImageCropper().cropImage(
         sourcePath: _xFile!.path,
         compressFormat: ImageCompressFormat.jpg,
+        aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
         compressQuality: 80,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: l10n!.cardImagePickerCropTitle,
-            lockAspectRatio: false,
+            lockAspectRatio: true,
             hideBottomControls: true,
             toolbarColor: theme.colorScheme.primary,
             statusBarColor: theme.colorScheme.primary,
             toolbarWidgetColor: theme.colorScheme.onPrimary,
-            initAspectRatio: CropAspectRatioPreset.original,
           ),
           IOSUiSettings(
             title: l10n.cardImagePickerCropTitle,
             rotateButtonsHidden: true,
             rotateClockwiseButtonHidden: true,
             aspectRatioPickerButtonHidden: true,
+            aspectRatioLockEnabled: true,
           ),
         ],
       );
