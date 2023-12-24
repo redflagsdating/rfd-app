@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:red_flags/models/user.dart';
 
 import '../global.dart' as global;
 
@@ -17,11 +18,13 @@ void main() {
         isTrue);
   });
 
-  test('UserProvider > createUser / getCurrentUser / cache getter methods',
+  test(
+      'UserProvider > createUser / getCurrentUser / getUserCache / cache getter methods',
       () async {
     final userModel = global.userModel;
     final userProvider = global.userProvider;
     final user = await userProvider.getCurrentUser();
+    final userCache = userProvider.getUserCache();
 
     expect(user, isNotNull);
     // Not need to verify all fields as test is covered by user_test.dart
@@ -49,6 +52,9 @@ void main() {
         isTrue);
     expect(
         mapEquals(userProvider.getRealTalkCache(), userModel.realTalk), isTrue);
+
+    // getUserCache check
+    expect(userCache.toString() == userModel.toString(), isTrue);
   });
 
   test('UserProvider.setId()', () async {
@@ -209,5 +215,50 @@ void main() {
     expect(await global.userProvider.getGenderFor(), isNotEmpty);
     expect(await global.userProvider.getRedFlags(), isNotEmpty);
     expect(await global.userProvider.getGreenFlags(), isNotEmpty);
+  });
+
+  test('UserProvider.getAge', () {
+    expect(
+      global.userProvider.getAge(
+            DateTime.fromMillisecondsSinceEpoch(
+              DateTime.now().millisecondsSinceEpoch - 94608000000,
+            ),
+          ) ==
+          3,
+      isTrue,
+    );
+  });
+
+  test('UserProvider.deleteUser', () async {
+    expect(global.userProvider.userDocRef != null, isTrue);
+    expect(global.userProvider.userDocRef?.id != null, isTrue);
+    expect(await global.userProvider.userDocRef?.get() != null, isTrue);
+
+    await global.userProvider.deleteUser();
+    expect(await global.userProvider.userDocRef?.get() == null, isTrue);
+    expect(global.userProvider.userDocRef == null, isTrue);
+
+    expect(global.localStorage.containsKey(UserFields.uid.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.email.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.createdAt.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.photoUrl.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.firstName.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.lastName.name), isFalse);
+    expect(
+        global.localStorage.containsKey(UserFields.displayName.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.dob.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.gender.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.genderFor.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.locality.name), isFalse);
+    expect(
+        global.localStorage.containsKey(UserFields.phoneNumber.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.onboarded.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.verified.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.verifySubmitted.name),
+        isFalse);
+    expect(global.localStorage.containsKey(UserFields.realTalk.name), isFalse);
+    expect(global.localStorage.containsKey(UserFields.redFlags.name), isFalse);
+    expect(
+        global.localStorage.containsKey(UserFields.greenFlags.name), isFalse);
   });
 }

@@ -16,7 +16,7 @@ late SharedPreferences localStorage;
 final userModel = UserModel(
   uid: uid,
   email: "example@email.com",
-  createdAt: DateTime.now(),
+  createdAt: DateTime(1991, 01, 01, 00, 00),
   onboarded: false,
   verified: false,
   verifySubmitted: false,

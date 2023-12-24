@@ -166,6 +166,7 @@ class UserProvider extends ChangeNotifier {
       final email = getEmailCache();
 
       await usersRef.doc(uid).delete();
+      _userDocRef = null;
       await localStorage.clear();
 
       logger.d('Deleted user $email successfully', time: DateTime.now());
@@ -211,6 +212,7 @@ class UserProvider extends ChangeNotifier {
     await setFirstName(user.firstName ?? "");
     await setLastName(user.lastName ?? "");
     await setDisplayName(user.displayName ?? "");
+    await setPhoneNumber(user.phoneNumber ?? "");
     await setGender(user.gender ?? "");
     await setLocality(user.locality ?? "");
     await setPhotoUrl(user.photoUrl ?? "");
@@ -244,6 +246,7 @@ class UserProvider extends ChangeNotifier {
       onboarded: getOnboardedCache() ?? false,
       verified: getVerifiedCache() ?? false,
       verifySubmitted: getVerifySubmittedCache() ?? false,
+      phoneNumber: getPhoneNumberCache(),
       photoUrl: getPhotoUrlCache(),
       firstName: getFirstNameCache(),
       lastName: getLastNameCache(),
@@ -294,6 +297,10 @@ class UserProvider extends ChangeNotifier {
 
   String getDisplayNameCache() {
     return _getStringFieldCache(UserStringFields.displayName);
+  }
+
+  String getPhoneNumberCache() {
+    return _getStringFieldCache(UserStringFields.phoneNumber);
   }
 
   String getGenderCache() {
@@ -514,6 +521,16 @@ class UserProvider extends ChangeNotifier {
       {bool? silent = true, bool? localOnly = true}) {
     return _setStringField(
       UserStringFields.photoUrl,
+      value,
+      silent: silent,
+      localOnly: localOnly,
+    );
+  }
+
+  Future<bool?> setPhoneNumber(String value,
+      {bool? silent = true, bool? localOnly = true}) {
+    return _setStringField(
+      UserStringFields.phoneNumber,
       value,
       silent: silent,
       localOnly: localOnly,
