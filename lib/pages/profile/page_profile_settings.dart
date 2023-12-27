@@ -17,7 +17,9 @@ import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
 import 'package:red_flags/pages/profile/page_profile_view.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
+import 'package:red_flags/services/utils.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/profile/dialog_delete_account.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
@@ -37,6 +39,7 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final logger = context.read<LoggerProvider>().logger;
     final authProvider = context.read<AuthProvider>();
     final userProvider = Provider.of<UserProvider>(context);
 
@@ -250,11 +253,27 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                   label: l10n.pgProfileMenuItemFaq,
                   leadingIcon: Icons.chat_bubble_outline,
                   trailingIcon: Icons.open_in_new,
+                  onTap: () async {
+                    if (!await Utils.launchFaqWebview()) {
+                      logger.e(
+                        'Unable to launch FAQS webview',
+                        time: DateTime.now(),
+                      );
+                    }
+                  },
                 ),
                 ProfileSettingsMenuItem(
                   label: l10n.pgProfileMenuItemLegal,
                   leadingIcon: Icons.policy,
                   trailingIcon: Icons.open_in_new,
+                  onTap: () async {
+                    if (!await Utils.launchTncWebview()) {
+                      logger.e(
+                        'Unable to launch T&C webview',
+                        time: DateTime.now(),
+                      );
+                    }
+                  },
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:red_flags/services/utils.dart';
 
 class ScaffoldBranding extends Scaffold {
   ScaffoldBranding({
@@ -64,8 +65,8 @@ class ScaffoldBranding extends Scaffold {
                                   fontWeight: FontWeight.w800,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // TODO: Open terms and services page
+                                  ..onTap = () async {
+                                    await Utils.launchTncWebview();
                                   },
                               ),
                               TextSpan(text: ' ${l10n.and} '),
@@ -75,8 +76,8 @@ class ScaffoldBranding extends Scaffold {
                                   fontWeight: FontWeight.w800,
                                 ),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // TODO: Open privacy policy page
+                                  ..onTap = () async {
+                                    await Utils.launchPrivacyPolicyWebview();
                                   },
                               ),
                             ],
