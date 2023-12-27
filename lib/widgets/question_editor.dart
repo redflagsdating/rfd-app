@@ -43,11 +43,13 @@ class _QuestionEditorState extends State<QuestionEditor> {
                 alignment: Alignment.centerLeft,
                 child: widget.onBack != null
                     ? IconButton(
+                        key: const Key("question_editor_back_button"),
                         icon: const Icon(Icons.arrow_back_ios_new_rounded),
                         onPressed: isEnabled ? widget.onBack : null,
                       )
                     : widget.onDelete != null
                         ? IconButton(
+                            key: const Key("question_editor_delete_button"),
                             icon: const Icon(Icons.delete),
                             onPressed: isEnabled ? widget.onDelete : null,
                           )
@@ -64,6 +66,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
                 width: 80,
                 alignment: Alignment.centerRight,
                 child: TextButton(
+                  key: const Key("question_editor_save_button"),
                   onPressed: isEnabled
                       ? () {
                           if (!_form.currentState!.validate()) {
@@ -80,6 +83,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
           ),
           const SizedBox(height: 40),
           Text(
+            key: const Key("question_editor_display_title"),
             widget.question,
             style: theme.textTheme.titleLarge,
           ),
@@ -91,6 +95,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
             maxLength: 250,
             enabled: isEnabled,
             controller: widget.controller,
+            key: const Key("question_editor_textfield"),
             textCapitalization: TextCapitalization.sentences,
             buildCounter: (context,
                 {required currentLength, required isFocused, maxLength}) {

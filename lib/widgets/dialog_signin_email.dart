@@ -90,6 +90,9 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                                         SnackBar(
                                           duration: const Duration(seconds: 8),
                                           action: SnackBarAction(
+                                            key: const Key(
+                                              "dialog_email_resend",
+                                            ),
                                             label: l10n.resend,
                                             onPressed: () {
                                               if (enabled) {

@@ -23,8 +23,9 @@ class ListViewQuestions extends StatelessWidget {
         final isSelected = selected?.contains(question) ?? false;
 
         return GestureDetector(
+          key: const Key("listview_questions_item_card"),
           onTap: () {
-            if (!selected!.contains(question)) {
+            if (selected == null || !selected!.contains(question)) {
               onSelect!(question);
             }
           },

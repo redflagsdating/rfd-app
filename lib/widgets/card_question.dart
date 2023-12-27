@@ -39,13 +39,23 @@ class _CardQuestionState extends State<CardQuestion> {
 
   // Do Not inline to ensure using this widget's context and setState
   void _onAdded() {
-    widget.onAdded!(_question!, _controller.text);
+    final onAdded = widget.onAdded;
+
+    if (onAdded != null) {
+      onAdded(_question!, _controller.text);
+    }
+
     Navigator.of(context).pop();
     setState(() {});
   }
 
   void _onDeleted() {
-    widget.onDeleted!(_question!);
+    final onDeleted = widget.onDeleted;
+
+    if (onDeleted != null) {
+      onDeleted(_question!);
+    }
+
     Navigator.pop(context);
     setState(() {
       _question = null;
@@ -104,6 +114,7 @@ class _CardQuestionState extends State<CardQuestion> {
     }
 
     return GestureDetector(
+      key: const Key("card_question_gesture_detector"),
       onTap: () {
         showModalBottomSheet<void>(
           elevation: 0,
@@ -142,6 +153,7 @@ class _CardQuestionState extends State<CardQuestion> {
                             onEditingComplete: _onAdded,
                           )
                         : ListViewQuestions(
+                            key: const Key("card_question_list_questions"),
                             questions: widget.listQuestions,
                             selected: widget.selectedQuestions,
                             onSelect: (question) {
@@ -173,6 +185,7 @@ class _CardQuestionState extends State<CardQuestion> {
       child: FadeThroughTransitionSwitcher(
         child: _question != null
             ? Container(
+                key: const Key("card_question_container"),
                 width: double.infinity,
                 height: 120,
                 decoration: BoxDecoration(
@@ -198,6 +211,7 @@ class _CardQuestionState extends State<CardQuestion> {
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
+                      key: const Key("card_question_container_title"),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -205,6 +219,7 @@ class _CardQuestionState extends State<CardQuestion> {
                       maxLines: 3,
                       overflow: TextOverflow.fade,
                       style: theme.textTheme.bodySmall,
+                      key: const Key("card_question_container_description"),
                     )
                   ],
                 ),
@@ -215,6 +230,7 @@ class _CardQuestionState extends State<CardQuestion> {
                 radius: const Radius.circular(12),
                 color: theme.colorScheme.inversePrimary,
                 child: SizedBox(
+                  key: const Key("card_question_empty_box"),
                   width: double.infinity,
                   height: 120,
                   child: Column(
