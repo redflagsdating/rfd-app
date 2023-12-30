@@ -38,21 +38,26 @@ class _ProfileDisplayNameState extends State<ProfileDisplayName> {
           const SizedBox(height: 10),
           Text(l10n.pgDisplayNameBody),
           const SizedBox(height: 48),
-          TextFormField(
-            autofocus: true,
-            enabled: widget.enabled != false,
-            controller: widget.controller,
-            decoration: InputDecoration(
-              border: const UnderlineInputBorder(),
-              hintText: l10n.fieldDisplayNameHintText,
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return l10n.fieldDisplayNameErrorText;
-              }
+          Semantics(
+            focusable: true,
+            textField: true,
+            label: l10n.fieldDisplayNameHintText,
+            child: TextFormField(
+              autofocus: true,
+              enabled: widget.enabled != false,
+              controller: widget.controller,
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                hintText: l10n.fieldDisplayNameHintText,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return l10n.fieldDisplayNameErrorText;
+                }
 
-              return null;
-            },
+                return null;
+              },
+            ),
           ),
         ],
       ),

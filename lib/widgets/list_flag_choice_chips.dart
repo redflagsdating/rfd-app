@@ -44,22 +44,27 @@ class _ListFlagChoiceChipsState extends State<ListFlagChoiceChips> {
           final isSelected = selected.contains(sorted[index]);
           final isEnabled = isSelected || (widget.enabled ?? true);
 
-          return ChoiceChip(
-            showCheckmark: false,
-            visualDensity: VisualDensity.compact,
-            label: Text(sorted[index]),
+          return Semantics(
             selected: isSelected,
-            onSelected: isEnabled
-                ? (selectedState) {
-                    setState(() {
-                      if (selectedState && selected.length < 3) {
-                        widget.onAdded!(sorted[index]);
-                      } else {
-                        widget.onDeleted!(sorted[index]);
-                      }
-                    });
-                  }
-                : null,
+            button: true,
+            label: sorted[index],
+            child: ChoiceChip(
+              showCheckmark: false,
+              visualDensity: VisualDensity.compact,
+              label: Text(sorted[index]),
+              selected: isSelected,
+              onSelected: isEnabled
+                  ? (selectedState) {
+                      setState(() {
+                        if (selectedState && selected.length < 3) {
+                          widget.onAdded!(sorted[index]);
+                        } else {
+                          widget.onDeleted!(sorted[index]);
+                        }
+                      });
+                    }
+                  : null,
+            ),
           );
         },
       ),

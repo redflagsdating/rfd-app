@@ -139,30 +139,34 @@ class _OnboardProfileGenderState extends State<ProfileGender> {
         for (var chip in chips)
           Container(
             margin: const EdgeInsets.only(bottom: 16),
-            child: ChoiceChip(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              key: Key((chip["key"] as Gender).name),
+            child: Semantics(
+              label: (chip["key"] as Gender).name,
               selected: chip["selected"] as bool,
-              showCheckmark: false,
-              avatar: FaIcon(
-                chip["icon"] as IconData,
-                size: 28,
+              child: ChoiceChip(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                key: Key((chip["key"] as Gender).name),
+                selected: chip["selected"] as bool,
+                showCheckmark: false,
+                avatar: FaIcon(
+                  chip["icon"] as IconData,
+                  size: 28,
+                ),
+                label: Container(
+                  height: 40,
+                  width: double.infinity,
+                  alignment: Alignment.centerLeft,
+                  child: chip["text"] as Widget,
+                ),
+                onSelected: widget.enabled == true
+                    ? (value) {
+                        _setGender(isGenderForPage || value
+                            ? chip["key"] as Gender
+                            : null);
+                      }
+                    : null,
               ),
-              label: Container(
-                height: 40,
-                width: double.infinity,
-                alignment: Alignment.centerLeft,
-                child: chip["text"] as Widget,
-              ),
-              onSelected: widget.enabled == true
-                  ? (value) {
-                      _setGender(isGenderForPage || value
-                          ? chip["key"] as Gender
-                          : null);
-                    }
-                  : null,
             ),
           ),
       ],

@@ -164,53 +164,68 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
                         )
                       : null,
                 ),
-                TextField(
+                Semantics(
+                  textField: true,
                   enabled: !_deleting,
-                  decoration: InputDecoration(
-                    labelText: l10n.dialogDeleteAccountLabel(
-                      l10n.pgProfileMenuItemDeleteAccount,
+                  label: l10n.pgProfileMenuItemDeleteAccount,
+                  child: TextField(
+                    enabled: !_deleting,
+                    decoration: InputDecoration(
+                      labelText: l10n.dialogDeleteAccountLabel(
+                        l10n.pgProfileMenuItemDeleteAccount,
+                      ),
                     ),
+                    onChanged: (value) {
+                      if (value.trim() == l10n.pgProfileMenuItemDeleteAccount) {
+                        setState(() {
+                          _enabled = true;
+                        });
+                      } else {
+                        setState(() {
+                          _enabled = false;
+                        });
+                      }
+                    },
                   ),
-                  onChanged: (value) {
-                    if (value.trim() == l10n.pgProfileMenuItemDeleteAccount) {
-                      setState(() {
-                        _enabled = true;
-                      });
-                    } else {
-                      setState(() {
-                        _enabled = false;
-                      });
-                    }
-                  },
                 ),
                 const SizedBox(height: 40),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    TextButton(
-                      onPressed:
-                          _deleting ? null : () => Navigator.pop(context),
-                      child: Text(l10n.cancel),
+                    Semantics(
+                      button: true,
+                      enabled: true,
+                      label: l10n.cancel,
+                      child: TextButton(
+                        onPressed:
+                            _deleting ? null : () => Navigator.pop(context),
+                        child: Text(l10n.cancel),
+                      ),
                     ),
                     const SizedBox(width: 8),
-                    FilledButton(
-                      onPressed: _enabled && !_deleting
-                          ? () async {
-                              if (await _deleteAccount() == true) {
-                                // ignore: use_build_context_synchronously
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    duration: const Duration(seconds: 8),
-                                    content: Text(
-                                      l10n.dialogDeleteAccountReAuthEmailSent,
+                    Semantics(
+                      button: true,
+                      enabled: true,
+                      label: l10n.delete,
+                      child: FilledButton(
+                        onPressed: _enabled && !_deleting
+                            ? () async {
+                                if (await _deleteAccount() == true) {
+                                  // ignore: use_build_context_synchronously
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      duration: const Duration(seconds: 8),
+                                      content: Text(
+                                        l10n.dialogDeleteAccountReAuthEmailSent,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
+                                }
                               }
-                            }
-                          : null,
-                      child: Text(l10n.delete),
-                    )
+                            : null,
+                        child: Text(l10n.delete),
+                      ),
+                    ),
                   ],
                 ),
               ],

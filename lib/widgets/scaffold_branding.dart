@@ -35,15 +35,24 @@ class ScaffoldBranding extends Scaffold {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Image.asset(
-                            "assets/rf-logo-white.png",
-                            width: 160,
+                          Semantics(
+                            image: true,
+                            readOnly: true,
+                            label: '${l10n!.brandName} Logo',
+                            child: Image.asset(
+                              "assets/rf-logo-white.png",
+                              width: 160,
+                            ),
                           ),
                           const SizedBox(height: 30),
-                          Text(
-                            tagLine ?? l10n!.scaffoldBrandingTagLine,
-                            style: graphicText.headlineSmall,
-                            textAlign: TextAlign.center,
+                          Semantics(
+                            readOnly: true,
+                            label: tagLine ?? l10n.scaffoldBrandingTagLine,
+                            child: Text(
+                              tagLine ?? l10n.scaffoldBrandingTagLine,
+                              style: graphicText.headlineSmall,
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                         ],
                       ),
@@ -52,35 +61,40 @@ class ScaffoldBranding extends Scaffold {
                     if (hideFooter != true)
                       SizedBox(
                         width: 320,
-                        child: Text.rich(
-                          textAlign: TextAlign.center,
-                          TextSpan(
-                            style: graphicText.bodySmall,
-                            text: l10n!.pgSignInFooter,
-                            children: [
-                              const TextSpan(text: ' '),
-                              TextSpan(
-                                text: l10n.termOfService,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
+                        child: Semantics(
+                          readOnly: true,
+                          label:
+                              '${l10n.pgSignInFooter} ${l10n.termOfService} & ${l10n.privacyPolicy}',
+                          child: Text.rich(
+                            textAlign: TextAlign.center,
+                            TextSpan(
+                              style: graphicText.bodySmall,
+                              text: l10n.pgSignInFooter,
+                              children: [
+                                const TextSpan(text: ' '),
+                                TextSpan(
+                                  text: l10n.termOfService,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      await Utils.launchTncWebview();
+                                    },
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    await Utils.launchTncWebview();
-                                  },
-                              ),
-                              TextSpan(text: ' ${l10n.and} '),
-                              TextSpan(
-                                text: l10n.privacyPolicy,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w800,
+                                TextSpan(text: ' ${l10n.and} '),
+                                TextSpan(
+                                  text: l10n.privacyPolicy,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () async {
+                                      await Utils.launchPrivacyPolicyWebview();
+                                    },
                                 ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () async {
-                                    await Utils.launchPrivacyPolicyWebview();
-                                  },
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

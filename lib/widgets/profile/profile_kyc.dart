@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/services/identity_verification.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
+import 'package:red_flags/services/utils.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
 import 'package:red_flags/widgets/label_kyc_status.dart';
 
@@ -114,88 +115,95 @@ class _ProfileKycState extends State<ProfileKyc> {
           child: FadeThroughTransitionSwitcher(
             child: IdentityVerification.isUploaded(_status)
                 ? LabelKycStatus(status: _status)
-                : FilledButton.icon(
-                    icon: _verifying
-                        ? Container(
-                            width: 16,
-                            height: 16,
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 7,
-                              horizontal: 4,
-                            ),
-                            child:
-                                const CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Icon(widget.onboarding == true
-                            ? Icons.fact_check_outlined
-                            : Icons.refresh),
-                    onPressed: _verifying
-                        ? null
-                        : () {
-                            launchKYC().then((result) {
-                              var message = result.errorMsg;
-                              bool showAction = false;
-
-                              if (result.success) {
-                                _updateUserStatus(result.status);
-
-                                switch (result.status) {
-                                  case SNSMobileSDKStatus.Ready:
-                                  case SNSMobileSDKStatus.Initial:
-                                  case SNSMobileSDKStatus.Incomplete:
-                                    message = l10n.pgKycIncompleteMessage;
-                                    break;
-
-                                  case SNSMobileSDKStatus.Pending:
-                                    message = l10n.pgKycPendingMessage;
-                                    break;
-
-                                  case SNSMobileSDKStatus.TemporarilyDeclined:
-                                    showAction = true;
-                                    message = l10n.pgKycDeclinedMessage;
-                                    logger.d(
-                                      result.toString(),
-                                      time: DateTime.now(),
-                                    );
-                                    break;
-
-                                  case SNSMobileSDKStatus.FinallyRejected:
-                                    showAction = true;
-                                    message = l10n.pgKycRejectedMessage;
-                                    logger.d(
-                                      result.toString(),
-                                      time: DateTime.now(),
-                                    );
-                                    break;
-
-                                  default:
-                                    break;
-                                }
-                              } else {
-                                logger.e('[${result.errorType}] $message',
-                                    time: DateTime.now());
-                              }
-
-                              if (message != null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(message),
-                                    action: showAction
-                                        ? SnackBarAction(
-                                            label: l10n.contactUs,
-                                            onPressed: () {
-                                              // TODO: Open support channel
-                                            },
-                                          )
-                                        : null,
-                                  ),
-                                );
-                              }
-                            });
-                          },
-                    label: Text(widget.onboarding == true
+                : Semantics(
+                    button: true,
+                    enabled: true,
+                    label: widget.onboarding == true
                         ? l10n.pgKycOnboardBtn
-                        : l10n.pgKycBtn),
+                        : l10n.pgKycBtn,
+                    child: FilledButton.icon(
+                      icon: _verifying
+                          ? Container(
+                              width: 16,
+                              height: 16,
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 7,
+                                horizontal: 4,
+                              ),
+                              child: const CircularProgressIndicator(
+                                  strokeWidth: 2),
+                            )
+                          : Icon(widget.onboarding == true
+                              ? Icons.fact_check_outlined
+                              : Icons.refresh),
+                      onPressed: _verifying
+                          ? null
+                          : () {
+                              launchKYC().then((result) {
+                                var message = result.errorMsg;
+                                bool showAction = false;
+
+                                if (result.success) {
+                                  _updateUserStatus(result.status);
+
+                                  switch (result.status) {
+                                    case SNSMobileSDKStatus.Ready:
+                                    case SNSMobileSDKStatus.Initial:
+                                    case SNSMobileSDKStatus.Incomplete:
+                                      message = l10n.pgKycIncompleteMessage;
+                                      break;
+
+                                    case SNSMobileSDKStatus.Pending:
+                                      message = l10n.pgKycPendingMessage;
+                                      break;
+
+                                    case SNSMobileSDKStatus.TemporarilyDeclined:
+                                      showAction = true;
+                                      message = l10n.pgKycDeclinedMessage;
+                                      logger.d(
+                                        result.toString(),
+                                        time: DateTime.now(),
+                                      );
+                                      break;
+
+                                    case SNSMobileSDKStatus.FinallyRejected:
+                                      showAction = true;
+                                      message = l10n.pgKycRejectedMessage;
+                                      logger.d(
+                                        result.toString(),
+                                        time: DateTime.now(),
+                                      );
+                                      break;
+
+                                    default:
+                                      break;
+                                  }
+                                } else {
+                                  logger.e('[${result.errorType}] $message',
+                                      time: DateTime.now());
+                                }
+
+                                if (message != null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message),
+                                      action: showAction
+                                          ? SnackBarAction(
+                                              label: l10n.contactUs,
+                                              onPressed: () {
+                                                // TODO: Open support channel
+                                              },
+                                            )
+                                          : null,
+                                    ),
+                                  );
+                                }
+                              });
+                            },
+                      label: Text(widget.onboarding == true
+                          ? l10n.pgKycOnboardBtn
+                          : l10n.pgKycBtn),
+                    ),
                   ),
           ),
         ),
@@ -213,8 +221,8 @@ class _ProfileKycState extends State<ProfileKyc> {
                   text: l10n.privacyPolicy,
                   style: const TextStyle(fontWeight: FontWeight.w800),
                   recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // TODO: Open privacy policy page
+                    ..onTap = () async {
+                      await Utils.launchPrivacyPolicyWebview();
                     },
                 ),
               ],

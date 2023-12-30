@@ -34,52 +34,57 @@ class _ProfileSettingsMenuItemState extends State<ProfileSettingsMenuItem> {
     final onTap = widget.onTap;
 
     return Material(
-      child: InkWell(
-        onTap: onTap ??
-            () {
-              final page = widget.page;
+      child: Semantics(
+        button: true,
+        enabled: true,
+        label: widget.label,
+        child: InkWell(
+          onTap: onTap ??
+              () {
+                final page = widget.page;
 
-              if (page != null) {
-                // Delay for UX transition
-                Future.delayed(const Duration(milliseconds: 150), () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => page,
-                    ),
-                  );
-                });
-              }
-            },
-        child: Container(
-          height: 50,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (widget.leadingIcon != null)
-                Icon(
-                  widget.leadingIcon,
-                  size: 28,
-                  color: widget.leadingIconColor ??
-                      theme.colorScheme.onSurfaceVariant,
+                if (page != null) {
+                  // Delay for UX transition
+                  Future.delayed(const Duration(milliseconds: 150), () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => page,
+                      ),
+                    );
+                  });
+                }
+              },
+          child: Container(
+            height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (widget.leadingIcon != null)
+                  Icon(
+                    widget.leadingIcon,
+                    size: 28,
+                    color: widget.leadingIconColor ??
+                        theme.colorScheme.onSurfaceVariant,
+                  ),
+                const SizedBox(width: 10),
+                Text(
+                  widget.label,
+                  style: theme.textTheme
+                      .apply(
+                          bodyColor: widget.labelColor ??
+                              theme.colorScheme.onSurfaceVariant)
+                      .labelLarge,
                 ),
-              const SizedBox(width: 10),
-              Text(
-                widget.label,
-                style: theme.textTheme
-                    .apply(
-                        bodyColor: widget.labelColor ??
-                            theme.colorScheme.onSurfaceVariant)
-                    .labelLarge,
-              ),
-              const Spacer(),
-              if (widget.trailingIcon != null)
-                Icon(
-                  widget.trailingIcon,
-                  size: 16,
-                  color: theme.colorScheme.onSurfaceVariant,
-                )
-            ],
+                const Spacer(),
+                if (widget.trailingIcon != null)
+                  Icon(
+                    widget.trailingIcon,
+                    size: 16,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  )
+              ],
+            ),
           ),
         ),
       ),

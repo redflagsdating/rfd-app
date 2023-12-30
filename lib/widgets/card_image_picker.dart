@@ -201,254 +201,260 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
     final isSpotlightPhoto = _imageRef != null &&
         userProvider.getPhotoUrlCache() == _imageRef?.fullPath;
 
-    return GestureDetector(
-      onLongPress: () async {
-        if (isDisabled) {
-          return;
-        }
+    return Semantics(
+      button: true,
+      enabled: !isDisabled,
+      label: l10n!.pgPhotoHelperText,
+      child: GestureDetector(
+        onLongPress: () async {
+          if (isDisabled) {
+            return;
+          }
 
-        if (_imageRef != null) {
-          HapticFeedback.heavyImpact();
+          if (_imageRef != null) {
+            HapticFeedback.heavyImpact();
 
-          await _setSpotlightPhoto();
-        }
-      },
-      onTap: () {
-        if (isDisabled) {
-          return;
-        }
+            await _setSpotlightPhoto();
+          }
+        },
+        onTap: () {
+          if (isDisabled) {
+            return;
+          }
 
-        showModalBottomSheet<void>(
-          context: context,
-          showDragHandle: true,
-          builder: (BuildContext context) {
-            return Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              child: Wrap(
-                runSpacing: 20,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        l10n!.cardImagePickerSheetTitle,
-                        style: theme.textTheme.titleLarge,
-                      ),
-                      const Spacer(),
-                      _xFile != null
-                          ? Row(
-                              children: [
-                                IconButton.outlined(
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-
-                                    await _crop();
-                                  },
-                                  icon: const Icon(Icons.crop),
-                                ),
-                                const SizedBox(width: 8),
-                                IconButton.outlined(
-                                  onPressed: () async {
-                                    Navigator.pop(context);
-
-                                    if (!isSpotlightPhoto) {
-                                      _delete();
-                                      return;
-                                    }
-
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          icon: Icon(
-                                            size: 50,
-                                            Icons.warning_amber_rounded,
-                                            color: theme.colorScheme.error,
-                                          ),
-                                          title: Text(
-                                            l10n.dialogDeletePrimaryPhotoTitle,
-                                          ),
-                                          content: Text(
-                                            l10n.dialogDeletePrimaryPhotoBody,
-                                          ),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(l10n.cancel),
-                                            ),
-                                            FilledButton(
-                                              onPressed: () {
-                                                _delete();
-                                                userProvider.setPhotoUrl(
-                                                  '',
-                                                  localOnly: false,
-                                                  silent: false,
-                                                );
-                                                Navigator.pop(context);
-                                              },
-                                              child: Text(l10n.delete),
-                                            )
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  icon: const Icon(Icons.delete),
-                                ),
-                              ],
-                            )
-                          : const Spacer()
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      const SizedBox(width: 10),
-                      Column(
-                        children: [
-                          IconButton.filled(
-                            padding: const EdgeInsets.all(16),
-                            onPressed: () async {
-                              Navigator.pop(context);
-
-                              _xFile = await _picker.pickImage(
-                                source: ImageSource.gallery,
-                              );
-
-                              await _crop();
-                            },
-                            icon: const Icon(Icons.image),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              l10n.gallery,
-                              style: theme.textTheme.labelMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(width: 30),
-                      Column(
-                        children: [
-                          IconButton.filled(
-                            padding: const EdgeInsets.all(16),
-                            onPressed: () async {
-                              Navigator.pop(context);
-
-                              _xFile = await _picker.pickImage(
-                                source: ImageSource.camera,
-                                preferredCameraDevice: CameraDevice.front,
-                              );
-
-                              await _crop();
-                            },
-                            icon: const Icon(Icons.photo_camera),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              l10n.camera,
-                              style: theme.textTheme.labelMedium,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
-      child: Builder(
-        builder: (context) {
-          return FadeThroughTransitionSwitcher(
-            duration: const Duration(milliseconds: 800),
-            child: _file == null
-                ? DottedBorder(
-                    dashPattern: const [10, 5],
-                    borderType: BorderType.RRect,
-                    radius: const Radius.circular(12),
-                    color: theme.colorScheme.outlineVariant,
-                    child: SizedBox(
-                      width: widget.size,
-                      height: widget.size,
-                      child: Icon(
-                        Icons.add_a_photo_outlined,
-                        size: (widget.size / 4),
-                        color: theme.colorScheme.outlineVariant,
-                      ),
-                    ),
-                  )
-                : isDisabled
-                    ? Container(
-                        width: widget.size,
-                        height: widget.size,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            //** Workaround of Image.file cache issue */
-                            //** https://github.com/flutter/flutter/issues/24858 */
-                            image: MemoryImage(
-                              (_file as File).readAsBytesSync(),
-                            ),
-                            fit: BoxFit.cover,
-                            opacity: 0.5,
-                          ),
+          showModalBottomSheet<void>(
+            context: context,
+            showDragHandle: true,
+            builder: (BuildContext context) {
+              return Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                child: Wrap(
+                  runSpacing: 20,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          l10n.cardImagePickerSheetTitle,
+                          style: theme.textTheme.titleLarge,
                         ),
-                        padding: const EdgeInsets.all(40),
-                        child: !_deleting
-                            ? const CircularProgressIndicator(
-                                strokeWidth: 2,
-                              )
-                            : const SizedBox.shrink(),
-                      )
-                    : Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            //** Workaround of Image.file cache issue */
-                            //** https://github.com/flutter/flutter/issues/24858 */
-                            child: Image.memory(
-                              (_file as File).readAsBytesSync(),
-                              width: widget.size,
-                              height: widget.size,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          ListenableBuilder(
-                            listenable: userProvider,
-                            builder: (context, _) {
-                              final photoUrl = _imageRef?.fullPath ?? "";
-                              final spotlight = userProvider.getPhotoUrlCache();
-                              final isSpotlight = spotlight.isNotEmpty &&
-                                  photoUrl.isNotEmpty &&
-                                  photoUrl.contains(spotlight);
+                        const Spacer(),
+                        _xFile != null
+                            ? Row(
+                                children: [
+                                  IconButton.outlined(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
 
-                              if (isSpotlight) {
-                                return Positioned(
-                                  top: -8,
-                                  left: -8,
-                                  child: Badge(
-                                    largeSize: 32,
-                                    label: Icon(
-                                      Icons.star,
-                                      color: theme.colorScheme.onTertiary,
-                                    ),
+                                      await _crop();
+                                    },
+                                    icon: const Icon(Icons.crop),
                                   ),
-                                );
-                              }
+                                  const SizedBox(width: 8),
+                                  IconButton.outlined(
+                                    onPressed: () async {
+                                      Navigator.pop(context);
 
-                              return const SizedBox.shrink();
-                            },
-                          ),
-                        ],
-                      ),
+                                      if (!isSpotlightPhoto) {
+                                        _delete();
+                                        return;
+                                      }
+
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            icon: Icon(
+                                              size: 50,
+                                              Icons.warning_amber_rounded,
+                                              color: theme.colorScheme.error,
+                                            ),
+                                            title: Text(
+                                              l10n.dialogDeletePrimaryPhotoTitle,
+                                            ),
+                                            content: Text(
+                                              l10n.dialogDeletePrimaryPhotoBody,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(l10n.cancel),
+                                              ),
+                                              FilledButton(
+                                                onPressed: () {
+                                                  _delete();
+                                                  userProvider.setPhotoUrl(
+                                                    '',
+                                                    localOnly: false,
+                                                    silent: false,
+                                                  );
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text(l10n.delete),
+                                              )
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: const Icon(Icons.delete),
+                                  ),
+                                ],
+                              )
+                            : const Spacer()
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        const SizedBox(width: 10),
+                        Column(
+                          children: [
+                            IconButton.filled(
+                              padding: const EdgeInsets.all(16),
+                              onPressed: () async {
+                                Navigator.pop(context);
+
+                                _xFile = await _picker.pickImage(
+                                  source: ImageSource.gallery,
+                                );
+
+                                await _crop();
+                              },
+                              icon: const Icon(Icons.image),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text(
+                                l10n.gallery,
+                                style: theme.textTheme.labelMedium,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(width: 30),
+                        Column(
+                          children: [
+                            IconButton.filled(
+                              padding: const EdgeInsets.all(16),
+                              onPressed: () async {
+                                Navigator.pop(context);
+
+                                _xFile = await _picker.pickImage(
+                                  source: ImageSource.camera,
+                                  preferredCameraDevice: CameraDevice.front,
+                                );
+
+                                await _crop();
+                              },
+                              icon: const Icon(Icons.photo_camera),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text(
+                                l10n.camera,
+                                style: theme.textTheme.labelMedium,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         },
+        child: Builder(
+          builder: (context) {
+            return FadeThroughTransitionSwitcher(
+              duration: const Duration(milliseconds: 800),
+              child: _file == null
+                  ? DottedBorder(
+                      dashPattern: const [10, 5],
+                      borderType: BorderType.RRect,
+                      radius: const Radius.circular(12),
+                      color: theme.colorScheme.outlineVariant,
+                      child: SizedBox(
+                        width: widget.size,
+                        height: widget.size,
+                        child: Icon(
+                          Icons.add_a_photo_outlined,
+                          size: (widget.size / 4),
+                          color: theme.colorScheme.outlineVariant,
+                        ),
+                      ),
+                    )
+                  : isDisabled
+                      ? Container(
+                          width: widget.size,
+                          height: widget.size,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              //** Workaround of Image.file cache issue */
+                              //** https://github.com/flutter/flutter/issues/24858 */
+                              image: MemoryImage(
+                                (_file as File).readAsBytesSync(),
+                              ),
+                              fit: BoxFit.cover,
+                              opacity: 0.5,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(40),
+                          child: !_deleting
+                              ? const CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                )
+                              : const SizedBox.shrink(),
+                        )
+                      : Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              //** Workaround of Image.file cache issue */
+                              //** https://github.com/flutter/flutter/issues/24858 */
+                              child: Image.memory(
+                                (_file as File).readAsBytesSync(),
+                                width: widget.size,
+                                height: widget.size,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ListenableBuilder(
+                              listenable: userProvider,
+                              builder: (context, _) {
+                                final photoUrl = _imageRef?.fullPath ?? "";
+                                final spotlight =
+                                    userProvider.getPhotoUrlCache();
+                                final isSpotlight = spotlight.isNotEmpty &&
+                                    photoUrl.isNotEmpty &&
+                                    photoUrl.contains(spotlight);
+
+                                if (isSpotlight) {
+                                  return Positioned(
+                                    top: -8,
+                                    left: -8,
+                                    child: Badge(
+                                      largeSize: 32,
+                                      label: Icon(
+                                        Icons.star,
+                                        color: theme.colorScheme.onTertiary,
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
+                        ),
+            );
+          },
+        ),
       ),
     );
   }

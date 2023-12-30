@@ -55,49 +55,54 @@ class _TextFieldChipsState extends State<TextFieldChips> {
       inputfieldBuilder:
           (context, controller, focusNode, error, onChanged, onSubmitted) {
         return ((context, sc, tags, onTagDelete) {
-          return TextField(
-            readOnly: widget.readOnly ?? false,
-            controller: controller,
-            focusNode: focusNode,
-            onChanged: onChanged,
-            onSubmitted: onSubmitted,
-            maxLength: 20,
-            decoration: InputDecoration(
-              border: const UnderlineInputBorder(),
-              labelText: widget.labelText,
-              hintText: _controller.hasTags ? '' : widget.hintText,
-              helperText: widget.helperText ?? l10n!.textFieldChipsHelperText,
-              errorText: error,
-              prefixIcon: tags.isNotEmpty
-                  ? Wrap(
-                      spacing: 6,
-                      runSpacing: 0,
-                      alignment: WrapAlignment.start,
-                      children: [
-                        ...(widget.initialChips ?? []).map(
-                          (String tag) {
-                            final value = tag.capitalize();
+          return Semantics(
+            textField: true,
+            readOnly: widget.readOnly,
+            label: widget.labelText,
+            child: TextField(
+              readOnly: widget.readOnly ?? false,
+              controller: controller,
+              focusNode: focusNode,
+              onChanged: onChanged,
+              onSubmitted: onSubmitted,
+              maxLength: 20,
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                labelText: widget.labelText,
+                hintText: _controller.hasTags ? '' : widget.hintText,
+                helperText: widget.helperText ?? l10n!.textFieldChipsHelperText,
+                errorText: error,
+                prefixIcon: tags.isNotEmpty
+                    ? Wrap(
+                        spacing: 6,
+                        runSpacing: 0,
+                        alignment: WrapAlignment.start,
+                        children: [
+                          ...(widget.initialChips ?? []).map(
+                            (String tag) {
+                              final value = tag.capitalize();
 
-                            return InputChip(
-                              selected: true,
-                              showCheckmark: false,
-                              label: Text(value),
-                              visualDensity: VisualDensity.compact,
-                              deleteIcon: const Icon(
-                                Icons.cancel,
-                                size: 20,
-                              ),
-                              onDeleted: () {
-                                onTagDelete(value);
-                                widget.onDeleted!(value);
-                              },
-                            );
-                          },
-                        ),
-                        const SizedBox(width: 2)
-                      ],
-                    )
-                  : null,
+                              return InputChip(
+                                selected: true,
+                                showCheckmark: false,
+                                label: Text(value),
+                                visualDensity: VisualDensity.compact,
+                                deleteIcon: const Icon(
+                                  Icons.cancel,
+                                  size: 20,
+                                ),
+                                onDeleted: () {
+                                  onTagDelete(value);
+                                  widget.onDeleted!(value);
+                                },
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 2)
+                        ],
+                      )
+                    : null,
+              ),
             ),
           );
         });

@@ -34,41 +34,45 @@ class _PageProfileSettingsRedFlagsState
     return ScaffoldPageBasic(
       title: widget.title,
       actions: [
-        TextButton(
-          child: Text(l10n!.save),
-          onPressed: () async {
-            final redflags = userProvider.getRedFlagsCache();
+        Semantics(
+          button: true,
+          label: '${l10n!.save} ${widget.title}',
+          child: TextButton(
+            child: Text(l10n.save),
+            onPressed: () async {
+              final redflags = userProvider.getRedFlagsCache();
 
-            if (redflags.length < 3) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.pgSelectFlagsErrorText),
-                ),
-              );
+              if (redflags.length < 3) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.pgSelectFlagsErrorText),
+                  ),
+                );
 
-              return;
-            }
+                return;
+              }
 
-            if (!const ListEquality().equals(redflags, _initialValue)) {
-              final result = await userProvider.setRedFlags(
-                redflags,
-                silent: false,
-                localOnly: false,
-              );
+              if (!const ListEquality().equals(redflags, _initialValue)) {
+                final result = await userProvider.setRedFlags(
+                  redflags,
+                  silent: false,
+                  localOnly: false,
+                );
 
-              _initialValue = redflags;
+                _initialValue = redflags;
 
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: const Duration(seconds: 2),
-                  content: Text(result == true
-                      ? l10n.pgProfileSuccessfulUpdated
-                      : l10n.pgProfileFailedUpdated),
-                ),
-              );
-            }
-          },
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: const Duration(seconds: 2),
+                    content: Text(result == true
+                        ? l10n.pgProfileSuccessfulUpdated
+                        : l10n.pgProfileFailedUpdated),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       ],
       content: const ProfileRedFlags(),

@@ -99,90 +99,107 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
                     .bodySmall,
               ),
             ),
-          FilledButton(
-            key: const Key("page_signin_google"),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
-            ),
-            onPressed: () {
-              authProvider.handleSignIn(SocialAuthProvider.google).whenComplete(
-                () {
-                  if (authProvider.message.isNotEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(authProvider.message),
-                      ),
-                    );
-                  }
-                },
-              );
-            },
-            child: Text(
-              l10n!.pgSignInWithBtn("Google"),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(height: 8),
-          FilledButton(
-            key: const Key("page_signin_facebook"),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
-            ),
-            onPressed: () {
-              authProvider
-                  .handleSignIn(SocialAuthProvider.facebook)
-                  .whenComplete(
-                () {
-                  if (authProvider.message.isNotEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(authProvider.message),
-                      ),
-                    );
-                  }
-                },
-              );
-            },
-            child: Text(
-              l10n.pgSignInWithBtn("Facebook"),
-              textAlign: TextAlign.center,
+          Semantics(
+            button: true,
+            enabled: true,
+            label: l10n!.pgSignInWithBtn("Google"),
+            child: FilledButton(
+              key: const Key("page_signin_google"),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
+              onPressed: () {
+                authProvider
+                    .handleSignIn(SocialAuthProvider.google)
+                    .whenComplete(
+                  () {
+                    if (authProvider.message.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(authProvider.message),
+                        ),
+                      );
+                    }
+                  },
+                );
+              },
+              child: Text(
+                l10n.pgSignInWithBtn("Google"),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           const SizedBox(height: 8),
-          FilledButton(
-            key: const Key("page_signin_email"),
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(40),
+          Semantics(
+            button: true,
+            enabled: true,
+            label: l10n.pgSignInWithBtn("Facebook"),
+            child: FilledButton(
+              key: const Key("page_signin_facebook"),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
+              onPressed: () {
+                authProvider
+                    .handleSignIn(SocialAuthProvider.facebook)
+                    .whenComplete(
+                  () {
+                    if (authProvider.message.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(authProvider.message),
+                        ),
+                      );
+                    }
+                  },
+                );
+              },
+              child: Text(
+                l10n.pgSignInWithBtn("Facebook"),
+                textAlign: TextAlign.center,
+              ),
             ),
-            onPressed: () {
-              setState(() {
-                _showDialogSigninEmail = true;
-              });
+          ),
+          const SizedBox(height: 8),
+          Semantics(
+            button: true,
+            enabled: true,
+            label: l10n.pgSignInWithBtn(l10n.email),
+            child: FilledButton(
+              key: const Key("page_signin_email"),
+              style: FilledButton.styleFrom(
+                minimumSize: const Size.fromHeight(40),
+              ),
+              onPressed: () {
+                setState(() {
+                  _showDialogSigninEmail = true;
+                });
 
-              showGeneralDialog(
-                context: context,
-                pageBuilder: (context, animation, secondaryAnimation) =>
-                    DialogSigninEmail(authProvider: authProvider),
-                transitionBuilder:
-                    (context, animation, secondaryAnimation, child) {
-                  return FadeThroughTransition(
-                    animation: animation,
-                    secondaryAnimation: secondaryAnimation,
-                    child: child,
-                  );
-                },
-              ).whenComplete(() {
-                // A workaround to prevent overflow
-                Future.delayed(const Duration(milliseconds: 100), () {
-                  setState(() {
-                    _showDialogSigninEmail = false;
+                showGeneralDialog(
+                  context: context,
+                  pageBuilder: (context, animation, secondaryAnimation) =>
+                      DialogSigninEmail(authProvider: authProvider),
+                  transitionBuilder:
+                      (context, animation, secondaryAnimation, child) {
+                    return FadeThroughTransition(
+                      animation: animation,
+                      secondaryAnimation: secondaryAnimation,
+                      child: child,
+                    );
+                  },
+                ).whenComplete(() {
+                  // A workaround to prevent overflow
+                  Future.delayed(const Duration(milliseconds: 100), () {
+                    setState(() {
+                      _showDialogSigninEmail = false;
+                    });
                   });
                 });
-              });
-            },
-            child: Text(
-              l10n.pgSignInWithBtn(l10n.email),
-              textAlign: TextAlign.center,
+              },
+              child: Text(
+                l10n.pgSignInWithBtn(l10n.email),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
           const SizedBox(height: 32),

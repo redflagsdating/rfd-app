@@ -49,72 +49,84 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 38),
-                    TextFormField(
-                      key: const Key("dialog_email_signin_input"),
+                    Semantics(
+                      textField: true,
                       enabled: enabled,
-                      autofocus: true,
-                      controller: _textCtrl,
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
-                      decoration: InputDecoration(
-                        border: const UnderlineInputBorder(),
-                        labelText: l10n.pgSignInEmailLabel,
-                        hintText: "your@email.com",
+                      label: l10n.pgSignInEmailLabel,
+                      child: TextFormField(
+                        key: const Key("dialog_email_signin_input"),
+                        enabled: enabled,
+                        autofocus: true,
+                        controller: _textCtrl,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: InputDecoration(
+                          border: const UnderlineInputBorder(),
+                          labelText: l10n.pgSignInEmailLabel,
+                          hintText: "your@email.com",
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return l10n.pgSignInEmailEmpty;
+                          }
+
+                          if (!EmailValidator.validate(value)) {
+                            return l10n.pgSignInEmailInvalid;
+                          }
+
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return l10n.pgSignInEmailEmpty;
-                        }
-
-                        if (!EmailValidator.validate(value)) {
-                          return l10n.pgSignInEmailInvalid;
-                        }
-
-                        return null;
-                      },
                     ),
                     const SizedBox(height: 30),
-                    FilledButton(
-                      key: const Key("dialog_email_signin_send"),
-                      onPressed: !enabled
-                          ? null
-                          : () {
-                              if (_emailForm.currentState!.validate()) {
-                                widget.authProvider
-                                    .sendSignInLinkToEmail(_textCtrl.text)
-                                    .whenComplete(
-                                  () {
-                                    if (widget.authProvider.status ==
-                                        AuthStatus.pending) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                          duration: const Duration(seconds: 8),
-                                          action: SnackBarAction(
-                                            key: const Key(
-                                              "dialog_email_resend",
+                    Semantics(
+                      button: true,
+                      enabled: enabled,
+                      label: l10n.pgSignInEmailSendBtn,
+                      child: FilledButton(
+                        key: const Key("dialog_email_signin_send"),
+                        onPressed: !enabled
+                            ? null
+                            : () {
+                                if (_emailForm.currentState!.validate()) {
+                                  widget.authProvider
+                                      .sendSignInLinkToEmail(_textCtrl.text)
+                                      .whenComplete(
+                                    () {
+                                      if (widget.authProvider.status ==
+                                          AuthStatus.pending) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            duration:
+                                                const Duration(seconds: 8),
+                                            action: SnackBarAction(
+                                              key: const Key(
+                                                "dialog_email_resend",
+                                              ),
+                                              label: l10n.resend,
+                                              onPressed: () {
+                                                if (enabled) {
+                                                  widget.authProvider
+                                                      .sendSignInLinkToEmail(
+                                                          _textCtrl.text);
+                                                }
+                                              },
                                             ),
-                                            label: l10n.resend,
-                                            onPressed: () {
-                                              if (enabled) {
-                                                widget.authProvider
-                                                    .sendSignInLinkToEmail(
-                                                        _textCtrl.text);
-                                              }
-                                            },
+                                            content:
+                                                Text(l10n.pgSignInEmailSent),
                                           ),
-                                          content: Text(l10n.pgSignInEmailSent),
-                                        ),
-                                      );
-                                    }
-                                  },
-                                );
-                              }
-                            },
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          AppLocalizations.of(context)!.pgSignInEmailSendBtn,
-                          textAlign: TextAlign.center,
+                                        );
+                                      }
+                                    },
+                                  );
+                                }
+                              },
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: Text(
+                            l10n.pgSignInEmailSendBtn,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),

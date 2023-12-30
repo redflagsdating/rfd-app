@@ -13,9 +13,12 @@ class ScaffoldPageBasic extends Scaffold {
   }) : super(
           appBar: AppBar(
             centerTitle: true,
-            leading: IconButton(
-              onPressed: onBackPressed,
-              icon: Icon(leadingIcon ?? Icons.arrow_back_ios_new_rounded),
+            leading: Semantics(
+              button: true,
+              child: IconButton(
+                onPressed: onBackPressed,
+                icon: Icon(leadingIcon ?? Icons.arrow_back_ios_new_rounded),
+              ),
             ),
             title: title,
             actions: actions,

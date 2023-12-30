@@ -42,39 +42,49 @@ class _ProfileFullNameState extends State<ProfileFullName> {
           const SizedBox(height: 10),
           Text(l10n.pgFullNameBody),
           const SizedBox(height: 48),
-          TextFormField(
-            autofocus: true,
-            enabled: isEnabled,
-            controller: widget.firstNameCtrl,
-            decoration: InputDecoration(
-              border: const UnderlineInputBorder(),
-              hintText: l10n.fieldFirstNameHintText,
-              helperText: l10n.fieldFirstNameHelperText,
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return l10n.fieldFirstNameErrorText;
-              }
+          Semantics(
+            focusable: true,
+            textField: true,
+            label: l10n.fieldFirstNameHintText,
+            child: TextFormField(
+              autofocus: true,
+              enabled: isEnabled,
+              controller: widget.firstNameCtrl,
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                hintText: l10n.fieldFirstNameHintText,
+                helperText: l10n.fieldFirstNameHelperText,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return l10n.fieldFirstNameErrorText;
+                }
 
-              return null;
-            },
+                return null;
+              },
+            ),
           ),
           const SizedBox(height: 24),
-          TextFormField(
-            enabled: isEnabled,
-            controller: widget.lastNameCtrl,
-            decoration: InputDecoration(
-              border: const UnderlineInputBorder(),
-              hintText: l10n.fieldLastNameHintText,
-              helperText: l10n.fieldLastNameHelperText,
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return l10n.fieldLastNameErrorText;
-              }
+          Semantics(
+            focusable: true,
+            textField: true,
+            label: l10n.fieldLastNameHintText,
+            child: TextFormField(
+              enabled: isEnabled,
+              controller: widget.lastNameCtrl,
+              decoration: InputDecoration(
+                border: const UnderlineInputBorder(),
+                hintText: l10n.fieldLastNameHintText,
+                helperText: l10n.fieldLastNameHelperText,
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return l10n.fieldLastNameErrorText;
+                }
 
-              return null;
-            },
+                return null;
+              },
+            ),
           ),
         ],
       ),

@@ -46,41 +46,45 @@ class _PageProfileSettingsDisplayNameState
     return ScaffoldPageBasic(
       title: widget.title,
       actions: [
-        TextButton(
-          child: Text(l10n!.save),
-          onPressed: () async {
-            if (!_form.currentState!.validate()) {
-              return;
-            }
+        Semantics(
+          button: true,
+          label: '${l10n!.save} ${widget.title}',
+          child: TextButton(
+            child: Text(l10n.save),
+            onPressed: () async {
+              if (!_form.currentState!.validate()) {
+                return;
+              }
 
-            final current = userProvider.getDisplayNameCache();
-            final displayName = _controller.text;
+              final current = userProvider.getDisplayNameCache();
+              final displayName = _controller.text;
 
-            if (current == displayName) {
-              return;
-            }
+              if (current == displayName) {
+                return;
+              }
 
-            _setEnabled(false);
+              _setEnabled(false);
 
-            final result = await userProvider.setDisplayName(
-              displayName,
-              localOnly: false,
-              silent: false,
-            );
+              final result = await userProvider.setDisplayName(
+                displayName,
+                localOnly: false,
+                silent: false,
+              );
 
-            // ignore: use_build_context_synchronously
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                duration: const Duration(seconds: 2),
-                content: Text(result == true
-                    ? l10n.pgProfileSuccessfulUpdated
-                    : l10n.pgProfileFailedUpdated),
-              ),
-            );
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  duration: const Duration(seconds: 2),
+                  content: Text(result == true
+                      ? l10n.pgProfileSuccessfulUpdated
+                      : l10n.pgProfileFailedUpdated),
+                ),
+              );
 
-            _setEnabled(true);
-          },
-        )
+              _setEnabled(true);
+            },
+          ),
+        ),
       ],
       content: Form(
         key: _form,

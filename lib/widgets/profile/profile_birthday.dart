@@ -57,42 +57,47 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
         const SizedBox(height: 10),
         Text(l10n.pgBirthdayBody),
         const SizedBox(height: 48),
-        FormBuilderDateTimePicker(
-          name: "birthday",
-          firstDate: firstYear,
-          lastDate: lastYear,
-          initialValue: initialValue,
-          initialDate: initialDate,
-          inputType: InputType.date,
-          controller: widget.controller,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          enabled: widget.enabled != false,
-          validator: (value) {
-            if (value == null) {
-              return l10n.fieldBirthdayEmptyErrorText;
-            }
+        Semantics(
+          focusable: true,
+          textField: true,
+          label: l10n.fieldBirthdayHintText,
+          child: FormBuilderDateTimePicker(
+            name: "birthday",
+            firstDate: firstYear,
+            lastDate: lastYear,
+            initialValue: initialValue,
+            initialDate: initialDate,
+            inputType: InputType.date,
+            controller: widget.controller,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            enabled: widget.enabled != false,
+            validator: (value) {
+              if (value == null) {
+                return l10n.fieldBirthdayEmptyErrorText;
+              }
 
-            return null;
-          },
-          onChanged: (value) {
-            if (value != null) {
-              _setHelperText(
-                  l10n.fieldBirthdayHelperText(userProvider.getAge(value)));
-            } else {
-              _setHelperText("");
-            }
-          },
-          decoration: InputDecoration(
-            border: const UnderlineInputBorder(),
-            hintText: l10n.fieldBirthdayHintText,
-            helperText: _helperText,
-            helperStyle: widget.controller.text.isNotEmpty
-                ? TextStyle(
-                    color: theme.colorScheme.secondary,
-                  )
-                : null,
+              return null;
+            },
+            onChanged: (value) {
+              if (value != null) {
+                _setHelperText(
+                    l10n.fieldBirthdayHelperText(userProvider.getAge(value)));
+              } else {
+                _setHelperText("");
+              }
+            },
+            decoration: InputDecoration(
+              border: const UnderlineInputBorder(),
+              hintText: l10n.fieldBirthdayHintText,
+              helperText: _helperText,
+              helperStyle: widget.controller.text.isNotEmpty
+                  ? TextStyle(
+                      color: theme.colorScheme.secondary,
+                    )
+                  : null,
+            ),
           ),
-        )
+        ),
       ],
     );
   }

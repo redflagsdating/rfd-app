@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:red_flags/mixins/mixin_file.dart';
 import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/models/user.dart';
@@ -31,6 +32,7 @@ class _PageProfileViewState extends State<PageProfileView>
   @override
   Widget build(BuildContext context) {
     final photoUrl = widget.photoUrl;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -62,9 +64,13 @@ class _PageProfileViewState extends State<PageProfileView>
                 Positioned(
                   left: 16,
                   top: 48,
-                  child: IconButton.filled(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.keyboard_arrow_left_rounded),
+                  child: Semantics(
+                    button: true,
+                    label: l10n!.back,
+                    child: IconButton.filled(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: const Icon(Icons.keyboard_arrow_left_rounded),
+                    ),
                   ),
                 ),
               ],

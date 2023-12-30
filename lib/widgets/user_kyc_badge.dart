@@ -29,42 +29,43 @@ class _UserKycBadgeState extends State<UserKycBadge> {
       builder: (context, _) {
         final verifySubmitted = userProvider.getVerifySubmittedCache();
         return Badge(
-            largeSize: 32,
-            offset: widget.offset,
-            backgroundColor: theme.colorScheme.onSecondary.withOpacity(0.8),
-            alignment: widget.alignment,
-            label: verifySubmitted != true
-                ? const Icon(
-                    Icons.person_search,
-                    color: Colors.black26,
-                  )
-                : FutureBuilder(
-                    future: userProvider.getVerified(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return snapshot.data == true
-                            ? Icon(
-                                Icons.verified,
-                                color: Colors.green.shade400,
-                              )
-                            : snapshot.data == false
-                                ? Icon(
-                                    Icons.error,
-                                    color: theme.colorScheme.error,
-                                  )
-                                : Icon(
-                                    Icons.access_time_filled_rounded,
-                                    color: theme.colorScheme.tertiary,
-                                  );
-                      }
+          largeSize: 32,
+          offset: widget.offset,
+          backgroundColor: theme.colorScheme.onSecondary.withOpacity(0.8),
+          alignment: widget.alignment,
+          label: verifySubmitted != true
+              ? const Icon(
+                  Icons.person_search,
+                  color: Colors.black26,
+                )
+              : FutureBuilder(
+                  future: userProvider.getVerified(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data == true
+                          ? Icon(
+                              Icons.verified,
+                              color: Colors.green.shade400,
+                            )
+                          : snapshot.data == false
+                              ? Icon(
+                                  Icons.error,
+                                  color: theme.colorScheme.error,
+                                )
+                              : Icon(
+                                  Icons.access_time_filled_rounded,
+                                  color: theme.colorScheme.tertiary,
+                                );
+                    }
 
-                      return Icon(
-                        Icons.circle_outlined,
-                        color: theme.colorScheme.onSecondary.withOpacity(0.8),
-                      );
-                    },
-                  ),
-            child: widget.child);
+                    return Icon(
+                      Icons.circle_outlined,
+                      color: theme.colorScheme.onSecondary.withOpacity(0.8),
+                    );
+                  },
+                ),
+          child: widget.child,
+        );
       },
     );
   }

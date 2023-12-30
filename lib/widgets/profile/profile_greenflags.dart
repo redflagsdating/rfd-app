@@ -59,30 +59,35 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
 
             return Column(
               children: [
-                TextFieldChips(
-                  readOnly: !isEnabled,
-                  initialChips: splitMatch.unmatched,
-                  hintText: l10n.fieldYourGreenFlagsHintText,
-                  validator: (value) {
-                    // Force to retrieve from cache due to validator context
-                    final s = userProvider.getGreenFlagsCache();
-                    final isExisted = FlagModel.greenFlags.any((element) =>
-                        element.toLowerCase() == value.toLowerCase());
-                    final isDuplicated = s.contains(value);
+                Semantics(
+                  textField: true,
+                  focusable: true,
+                  label: l10n.fieldYourGreenFlagsHintText,
+                  child: TextFieldChips(
+                    readOnly: !isEnabled,
+                    initialChips: splitMatch.unmatched,
+                    hintText: l10n.fieldYourGreenFlagsHintText,
+                    validator: (value) {
+                      // Force to retrieve from cache due to validator context
+                      final s = userProvider.getGreenFlagsCache();
+                      final isExisted = FlagModel.greenFlags.any((element) =>
+                          element.toLowerCase() == value.toLowerCase());
+                      final isDuplicated = s.contains(value);
 
-                    if (isExisted || isDuplicated) {
-                      return l10n.fieldYourGreenFlagsErrorText;
-                    }
+                      if (isExisted || isDuplicated) {
+                        return l10n.fieldYourGreenFlagsErrorText;
+                      }
 
-                    s.add(value.capitalize());
-                    userProvider.setGreenFlags(s, silent: false);
+                      s.add(value.capitalize());
+                      userProvider.setGreenFlags(s, silent: false);
 
-                    return null;
-                  },
-                  onDeleted: (value) {
-                    selected.remove(value);
-                    userProvider.setGreenFlags(selected, silent: false);
-                  },
+                      return null;
+                    },
+                    onDeleted: (value) {
+                      selected.remove(value);
+                      userProvider.setGreenFlags(selected, silent: false);
+                    },
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ListFlagChoiceChips(

@@ -62,49 +62,54 @@ class _PageProfileSettingsFullNameState
       actions: isSubmitted
           ? []
           : [
-              TextButton(
-                child: Text(l10n!.save),
-                onPressed: () async {
-                  if (!_form.currentState!.validate()) {
-                    return;
-                  }
+              Semantics(
+                button: true,
+                label: '${l10n!.save} ${widget.title}',
+                child: TextButton(
+                  child: Text(l10n.save),
+                  onPressed: () async {
+                    if (!_form.currentState!.validate()) {
+                      return;
+                    }
 
-                  final current = _getFullName();
-                  final firstName = _firstNameCtrl.text;
-                  final lastName = _lastNameCtrl.text;
+                    final current = _getFullName();
+                    final firstName = _firstNameCtrl.text;
+                    final lastName = _lastNameCtrl.text;
 
-                  if (current.first == firstName && current.last == lastName) {
-                    return;
-                  }
+                    if (current.first == firstName &&
+                        current.last == lastName) {
+                      return;
+                    }
 
-                  _setEnabled(false);
+                    _setEnabled(false);
 
-                  // Update local cache only
-                  bool result =
-                      await userProvider.setFirstName(firstName) ?? false;
-                  result &=
-                      await userProvider.setLastName(lastName, silent: false) ??
-                          false;
+                    // Update local cache only
+                    bool result =
+                        await userProvider.setFirstName(firstName) ?? false;
+                    result &= await userProvider.setLastName(lastName,
+                            silent: false) ??
+                        false;
 
-                  // Aggregate Firebase update API calls into one
-                  await userProvider.userDocRef?.update({
-                    UserFields.firstName.name: firstName,
-                    UserFields.lastName.name: lastName,
-                  });
+                    // Aggregate Firebase update API calls into one
+                    await userProvider.userDocRef?.update({
+                      UserFields.firstName.name: firstName,
+                      UserFields.lastName.name: lastName,
+                    });
 
-                  // ignore: use_build_context_synchronously
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      duration: const Duration(seconds: 2),
-                      content: Text(result
-                          ? l10n.pgProfileSuccessfulUpdated
-                          : l10n.pgProfileFailedUpdated),
-                    ),
-                  );
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        duration: const Duration(seconds: 2),
+                        content: Text(result
+                            ? l10n.pgProfileSuccessfulUpdated
+                            : l10n.pgProfileFailedUpdated),
+                      ),
+                    );
 
-                  _setEnabled(true);
-                },
-              )
+                    _setEnabled(true);
+                  },
+                ),
+              ),
             ],
       content: Form(
         key: _form,

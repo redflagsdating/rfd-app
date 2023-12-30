@@ -34,39 +34,43 @@ class _PageProfileSettingsRealtalkState
     return ScaffoldPageBasic(
       title: widget.title,
       actions: [
-        TextButton(
-          child: Text(l10n!.save),
-          onPressed: () async {
-            final realtalk = userProvider.getRealTalkCache();
+        Semantics(
+          button: true,
+          label: '${l10n!.save} ${widget.title}',
+          child: TextButton(
+            child: Text(l10n.save),
+            onPressed: () async {
+              final realtalk = userProvider.getRealTalkCache();
 
-            if (realtalk?.isEmpty != false) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(l10n.pgRealTalkEmptyErrorText),
-                ),
-              );
-            }
+              if (realtalk?.isEmpty != false) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(l10n.pgRealTalkEmptyErrorText),
+                  ),
+                );
+              }
 
-            if (!mapEquals(realtalk, _initialValue)) {
-              final result = await userProvider.setRealTalk(
-                realtalk!,
-                silent: false,
-                localOnly: false,
-              );
+              if (!mapEquals(realtalk, _initialValue)) {
+                final result = await userProvider.setRealTalk(
+                  realtalk!,
+                  silent: false,
+                  localOnly: false,
+                );
 
-              _initialValue = realtalk;
+                _initialValue = realtalk;
 
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  duration: const Duration(seconds: 2),
-                  content: Text(result == true
-                      ? l10n.pgProfileSuccessfulUpdated
-                      : l10n.pgProfileFailedUpdated),
-                ),
-              );
-            }
-          },
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: const Duration(seconds: 2),
+                    content: Text(result == true
+                        ? l10n.pgProfileSuccessfulUpdated
+                        : l10n.pgProfileFailedUpdated),
+                  ),
+                );
+              }
+            },
+          ),
         ),
       ],
       content: const ProfileRealTalk(),

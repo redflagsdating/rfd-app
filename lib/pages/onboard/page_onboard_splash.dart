@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Splash page for onboarding milestones
 class PageOnboardSplash extends StatefulWidget {
@@ -23,6 +24,7 @@ class _PageOnboardSplashState extends State<PageOnboardSplash> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       width: double.infinity,
@@ -48,25 +50,39 @@ class _PageOnboardSplashState extends State<PageOnboardSplash> {
                 )
               ]
             : [
-                Image.asset(
-                  "assets/rf-logo-white.png",
-                  width: 120,
+                Semantics(
+                  image: true,
+                  label: '${l10n!.brandName} Logo',
+                  child: Image.asset(
+                    "assets/rf-logo-white.png",
+                    width: 120,
+                  ),
                 ),
                 const SizedBox(height: 40),
-                Text(widget.title ?? "",
+                Semantics(
+                  readOnly: true,
+                  label: widget.title,
+                  child: Text(
+                    widget.title ?? "",
                     style: theme.textTheme
                         .apply(
                             bodyColor: theme.colorScheme.onSecondaryContainer)
-                        .titleLarge),
-                const Spacer(),
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size.fromHeight(40),
+                        .titleLarge,
                   ),
-                  onPressed: () {
-                    widget.onPressed!();
-                  },
-                  child: Text(widget.buttonLabel ?? ""),
+                ),
+                const Spacer(),
+                Semantics(
+                  button: true,
+                  label: widget.buttonLabel,
+                  child: FilledButton(
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: () {
+                      widget.onPressed!();
+                    },
+                    child: Text(widget.buttonLabel ?? ""),
+                  ),
                 ),
               ],
       ),

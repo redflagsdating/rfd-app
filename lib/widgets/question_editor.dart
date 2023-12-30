@@ -42,16 +42,26 @@ class _QuestionEditorState extends State<QuestionEditor> {
                 width: 80,
                 alignment: Alignment.centerLeft,
                 child: widget.onBack != null
-                    ? IconButton(
-                        key: const Key("question_editor_back_button"),
-                        icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                        onPressed: isEnabled ? widget.onBack : null,
+                    ? Semantics(
+                        button: true,
+                        enabled: true,
+                        label: l10n!.back,
+                        child: IconButton(
+                          key: const Key("question_editor_back_button"),
+                          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                          onPressed: isEnabled ? widget.onBack : null,
+                        ),
                       )
                     : widget.onDelete != null
-                        ? IconButton(
-                            key: const Key("question_editor_delete_button"),
-                            icon: const Icon(Icons.delete),
-                            onPressed: isEnabled ? widget.onDelete : null,
+                        ? Semantics(
+                            button: true,
+                            enabled: true,
+                            label: l10n!.delete,
+                            child: IconButton(
+                              key: const Key("question_editor_delete_button"),
+                              icon: const Icon(Icons.delete),
+                              onPressed: isEnabled ? widget.onDelete : null,
+                            ),
                           )
                         : const SizedBox.shrink(),
               ),
@@ -65,18 +75,23 @@ class _QuestionEditorState extends State<QuestionEditor> {
               Container(
                 width: 80,
                 alignment: Alignment.centerRight,
-                child: TextButton(
-                  key: const Key("question_editor_save_button"),
-                  onPressed: isEnabled
-                      ? () {
-                          if (!_form.currentState!.validate()) {
-                            return;
-                          }
+                child: Semantics(
+                  button: true,
+                  enabled: isEnabled,
+                  label: l10n.done,
+                  child: TextButton(
+                    key: const Key("question_editor_save_button"),
+                    onPressed: isEnabled
+                        ? () {
+                            if (!_form.currentState!.validate()) {
+                              return;
+                            }
 
-                          widget.onEditingComplete!();
-                        }
-                      : null,
-                  child: Text(l10n.done),
+                            widget.onEditingComplete!();
+                          }
+                        : null,
+                    child: Text(l10n.done),
+                  ),
                 ),
               ),
             ],
@@ -88,48 +103,53 @@ class _QuestionEditorState extends State<QuestionEditor> {
             style: theme.textTheme.titleLarge,
           ),
           const SizedBox(height: 20),
-          TextFormField(
-            autofocus: true,
-            minLines: 4,
-            maxLines: 4,
-            maxLength: 250,
+          Semantics(
+            textField: true,
             enabled: isEnabled,
-            controller: widget.controller,
-            key: const Key("question_editor_textfield"),
-            textCapitalization: TextCapitalization.sentences,
-            buildCounter: (context,
-                {required currentLength, required isFocused, maxLength}) {
-              return Container(
-                transform: Matrix4.translationValues(0, -175, 0),
-                child: Text(
-                  "$currentLength/$maxLength",
-                  style: theme.textTheme
-                      .apply(bodyColor: theme.colorScheme.outline)
-                      .labelMedium,
+            label: l10n.questionEditorHintText,
+            child: TextFormField(
+              autofocus: true,
+              minLines: 4,
+              maxLines: 4,
+              maxLength: 250,
+              enabled: isEnabled,
+              controller: widget.controller,
+              key: const Key("question_editor_textfield"),
+              textCapitalization: TextCapitalization.sentences,
+              buildCounter: (context,
+                  {required currentLength, required isFocused, maxLength}) {
+                return Container(
+                  transform: Matrix4.translationValues(0, -175, 0),
+                  child: Text(
+                    "$currentLength/$maxLength",
+                    style: theme.textTheme
+                        .apply(bodyColor: theme.colorScheme.outline)
+                        .labelMedium,
+                  ),
+                );
+              },
+              decoration: InputDecoration(
+                errorMaxLines: 2,
+                border: const OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
+                  ),
                 ),
-              );
-            },
-            decoration: InputDecoration(
-              errorMaxLines: 2,
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(12),
-                ),
+                hintText: l10n.questionEditorHintText,
               ),
-              hintText: l10n.questionEditorHintText,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return l10n.questionEditorEmptyErrorText;
+                }
+
+                // TODO: Revisit later, meaningful sentence roughly 10-30 words
+                if (value.length < 100) {
+                  return l10n.questionEditorShortErrorText;
+                }
+
+                return null;
+              },
             ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return l10n.questionEditorEmptyErrorText;
-              }
-
-              // TODO: Revisit later, meaningful sentence roughly 10-30 words
-              if (value.length < 100) {
-                return l10n.questionEditorShortErrorText;
-              }
-
-              return null;
-            },
           ),
         ],
       ),

@@ -40,9 +40,13 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
               color: theme.colorScheme.primary,
             ),
             const SizedBox(width: 4),
-            Text(
-              l10n!.pgRedFlagsHeadline,
-              style: theme.textTheme.headlineSmall,
+            Semantics(
+              readOnly: true,
+              label: l10n!.pgRedFlagsHeadline,
+              child: Text(
+                l10n.pgRedFlagsHeadline,
+                style: theme.textTheme.headlineSmall,
+              ),
             ),
           ],
         ),

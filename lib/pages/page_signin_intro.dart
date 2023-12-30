@@ -86,15 +86,24 @@ class _PageSignInIntroState extends State<PageSignInIntro>
                         shape: BoxShape.circle,
                       ),
                     ),
-                    Text(
-                      headline,
-                      style: textTheme.headlineSmall,
+                    Semantics(
+                      readOnly: true,
+                      label: headline,
+                      child: Text(
+                        headline,
+                        style: textTheme.headlineSmall,
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    Text(
-                      body,
-                      style: textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
+                    Semantics(
+                      readOnly: true,
+                      multiline: true,
+                      label: body,
+                      child: Text(
+                        body,
+                        style: textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ],
                 ),
@@ -112,15 +121,23 @@ class _PageSignInIntroState extends State<PageSignInIntro>
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(
-                    onPressed: _skip,
-                    child: Text(l10n.skip),
+                  Semantics(
+                    button: true,
+                    label: l10n.skip,
+                    child: TextButton(
+                      onPressed: _skip,
+                      child: Text(l10n.skip),
+                    ),
                   ),
                   const Spacer(),
-                  FloatingActionButton(
-                    shape: const CircleBorder(),
-                    onPressed: _navigate,
-                    child: const Icon(Icons.arrow_forward_ios_rounded),
+                  Semantics(
+                    button: true,
+                    label: l10n.next,
+                    child: FloatingActionButton(
+                      shape: const CircleBorder(),
+                      onPressed: _navigate,
+                      child: const Icon(Icons.arrow_forward_ios_rounded),
+                    ),
                   ),
                 ],
               )

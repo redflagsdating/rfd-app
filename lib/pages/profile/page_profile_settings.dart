@@ -78,20 +78,24 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                     FutureBuilder(
                       future: future,
                       builder: (context, snapshot) {
-                        return FilledButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              PageFadeRouteBuilder(
-                                page: Builder(
-                                  builder: (context) => PageProfileView(
-                                    photoUrl: snapshot.data,
-                                    userModel: userProvider.getUserCache(),
+                        return Semantics(
+                          button: true,
+                          label: l10n!.pgProfileViewProfileBtn,
+                          child: FilledButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                PageFadeRouteBuilder(
+                                  page: Builder(
+                                    builder: (context) => PageProfileView(
+                                      photoUrl: snapshot.data,
+                                      userModel: userProvider.getUserCache(),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
-                          child: Text(l10n!.pgProfileViewProfileBtn),
+                              );
+                            },
+                            child: Text(l10n.pgProfileViewProfileBtn),
+                          ),
                         );
                       },
                     ),
