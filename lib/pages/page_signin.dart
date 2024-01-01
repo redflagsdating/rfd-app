@@ -52,10 +52,10 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     _scaffoldMessenger = ScaffoldMessenger.of(context);
     _logger = Provider.of<LoggerProvider>(context).logger;
     _authProvider = Provider.of<AuthProvider>(context);
+    super.didChangeDependencies();
   }
 
   @override
