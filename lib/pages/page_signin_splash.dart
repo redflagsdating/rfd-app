@@ -13,12 +13,13 @@ class PageSignInSplash extends StatefulWidget {
 class _PageSignInSplashState extends State<PageSignInSplash>
     with TickerProviderStateMixin {
   late void Function() _authListener;
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   @override
   void initState() {
     _authListener = () {
       if (widget.authProvider.message.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        _scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Text(widget.authProvider.message),
           ),
@@ -31,7 +32,14 @@ class _PageSignInSplashState extends State<PageSignInSplash>
   }
 
   @override
+  void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+    super.didChangeDependencies();
+  }
+
+  @override
   void dispose() {
+    _scaffoldMessenger.clearSnackBars();
     widget.authProvider.removeListener(_authListener);
     super.dispose();
   }

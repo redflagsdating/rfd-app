@@ -18,6 +18,7 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
   bool _enabled = true;
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   void _setEnabled(bool value) {
     setState(() {
@@ -28,6 +29,7 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
   @override
   void dispose() {
     _controller.dispose();
+    _scaffoldMessenger.clearSnackBars();
     super.dispose();
   }
 
@@ -37,6 +39,8 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
     if (dob != null) {
       _controller.text = DateFormat.yMd().format(dob);
     }
+
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
     super.didChangeDependencies();
   }
 
@@ -73,8 +77,7 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
                 silent: false,
               );
 
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
+              _scaffoldMessenger.showSnackBar(
                 SnackBar(
                   duration: const Duration(seconds: 2),
                   content: Text(result == true

@@ -25,6 +25,7 @@ class _ProfileKycState extends State<ProfileKyc> {
   SNSMobileSDKStatus? _status;
   bool _verifying = false;
   late IdentityVerification _kycApi;
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   void _updateUserStatus(SNSMobileSDKStatus status) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
@@ -74,9 +75,16 @@ class _ProfileKycState extends State<ProfileKyc> {
   }
 
   @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     final uid = context.read<UserProvider>().getIdCache();
     _kycApi = IdentityVerification(uid: uid);
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
 
     super.didChangeDependencies();
   }
@@ -184,7 +192,7 @@ class _ProfileKycState extends State<ProfileKyc> {
                                 }
 
                                 if (message != null) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  _scaffoldMessenger.showSnackBar(
                                     SnackBar(
                                       content: Text(message),
                                       action: showAction

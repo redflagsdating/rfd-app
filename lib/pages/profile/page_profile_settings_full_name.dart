@@ -21,6 +21,7 @@ class _PageProfileSettingsFullNameState
   final _form = GlobalKey<FormState>();
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   void _setEnabled(bool value) {
     setState(() {
@@ -37,6 +38,7 @@ class _PageProfileSettingsFullNameState
   void dispose() {
     _firstNameCtrl.dispose();
     _lastNameCtrl.dispose();
+    _scaffoldMessenger.clearSnackBars();
     super.dispose();
   }
 
@@ -46,6 +48,7 @@ class _PageProfileSettingsFullNameState
 
     _firstNameCtrl.text = fullName.first;
     _lastNameCtrl.text = fullName.last;
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
 
     super.didChangeDependencies();
   }
@@ -96,8 +99,7 @@ class _PageProfileSettingsFullNameState
                       UserFields.lastName.name: lastName,
                     });
 
-                    // ignore: use_build_context_synchronously
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    _scaffoldMessenger.showSnackBar(
                       SnackBar(
                         duration: const Duration(seconds: 2),
                         content: Text(result

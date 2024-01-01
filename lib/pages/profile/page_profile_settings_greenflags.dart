@@ -19,11 +19,24 @@ class PageProfileSettingsGreenFlags extends StatefulWidget {
 class _PageProfileSettingsGreenFlagsState
     extends State<PageProfileSettingsGreenFlags> {
   List<String>? _initialValue;
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   @override
   void initState() {
     _initialValue = context.read<UserProvider>().getGreenFlagsCache();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -43,7 +56,7 @@ class _PageProfileSettingsGreenFlagsState
               final greenFlags = userProvider.getGreenFlagsCache();
 
               if (greenFlags.length < 3) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(l10n.pgSelectFlagsErrorText),
                   ),
@@ -62,7 +75,7 @@ class _PageProfileSettingsGreenFlagsState
                 _initialValue = greenFlags;
 
                 // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     duration: const Duration(seconds: 2),
                     content: Text(result == true

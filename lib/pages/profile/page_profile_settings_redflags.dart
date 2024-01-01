@@ -19,11 +19,24 @@ class PageProfileSettingsRedFlags extends StatefulWidget {
 class _PageProfileSettingsRedFlagsState
     extends State<PageProfileSettingsRedFlags> {
   List<String>? _initialValue;
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   @override
   void initState() {
     _initialValue = context.read<UserProvider>().getRedFlagsCache();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -43,7 +56,7 @@ class _PageProfileSettingsRedFlagsState
               final redflags = userProvider.getRedFlagsCache();
 
               if (redflags.length < 3) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(l10n.pgSelectFlagsErrorText),
                   ),
@@ -61,8 +74,7 @@ class _PageProfileSettingsRedFlagsState
 
                 _initialValue = redflags;
 
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     duration: const Duration(seconds: 2),
                     content: Text(result == true

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:red_flags/mixins/mixin_kyc_state.dart';
+import 'package:red_flags/pages/home/page_home.dart';
 import 'package:red_flags/pages/profile/page_profile_settings.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
-class PageHome extends StatefulWidget {
-  const PageHome({super.key});
+class PageMain extends StatefulWidget {
+  const PageMain({super.key});
 
   @override
-  State<PageHome> createState() => _PageHomeState();
+  State<PageMain> createState() => _PageMainState();
 }
 
-class _PageHomeState extends State<PageHome> with MixinKycState {
+class _PageMainState extends State<PageMain> with MixinKycState {
   bool _reverse = false;
   int _currentIndex = 1;
 
@@ -39,11 +40,7 @@ class _PageHomeState extends State<PageHome> with MixinKycState {
               )
             : _currentIndex == 2
                 ? PageProfileSettings(key: bodyKey)
-                : Container(
-                    key: bodyKey,
-                    alignment: Alignment.center,
-                    child: Text(l10n!.home),
-                  ),
+                : PageHome(key: bodyKey),
       ),
       bottomNavigationBar: BottomNavigationBar(
         showSelectedLabels: false,

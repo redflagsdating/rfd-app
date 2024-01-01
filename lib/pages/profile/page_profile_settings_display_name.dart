@@ -19,6 +19,7 @@ class _PageProfileSettingsDisplayNameState
   bool _enabled = true;
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   void _setEnabled(bool value) {
     setState(() {
@@ -29,11 +30,13 @@ class _PageProfileSettingsDisplayNameState
   @override
   void dispose() {
     _controller.dispose();
+    _scaffoldMessenger.clearSnackBars();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
     _controller.text = context.read<UserProvider>().getDisplayNameCache();
     super.didChangeDependencies();
   }
@@ -71,8 +74,7 @@ class _PageProfileSettingsDisplayNameState
                 silent: false,
               );
 
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
+              _scaffoldMessenger.showSnackBar(
                 SnackBar(
                   duration: const Duration(seconds: 2),
                   content: Text(result == true

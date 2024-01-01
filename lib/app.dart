@@ -7,7 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/onboard/page_onboard_home.dart';
-import 'package:red_flags/pages/page_home.dart';
+import 'package:red_flags/pages/page_main.dart';
 import 'package:red_flags/pages/page_signin.dart';
 import 'package:red_flags/pages/page_signin_intro.dart';
 import 'package:red_flags/pages/page_signin_splash.dart';
@@ -94,6 +94,14 @@ class App extends StatelessWidget {
                   foregroundColor: lightColorScheme.onPrimary,
                   backgroundColor: lightColorScheme.primary,
                 ),
+                bannerTheme: MaterialBannerThemeData(
+                  padding: const EdgeInsets.all(12),
+                  backgroundColor: lightColorScheme.secondary,
+                  contentTextStyle: const TextStyle(
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
                 snackBarTheme: SnackBarThemeData(
                   contentTextStyle: const TextStyle(
                     fontFamily: "Roboto",
@@ -130,7 +138,7 @@ class App extends StatelessWidget {
                         : false,
                     child: authProvider.isAuthenticated()
                         ? (isOnboard == true
-                            ? const PageHome()
+                            ? const PageMain()
                             : const PageOnboardHome())
                         : authProvider.isAuthenticating()
                             ? PageSignInSplash(authProvider: authProvider)

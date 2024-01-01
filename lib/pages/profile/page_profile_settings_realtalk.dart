@@ -19,11 +19,24 @@ class PageProfileSettingsRealtalk extends StatefulWidget {
 class _PageProfileSettingsRealtalkState
     extends State<PageProfileSettingsRealtalk> {
   Map<String, String>? _initialValue;
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   @override
   void initState() {
     _initialValue = context.read<UserProvider>().getRealTalkCache();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -43,7 +56,7 @@ class _PageProfileSettingsRealtalkState
               final realtalk = userProvider.getRealTalkCache();
 
               if (realtalk?.isEmpty != false) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(l10n.pgRealTalkEmptyErrorText),
                   ),
@@ -59,8 +72,7 @@ class _PageProfileSettingsRealtalkState
 
                 _initialValue = realtalk;
 
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     duration: const Duration(seconds: 2),
                     content: Text(result == true

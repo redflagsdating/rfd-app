@@ -157,5 +157,6 @@
   "pgProfileMenuItemSignOut": "Sign out",
   "pgProfileMenuItemDeleteAccount": "Delete account",
   "pgProfileSuccessfulUpdated": "Profile updated successfully.",
-  "pgProfileFailedUpdated": "Profile updated failed."
+  "pgProfileFailedUpdated": "Profile updated failed.",
+  "pgHomeTitle": "Your connections"
 }

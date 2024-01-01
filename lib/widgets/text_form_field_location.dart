@@ -31,6 +31,7 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
   Position? _pos;
   Timer? _throttle;
   String? _errorText;
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   final _location = FocusNode();
 
@@ -64,6 +65,18 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
     } finally {
       setLoading(false);
     }
+  }
+
+  @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -173,8 +186,7 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
               try {
                 await getCurrentLocation();
               } catch (e) {
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
+                _scaffoldMessenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       e == GeolocatorError.disabled

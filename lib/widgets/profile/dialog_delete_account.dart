@@ -25,6 +25,7 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
   bool _deleting = false;
   late Logger _logger;
   late IdentityVerification _kycApi;
+  late ScaffoldMessengerState _scaffoldMessenger;
   late StreamSubscription<PendingDynamicLinkData> _subscription;
 
   Future<bool?> _deleteAccount() async {
@@ -83,10 +84,18 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
   }
 
   @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() {
     _logger = context.read<LoggerProvider>().logger;
-    _kycApi =
-        IdentityVerification(uid: context.read<UserProvider>().getIdCache());
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+    _kycApi = IdentityVerification(
+      uid: context.read<UserProvider>().getIdCache(),
+    );
     super.didChangeDependencies();
   }
 
@@ -211,8 +220,7 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
                         onPressed: _enabled && !_deleting
                             ? () async {
                                 if (await _deleteAccount() == true) {
-                                  // ignore: use_build_context_synchronously
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  _scaffoldMessenger.showSnackBar(
                                     SnackBar(
                                       duration: const Duration(seconds: 8),
                                       content: Text(

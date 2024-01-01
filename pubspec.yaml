@@ -66,7 +66,7 @@ dependencies:
   textfield_tags: ^2.0.2
   font_awesome_flutter: ^10.6.0
   permission_handler: ^11.1.0
-  flutter_idensic_mobile_sdk_plugin: ^1.28.0
+  flutter_idensic_mobile_sdk_plugin: 1.28.0
   flutter_dotenv: ^5.1.0
   http: ^1.1.2
   crypto: ^3.0.3
@@ -75,6 +75,7 @@ dependencies:
   cached_network_image: ^3.3.0
   flutter_cache_manager: ^3.3.1
   url_launcher: ^6.2.2
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:

@@ -248,7 +248,15 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<UserCredential?> _signInWithFacebook({bool? reauthenticate}) async {
-    final LoginResult fbAuth = await fbSignIn!.login();
+    final LoginResult fbAuth = await fbSignIn!.login(permissions: [
+      'email',
+      'public_profile',
+      'user_birthday',
+      'user_gender',
+      'user_friends',
+      'user_location',
+      'user_photos',
+    ]);
 
     switch (fbAuth.status) {
       case LoginStatus.cancelled:

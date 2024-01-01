@@ -27,6 +27,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
   bool _showDialogSigninEmail = false;
   late Logger _logger;
   late AuthProvider _authProvider;
+  late ScaffoldMessengerState _scaffoldMessenger;
   late StreamSubscription<PendingDynamicLinkData> _subscription;
 
   @override
@@ -52,6 +53,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
     _logger = Provider.of<LoggerProvider>(context).logger;
     _authProvider = Provider.of<AuthProvider>(context);
   }
@@ -71,6 +73,12 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
     } catch (e) {
       _logger.e(e, time: DateTime.now());
     }
+  }
+
+  @override
+  void dispose() {
+    _scaffoldMessenger.clearSnackBars();
+    super.dispose();
   }
 
   @override
@@ -114,7 +122,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
                     .whenComplete(
                   () {
                     if (authProvider.message.isNotEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      _scaffoldMessenger.showSnackBar(
                         SnackBar(
                           content: Text(authProvider.message),
                         ),
@@ -145,7 +153,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
                     .whenComplete(
                   () {
                     if (authProvider.message.isNotEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
+                      _scaffoldMessenger.showSnackBar(
                         SnackBar(
                           content: Text(authProvider.message),
                         ),

@@ -19,6 +19,7 @@ class _PageProfileSettingsLocalityState
   bool _enabled = true;
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
+  late ScaffoldMessengerState _scaffoldMessenger;
 
   void _setEnabled(bool value) {
     setState(() {
@@ -29,11 +30,13 @@ class _PageProfileSettingsLocalityState
   @override
   void dispose() {
     _controller.dispose();
+    _scaffoldMessenger.clearSnackBars();
     super.dispose();
   }
 
   @override
   void didChangeDependencies() {
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
     _controller.text = Provider.of<UserProvider>(context).getLocalityCache();
     super.didChangeDependencies();
   }
@@ -69,8 +72,8 @@ class _PageProfileSettingsLocalityState
                 locality,
                 localOnly: false,
               );
-              // ignore: use_build_context_synchronously
-              ScaffoldMessenger.of(context).showSnackBar(
+
+              _scaffoldMessenger.showSnackBar(
                 SnackBar(
                   duration: const Duration(seconds: 2),
                   content: Text(result == true
