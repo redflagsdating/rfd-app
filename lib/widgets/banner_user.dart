@@ -10,18 +10,17 @@ import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/user_kyc_badge.dart';
+import 'package:red_flags/widgets/badge_kyc_status.dart';
 
-class UserProfileBanner extends StatefulWidget {
-  const UserProfileBanner({super.key, required this.userModel});
+class BannerUser extends StatefulWidget {
+  const BannerUser({super.key, required this.userModel});
   final UserModel userModel;
 
   @override
-  State<UserProfileBanner> createState() => _UserProfileBannerState();
+  State<BannerUser> createState() => _BannerUserState();
 }
 
-class _UserProfileBannerState extends State<UserProfileBanner>
-    with MixinPermissions {
+class _BannerUserState extends State<BannerUser> with MixinPermissions {
   // Calculates the distance between user current position and profile locality
   // in km.
   Future<double> _getDistance() async {
@@ -81,7 +80,7 @@ class _UserProfileBannerState extends State<UserProfileBanner>
               style: theme.textTheme.headlineMedium,
             ),
             const SizedBox(width: 6),
-            UserKycBadge(
+            BadgeKycStatus(
               offset: const Offset(0, 0),
               alignment: Alignment.centerRight,
               child: SizedBox(

@@ -21,10 +21,10 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/services/utils.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
+import 'package:red_flags/widgets/circle_avatar_user.dart';
 import 'package:red_flags/widgets/profile/dialog_delete_account.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu_item.dart';
-import 'package:red_flags/widgets/user_circle_avatar.dart';
 
 class PageProfileSettings extends StatefulWidget {
   const PageProfileSettings({super.key});
@@ -66,7 +66,7 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                     FutureBuilder(
                       future: future,
                       builder: (context, snapshot) {
-                        return UserCircleAvatar(photoUrl: snapshot.data);
+                        return CircleAvatarUser(photoUrl: snapshot.data);
                       },
                     ),
                     const SizedBox(height: 16),

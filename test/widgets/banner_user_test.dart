@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/user_profile_banner.dart';
+import 'package:red_flags/widgets/banner_user.dart';
 
 import '../global.dart' as global;
 
@@ -28,7 +28,7 @@ void main() {
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: const [Locale('en')],
-        home: UserProfileBanner(userModel: global.userModel),
+        home: BannerUser(userModel: global.userModel),
       ),
     );
   });

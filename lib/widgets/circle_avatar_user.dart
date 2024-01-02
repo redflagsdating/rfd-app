@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_file.dart';
 import 'package:red_flags/services/logger_provider.dart';
-import 'package:red_flags/widgets/user_kyc_badge.dart';
+import 'package:red_flags/widgets/badge_kyc_status.dart';
 
-class UserCircleAvatar extends StatefulWidget {
-  const UserCircleAvatar({super.key, this.photoUrl});
+class CircleAvatarUser extends StatefulWidget {
+  const CircleAvatarUser({super.key, this.photoUrl});
 
   final String? photoUrl;
 
   @override
-  State<UserCircleAvatar> createState() => _UserCircleAvatarState();
+  State<CircleAvatarUser> createState() => _CircleAvatarUserState();
 }
 
-class _UserCircleAvatarState extends State<UserCircleAvatar> with MixinFile {
+class _CircleAvatarUserState extends State<CircleAvatarUser> with MixinFile {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final logger = Provider.of<LoggerProvider>(context).logger;
     final photoUrl = widget.photoUrl;
 
-    return UserKycBadge(
+    return BadgeKycStatus(
       alignment: Alignment.bottomRight,
       child: photoUrl != null
           ? CachedNetworkImage(

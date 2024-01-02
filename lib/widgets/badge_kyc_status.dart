@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 
-class UserKycBadge extends StatefulWidget {
-  const UserKycBadge({
+class BadgeKycStatus extends StatefulWidget {
+  const BadgeKycStatus({
     super.key,
     required this.child,
     this.offset,
@@ -15,10 +15,10 @@ class UserKycBadge extends StatefulWidget {
   final AlignmentGeometry? alignment;
 
   @override
-  State<UserKycBadge> createState() => _UserKycBadgeState();
+  State<BadgeKycStatus> createState() => _BadgeKycStatusState();
 }
 
-class _UserKycBadgeState extends State<UserKycBadge> {
+class _BadgeKycStatusState extends State<BadgeKycStatus> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
