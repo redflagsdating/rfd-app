@@ -16,7 +16,6 @@ import 'package:red_flags/pages/profile/page_profile_settings_realtalk.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
 import 'package:red_flags/pages/profile/page_profile_view.dart';
 import 'package:red_flags/services/auth_provider.dart';
-import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/services/utils.dart';
@@ -54,50 +53,34 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
             ListenableBuilder(
               listenable: userProvider,
               builder: (context, _) {
-                final photoUrl = userProvider.getPhotoUrlCache();
-                final displayName = userProvider.getDisplayNameCache();
-                final future =
-                    context.read<FireStorageProvider>().cacheImage(photoUrl);
-
                 updateKycStatus();
 
                 return Column(
                   children: [
-                    FutureBuilder(
-                      future: future,
-                      builder: (context, snapshot) {
-                        return CircleAvatarUser(photoUrl: snapshot.data);
-                      },
-                    ),
+                    CircleAvatarUser(photoUrl: userProvider.getPhotoUrlCache()),
                     const SizedBox(height: 16),
                     Text(
-                      displayName,
+                      userProvider.getDisplayNameCache(),
                       style: theme.textTheme.titleLarge,
                     ),
                     const SizedBox(height: 2),
-                    FutureBuilder(
-                      future: future,
-                      builder: (context, snapshot) {
-                        return Semantics(
-                          button: true,
-                          label: l10n!.pgProfileViewProfileBtn,
-                          child: FilledButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                PageFadeRouteBuilder(
-                                  page: Builder(
-                                    builder: (context) => PageProfileView(
-                                      photoUrl: snapshot.data,
-                                      userModel: userProvider.getUserCache(),
-                                    ),
-                                  ),
+                    Semantics(
+                      button: true,
+                      label: l10n!.pgProfileViewProfileBtn,
+                      child: FilledButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            PageFadeRouteBuilder(
+                              page: Builder(
+                                builder: (context) => PageProfileView(
+                                  userModel: userProvider.getUserCache(),
                                 ),
-                              );
-                            },
-                            child: Text(l10n.pgProfileViewProfileBtn),
-                          ),
-                        );
-                      },
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(l10n.pgProfileViewProfileBtn),
+                      ),
                     ),
                   ],
                 );

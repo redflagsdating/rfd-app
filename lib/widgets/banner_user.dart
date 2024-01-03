@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -13,8 +14,17 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/badge_kyc_status.dart';
 
 class BannerUser extends StatefulWidget {
-  const BannerUser({super.key, required this.userModel});
+  const BannerUser({
+    super.key,
+    required this.userModel,
+    this.compact,
+    this.answerCount,
+    this.messageCount,
+  });
   final UserModel userModel;
+  final bool? compact;
+  final int? answerCount;
+  final int? messageCount;
 
   @override
   State<BannerUser> createState() => _BannerUserState();
@@ -70,26 +80,96 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
     final lastName = widget.userModel.lastName;
     // Split to cater long location string and prevent overflow
     final locality = (widget.userModel.locality ?? '-').split(',');
+    final isCompact = widget.compact == true;
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              '${displayName ?? '$firstName $lastName'},',
-              style: theme.textTheme.headlineMedium,
-            ),
-            const SizedBox(width: 6),
-            BadgeKycStatus(
-              offset: const Offset(0, 0),
-              alignment: Alignment.centerRight,
-              child: SizedBox(
-                width: 70,
-                child: Text(
-                  dob != null ? userProvider.getAge(dob).toString() : "-",
-                  style: theme.textTheme.headlineMedium,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  '${displayName ?? '$firstName $lastName'},',
+                  style: isCompact
+                      ? theme.textTheme.headlineSmall
+                      : theme.textTheme.headlineMedium,
                 ),
-              ),
+                const SizedBox(width: 6),
+                BadgeKycStatus(
+                  offset: const Offset(0, 0),
+                  alignment: Alignment.centerRight,
+                  child: SizedBox(
+                    width: isCompact ? 60 : 70,
+                    child: Text(
+                      dob != null ? userProvider.getAge(dob).toString() : "-",
+                      style: isCompact
+                          ? theme.textTheme.headlineSmall
+                          : theme.textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                widget.answerCount != null
+                    ? Chip(
+                        padding: const EdgeInsets.all(4),
+                        labelPadding: const EdgeInsets.only(right: 4),
+                        label: Text(
+                          widget.answerCount.toString(),
+                          style: theme.textTheme
+                              .apply(bodyColor: Colors.white)
+                              .labelMedium,
+                        ),
+                        avatar: const Icon(
+                          FontAwesomeIcons.fireFlameCurved,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        visualDensity: VisualDensity.compact,
+                        side: MaterialStateBorderSide.resolveWith((states) {
+                          return const BorderSide(color: Colors.transparent);
+                        }),
+                        color: MaterialStateProperty.resolveWith(
+                          (states) {
+                            return theme.colorScheme.tertiary;
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+                const SizedBox(width: 8),
+                widget.messageCount != null
+                    ? Chip(
+                        padding: const EdgeInsets.all(4),
+                        labelPadding: const EdgeInsets.only(right: 4),
+                        label: Text(
+                          widget.messageCount.toString(),
+                          style: theme.textTheme
+                              .apply(bodyColor: Colors.white)
+                              .labelMedium,
+                        ),
+                        avatar: const Icon(
+                          FontAwesomeIcons.solidComment,
+                          color: Colors.white,
+                          size: 16,
+                        ),
+                        visualDensity: VisualDensity.compact,
+                        side: MaterialStateBorderSide.resolveWith((states) {
+                          return const BorderSide(color: Colors.transparent);
+                        }),
+                        color: MaterialStateProperty.resolveWith(
+                          (states) {
+                            return theme.colorScheme.inversePrimary;
+                          },
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ],
             ),
           ],
         ),
@@ -97,7 +177,10 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(Icons.location_on_rounded),
+            Icon(
+              Icons.location_on_rounded,
+              size: isCompact ? 20 : null,
+            ),
             const SizedBox(width: 2),
             FutureBuilder(
               future: _getDistance(),
@@ -105,14 +188,17 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                 final distance = snapshot.data;
 
                 return Text.rich(
+                  style: isCompact
+                      ? theme.textTheme.bodyMedium
+                      : theme.textTheme.bodyLarge,
                   TextSpan(
                     children: [
                       distance == null
                           ? WidgetSpan(
                               child:
                                   LoadingAnimationWidget.horizontalRotatingDots(
-                                color: theme.colorScheme.outlineVariant,
-                                size: 20,
+                                color: theme.colorScheme.surfaceVariant,
+                                size: isCompact ? 16 : 20,
                               ),
                             )
                           : TextSpan(
@@ -126,13 +212,19 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
               },
             ),
             const SizedBox(width: 16),
-            const Icon(Icons.home),
+            Icon(
+              Icons.home,
+              size: isCompact ? 20 : null,
+            ),
             const SizedBox(width: 2),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(
                 locality.length,
                 (index) => Text(
+                  style: isCompact
+                      ? theme.textTheme.bodyMedium
+                      : theme.textTheme.bodyLarge,
                   locality[index].trim(),
                   textHeightBehavior: const TextHeightBehavior(
                     applyHeightToFirstAscent: false,

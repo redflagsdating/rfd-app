@@ -8,6 +8,7 @@ import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/widgets/banner_user.dart';
+import 'package:red_flags/widgets/cached_image.dart';
 import 'package:red_flags/widgets/card_question.dart';
 import 'package:red_flags/widgets/image_placeholder.dart';
 
@@ -15,16 +16,11 @@ class PageProfileView extends StatefulWidget {
   const PageProfileView({
     super.key,
     required this.userModel,
-    this.photoUrl,
     this.userImgStorageRef,
   });
 
   final UserModel userModel;
   final Reference? userImgStorageRef;
-
-  /// Even though photoUrl can be retrieved from userModel, by passing photoUrl
-  /// externally allows fetching image from cache first to improve UX
-  final String? photoUrl;
 
   @override
   State<PageProfileView> createState() => _PageProfileViewState();
@@ -69,7 +65,6 @@ class _PageProfileViewState extends State<PageProfileView>
 
   @override
   Widget build(BuildContext context) {
-    final photoUrl = widget.photoUrl;
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final redFlags = widget.userModel.redFlags;
@@ -82,27 +77,10 @@ class _PageProfileViewState extends State<PageProfileView>
           children: [
             Stack(
               children: [
-                photoUrl != null
-                    ? CachedNetworkImage(
-                        imageUrl: photoUrl,
-                        width: double.infinity,
-                        height: 360,
-                        useOldImageOnUrlChange: true,
-                        errorWidget: (context, url, error) {
-                          return ImagePlaceholder(error: error);
-                        },
-                        imageBuilder: (context, imageProvider) {
-                          return Image(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          );
-                        },
-                      )
-                    : const ImagePlaceholder(
-                        loading: true,
-                        height: 360,
-                        width: double.infinity,
-                      ),
+                CachedImage(
+                  photoUrl: widget.userModel.photoUrl,
+                  height: 360,
+                ),
                 Positioned(
                   left: 16,
                   top: 48,

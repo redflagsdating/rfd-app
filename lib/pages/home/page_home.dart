@@ -1,6 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:red_flags/services/user_provider.dart';
+import 'package:red_flags/widgets/card_user_profile.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({super.key});
@@ -10,24 +13,11 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
-  late ScaffoldMessengerState _scaffoldMessenger;
-
-  @override
-  void didChangeDependencies() {
-    _scaffoldMessenger = ScaffoldMessenger.of(context);
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    _scaffoldMessenger.clearMaterialBanners();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
@@ -45,47 +35,24 @@ class _PageHomeState extends State<PageHome> {
             ),
             const SizedBox(height: 24),
             CarouselSlider(
-              options: CarouselOptions(height: 420),
+              options: CarouselOptions(
+                enlargeFactor: 0.4,
+                enlargeCenterPage: true,
+                enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                height: 520,
+              ),
               items: List.generate(
                 3,
                 (index) {
-                  return const SizedBox(
-                    width: 300,
-                    child: Card(
-                        // child: Column(
-                        //   mainAxisAlignment: MainAxisAlignment.center,
-                        //   children: [
-                        //     TextButton(
-                        //       onPressed: () {
-                        //         _scaffoldMessenger.showMaterialBanner(
-                        //           MaterialBanner(
-                        //             content: const Text(
-                        //                 'Hello, I am a Material Banner'),
-                        //             leading: Icon(
-                        //               Icons.agriculture_outlined,
-                        //               color: theme.colorScheme.onSecondary,
-                        //             ),
-                        //             actions: [
-                        //               TextButton(
-                        //                 onPressed: () {
-                        //                   ScaffoldMessenger.of(context)
-                        //                       .hideCurrentMaterialBanner();
-                        //                 },
-                        //                 child: Text('DISMISS'),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         );
-                        //       },
-                        //       child: Text('Show Banner'),
-                        //     ),
-                        //   ],
-                        // ),
-                        ),
+                  // TODO: Change to actual matches or placeholder
+                  return CardUserProfile(
+                    userModel: userProvider.getUserCache(),
+                    question:
+                        "What is something about you that surprises most people?",
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

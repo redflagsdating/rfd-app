@@ -7,11 +7,13 @@ class BadgeKycStatus extends StatefulWidget {
     super.key,
     required this.child,
     this.offset,
+    this.backgroundColor,
     this.alignment,
   });
 
   final Widget child;
   final Offset? offset;
+  final Color? backgroundColor;
   final AlignmentGeometry? alignment;
 
   @override
@@ -31,7 +33,7 @@ class _BadgeKycStatusState extends State<BadgeKycStatus> {
         return Badge(
           largeSize: 32,
           offset: widget.offset,
-          backgroundColor: theme.colorScheme.onSecondary.withOpacity(0.8),
+          backgroundColor: widget.backgroundColor ?? Colors.transparent,
           alignment: widget.alignment,
           label: verifySubmitted != true
               ? const Icon(
