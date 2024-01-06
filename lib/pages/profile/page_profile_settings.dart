@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_kyc_state.dart';
+import 'package:red_flags/pages/profile/page_full_profile_view.dart';
 import 'package:red_flags/pages/profile/page_profile_settings.photos.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_age.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_display_name.dart';
@@ -14,7 +15,6 @@ import 'package:red_flags/pages/profile/page_profile_settings_kyc.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_locality.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_realtalk.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_redflags.dart';
-import 'package:red_flags/pages/profile/page_profile_view.dart';
 import 'package:red_flags/services/auth_provider.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
@@ -72,7 +72,7 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                           Navigator.of(context).push(
                             PageFadeRouteBuilder(
                               page: Builder(
-                                builder: (context) => PageProfileView(
+                                builder: (context) => PageFullProfileView(
                                   userModel: userProvider.getUserCache(),
                                 ),
                               ),

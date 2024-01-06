@@ -29,6 +29,7 @@
   "displayName": "Preferred Name",
   "gender": "Gender",
   "age": "Age",
+  "questionOfDay": "QoD",
   "kilometer": "km",
   "verification": "Verification",
   "photo": "{count, plural, =1{Photo} other{Photos}}",

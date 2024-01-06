@@ -73,6 +73,10 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final userProvider = context.read<UserProvider>();
+    final textWhiteTheme = theme.textTheme.apply(
+      bodyColor: Colors.white,
+      displayColor: Colors.white,
+    );
 
     final dob = widget.userModel.dob;
     final displayName = widget.userModel.displayName;
@@ -86,7 +90,7 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
@@ -95,8 +99,8 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                 Text(
                   '${displayName ?? '$firstName $lastName'},',
                   style: isCompact
-                      ? theme.textTheme.headlineSmall
-                      : theme.textTheme.headlineMedium,
+                      ? textWhiteTheme.titleLarge
+                      : textWhiteTheme.headlineMedium,
                 ),
                 const SizedBox(width: 6),
                 BadgeKycStatus(
@@ -107,8 +111,8 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                     child: Text(
                       dob != null ? userProvider.getAge(dob).toString() : "-",
                       style: isCompact
-                          ? theme.textTheme.headlineSmall
-                          : theme.textTheme.headlineMedium,
+                          ? textWhiteTheme.titleLarge
+                          : textWhiteTheme.headlineMedium,
                     ),
                   ),
                 ),
@@ -122,14 +126,12 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                         labelPadding: const EdgeInsets.only(right: 4),
                         label: Text(
                           widget.answerCount.toString(),
-                          style: theme.textTheme
-                              .apply(bodyColor: Colors.white)
-                              .labelMedium,
+                          style: textWhiteTheme.labelMedium,
                         ),
                         avatar: const Icon(
                           FontAwesomeIcons.fireFlameCurved,
                           color: Colors.white,
-                          size: 16,
+                          size: 14,
                         ),
                         visualDensity: VisualDensity.compact,
                         side: MaterialStateBorderSide.resolveWith((states) {
@@ -149,14 +151,12 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                         labelPadding: const EdgeInsets.only(right: 4),
                         label: Text(
                           widget.messageCount.toString(),
-                          style: theme.textTheme
-                              .apply(bodyColor: Colors.white)
-                              .labelMedium,
+                          style: textWhiteTheme.labelMedium,
                         ),
                         avatar: const Icon(
                           FontAwesomeIcons.solidComment,
                           color: Colors.white,
-                          size: 16,
+                          size: 14,
                         ),
                         visualDensity: VisualDensity.compact,
                         side: MaterialStateBorderSide.resolveWith((states) {
@@ -179,7 +179,8 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
           children: [
             Icon(
               Icons.location_on_rounded,
-              size: isCompact ? 20 : null,
+              size: isCompact ? 18 : null,
+              color: Colors.white,
             ),
             const SizedBox(width: 2),
             FutureBuilder(
@@ -189,14 +190,13 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
 
                 return Text.rich(
                   style: isCompact
-                      ? theme.textTheme.bodyMedium
-                      : theme.textTheme.bodyLarge,
+                      ? textWhiteTheme.bodySmall
+                      : textWhiteTheme.bodyLarge,
                   TextSpan(
                     children: [
                       distance == null
                           ? WidgetSpan(
-                              child:
-                                  LoadingAnimationWidget.horizontalRotatingDots(
+                              child: LoadingAnimationWidget.prograssiveDots(
                                 color: theme.colorScheme.surfaceVariant,
                                 size: isCompact ? 16 : 20,
                               ),
@@ -211,10 +211,11 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                 );
               },
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: isCompact ? 10 : 16),
             Icon(
               Icons.home,
-              size: isCompact ? 20 : null,
+              color: Colors.white,
+              size: isCompact ? 18 : null,
             ),
             const SizedBox(width: 2),
             Column(
@@ -223,8 +224,8 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                 locality.length,
                 (index) => Text(
                   style: isCompact
-                      ? theme.textTheme.bodyMedium
-                      : theme.textTheme.bodyLarge,
+                      ? textWhiteTheme.bodySmall
+                      : textWhiteTheme.bodyLarge,
                   locality[index].trim(),
                   textHeightBehavior: const TextHeightBehavior(
                     applyHeightToFirstAscent: false,
