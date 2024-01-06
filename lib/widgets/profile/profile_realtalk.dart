@@ -3,7 +3,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/question.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/card_question.dart';
+import 'package:red_flags/widgets/card_realtalk.dart';
 
 class ProfileRealTalk extends StatefulWidget {
   const ProfileRealTalk({super.key});
@@ -78,7 +78,7 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
         const SizedBox(height: 10),
         Text(l10n.pgRealTalkBody),
         const SizedBox(height: 20),
-        CardQuestion(
+        CardRealTalk(
           hintText: l10n.cardRealTalkText,
           initialQuestion: first?.key,
           initialAnswer: first?.value,
@@ -88,7 +88,7 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
           onAdded: _onAdded,
         ),
         const SizedBox(height: 10),
-        CardQuestion(
+        CardRealTalk(
           hintText: l10n.cardRealTalkText,
           initialQuestion: second?.key,
           initialAnswer: second?.value,
@@ -98,7 +98,7 @@ class _ProfileRealTalkState extends State<ProfileRealTalk> {
           onAdded: _onAdded,
         ),
         const SizedBox(height: 10),
-        CardQuestion(
+        CardRealTalk(
           hintText: l10n.cardRealTalkText,
           initialQuestion: third?.key,
           initialAnswer: third?.value,

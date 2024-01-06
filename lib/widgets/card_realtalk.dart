@@ -5,10 +5,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:red_flags/widgets/listview_questions.dart';
-import 'package:red_flags/widgets/question_editor.dart';
+import 'package:red_flags/widgets/realtalk_editor.dart';
 
-class CardQuestion extends StatefulWidget {
-  const CardQuestion({
+class CardRealTalk extends StatefulWidget {
+  const CardRealTalk({
     super.key,
     required this.listQuestions,
     this.selectedQuestions,
@@ -30,10 +30,10 @@ class CardQuestion extends StatefulWidget {
   final void Function(String question)? onDeleted;
 
   @override
-  State<CardQuestion> createState() => _CardQuestionState();
+  State<CardRealTalk> createState() => _CardRealTalkState();
 }
 
-class _CardQuestionState extends State<CardQuestion> {
+class _CardRealTalkState extends State<CardRealTalk> {
   String? _question;
   final _controller = TextEditingController();
 
@@ -114,7 +114,7 @@ class _CardQuestionState extends State<CardQuestion> {
     }
 
     return GestureDetector(
-      key: const Key("card_question_gesture_detector"),
+      key: const Key("card_realtalk_gesture_detector"),
       onTap: () {
         showModalBottomSheet<void>(
           elevation: 0,
@@ -133,7 +133,7 @@ class _CardQuestionState extends State<CardQuestion> {
                   ),
                   child: SlideTransitionSwitcher(
                     child: _question != null
-                        ? QuestionEditor(
+                        ? RealTalkEditor(
                             question: _question!,
                             controller: _controller,
                             onDelete: widget.initialQuestion != null
@@ -153,7 +153,7 @@ class _CardQuestionState extends State<CardQuestion> {
                             onEditingComplete: _onAdded,
                           )
                         : ListViewQuestions(
-                            key: const Key("card_question_list_questions"),
+                            key: const Key("card_realtalk_list_questions"),
                             questions: widget.listQuestions,
                             selected: widget.selectedQuestions,
                             onSelect: (question) {
@@ -185,7 +185,7 @@ class _CardQuestionState extends State<CardQuestion> {
       child: FadeThroughTransitionSwitcher(
         child: _question != null
             ? Container(
-                key: const Key("card_question_container"),
+                key: const Key("card_realtalk_container"),
                 width: double.infinity,
                 height: 120,
                 decoration: BoxDecoration(
@@ -211,7 +211,7 @@ class _CardQuestionState extends State<CardQuestion> {
                       softWrap: false,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
-                      key: const Key("card_question_container_title"),
+                      key: const Key("card_realtalk_container_title"),
                     ),
                     const SizedBox(height: 8),
                     Text(
@@ -219,7 +219,7 @@ class _CardQuestionState extends State<CardQuestion> {
                       maxLines: 3,
                       overflow: TextOverflow.fade,
                       style: theme.textTheme.bodySmall,
-                      key: const Key("card_question_container_description"),
+                      key: const Key("card_realtalk_container_description"),
                     )
                   ],
                 ),
@@ -230,7 +230,7 @@ class _CardQuestionState extends State<CardQuestion> {
                 radius: const Radius.circular(12),
                 color: theme.colorScheme.inversePrimary,
                 child: SizedBox(
-                  key: const Key("card_question_empty_box"),
+                  key: const Key("card_realtalk_empty_box"),
                   width: double.infinity,
                   height: 120,
                   child: Column(

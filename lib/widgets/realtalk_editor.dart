@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class QuestionEditor extends StatefulWidget {
-  const QuestionEditor({
+class RealTalkEditor extends StatefulWidget {
+  const RealTalkEditor({
     super.key,
     this.enabled,
     this.onBack,
@@ -20,10 +20,10 @@ class QuestionEditor extends StatefulWidget {
   final TextEditingController controller;
 
   @override
-  State<QuestionEditor> createState() => _QuestionEditorState();
+  State<RealTalkEditor> createState() => _RealTalkEditorState();
 }
 
-class _QuestionEditorState extends State<QuestionEditor> {
+class _RealTalkEditorState extends State<RealTalkEditor> {
   final _form = GlobalKey<FormState>();
 
   @override
@@ -47,7 +47,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
                         enabled: true,
                         label: l10n!.back,
                         child: IconButton(
-                          key: const Key("question_editor_back_button"),
+                          key: const Key("realtalk_editor_back_button"),
                           icon: const Icon(Icons.arrow_back_ios_new_rounded),
                           onPressed: isEnabled ? widget.onBack : null,
                         ),
@@ -58,7 +58,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
                             enabled: true,
                             label: l10n!.delete,
                             child: IconButton(
-                              key: const Key("question_editor_delete_button"),
+                              key: const Key("realtalk_editor_delete_button"),
                               icon: const Icon(Icons.delete),
                               onPressed: isEnabled ? widget.onDelete : null,
                             ),
@@ -67,7 +67,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
               ),
               Expanded(
                 child: Text(
-                  l10n!.questionEditorTitle,
+                  l10n!.realtalkEditorTitle,
                   style: theme.textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -80,7 +80,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
                   enabled: isEnabled,
                   label: l10n.done,
                   child: TextButton(
-                    key: const Key("question_editor_save_button"),
+                    key: const Key("realtalk_editor_save_button"),
                     onPressed: isEnabled
                         ? () {
                             if (!_form.currentState!.validate()) {
@@ -98,7 +98,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
           ),
           const SizedBox(height: 40),
           Text(
-            key: const Key("question_editor_display_title"),
+            key: const Key("realtalk_editor_display_title"),
             widget.question,
             style: theme.textTheme.titleLarge,
           ),
@@ -106,7 +106,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
           Semantics(
             textField: true,
             enabled: isEnabled,
-            label: l10n.questionEditorHintText,
+            label: l10n.realtalkEditorHintText,
             child: TextFormField(
               autofocus: true,
               minLines: 4,
@@ -114,7 +114,7 @@ class _QuestionEditorState extends State<QuestionEditor> {
               maxLength: 250,
               enabled: isEnabled,
               controller: widget.controller,
-              key: const Key("question_editor_textfield"),
+              key: const Key("realtalk_editor_textfield"),
               textCapitalization: TextCapitalization.sentences,
               buildCounter: (context,
                   {required currentLength, required isFocused, maxLength}) {
@@ -135,16 +135,16 @@ class _QuestionEditorState extends State<QuestionEditor> {
                     Radius.circular(12),
                   ),
                 ),
-                hintText: l10n.questionEditorHintText,
+                hintText: l10n.realtalkEditorHintText,
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return l10n.questionEditorEmptyErrorText;
+                  return l10n.realtalkEditorEmptyErrorText;
                 }
 
                 // TODO: Revisit later, meaningful sentence roughly 10-30 words
                 if (value.length < 100) {
-                  return l10n.questionEditorShortErrorText;
+                  return l10n.realtalkEditorShortErrorText;
                 }
 
                 return null;

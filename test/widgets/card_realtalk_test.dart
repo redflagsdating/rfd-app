@@ -3,31 +3,31 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:red_flags/widgets/card_question.dart';
+import 'package:red_flags/widgets/card_realtalk.dart';
 
 import '../global.dart' as global;
 
 void main() {
-  // CardQuestion widget
-  const gestureKey = Key("card_question_gesture_detector");
-  const containerKey = Key("card_question_container");
-  const emptyBoxKey = Key("card_question_empty_box");
-  const listKey = Key("card_question_list_questions");
+  // CardRealTalk widget
+  const gestureKey = Key("card_realtalk_gesture_detector");
+  const containerKey = Key("card_realtalk_container");
+  const emptyBoxKey = Key("card_realtalk_empty_box");
+  const listKey = Key("card_realtalk_list_questions");
 
   // ListViewQuestions widget
   const listItemKey = Key("listview_questions_item_card");
 
-  // QuestionEditor widget
-  const editorTitleKey = Key("question_editor_display_title");
-  const editorSaveKey = Key("question_editor_save_button");
-  const editorDeleteKey = Key("question_editor_delete_button");
-  const textfieldKey = Key("question_editor_textfield");
+  // realtalkEditor widget
+  const editorTitleKey = Key("realtalk_editor_display_title");
+  const editorSaveKey = Key("realtalk_editor_save_button");
+  const editorDeleteKey = Key("realtalk_editor_delete_button");
+  const textfieldKey = Key("realtalk_editor_textfield");
 
   final question = global.userModel.realTalk?.entries.first.key;
   final answer = global.userModel.realTalk?.entries.first.value;
 
   testWidgets(
-    "CardQuestion/QuestionEditor widgets > Adding question scenario",
+    "CardRealTalk/RealTalkEditor widgets > Adding question scenario",
     (widgetTester) async {
       final addCompleter = Completer();
 
@@ -38,7 +38,7 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) {
-                return CardQuestion(
+                return CardRealTalk(
                     listQuestions: [question!],
                     hintText: global.l10n.brandName,
                     onAdded: (q, answer) {
@@ -68,19 +68,19 @@ void main() {
       await widgetTester.pumpAndSettle();
       await widgetTester.tap(find.byKey(listItemKey));
       await widgetTester.pump();
-      expect(find.text(global.l10n.questionEditorTitle), findsOneWidget);
+      expect(find.text(global.l10n.realtalkEditorTitle), findsOneWidget);
       expect(find.byKey(editorTitleKey), findsOneWidget);
-      expect(find.text(global.l10n.questionEditorHintText), findsOneWidget);
+      expect(find.text(global.l10n.realtalkEditorHintText), findsOneWidget);
       expect(find.text('0/250'), findsOneWidget);
 
       expect(
-        find.text(global.l10n.questionEditorEmptyErrorText),
+        find.text(global.l10n.realtalkEditorEmptyErrorText),
         findsNothing,
       );
       await widgetTester.tap(find.byKey(editorSaveKey));
       await widgetTester.pump();
       expect(
-        find.text(global.l10n.questionEditorEmptyErrorText),
+        find.text(global.l10n.realtalkEditorEmptyErrorText),
         findsOneWidget,
       );
 
@@ -92,7 +92,7 @@ void main() {
       await widgetTester.tap(find.byKey(editorSaveKey));
       await widgetTester.pump();
       expect(
-        find.text(global.l10n.questionEditorShortErrorText),
+        find.text(global.l10n.realtalkEditorShortErrorText),
         findsOneWidget,
       );
 
@@ -103,7 +103,7 @@ void main() {
       await widgetTester.pump();
       expect(addCompleter.isCompleted, isTrue);
 
-      // Test CardQuestion contains ellipsis question and answer for preview
+      // Test CardRealTalk contains ellipsis question and answer for preview
       expect(find.byKey(containerKey), findsOneWidget);
       expect(
         find.descendant(
@@ -125,7 +125,7 @@ void main() {
   );
 
   testWidgets(
-    "CardQuestion/QuestionEditor widgets > Delete initialQuestion/initialAnswer",
+    "CardRealTalk/RealTalkEditor widgets > Delete initialQuestion/initialAnswer",
     (widgetTester) async {
       final deleteCompleter = Completer();
 
@@ -136,7 +136,7 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) {
-                return CardQuestion(
+                return CardRealTalk(
                   listQuestions: [question!],
                   selectedQuestions: [question],
                   initialQuestion: question,
@@ -173,7 +173,7 @@ void main() {
         findsOneWidget,
       );
 
-      // Test QuestionEditor inline delete question
+      // Test realtalkEditor inline delete question
       expect(deleteCompleter.isCompleted, isFalse);
       await widgetTester.tap(find.byKey(gestureKey));
       await widgetTester.pump();
@@ -196,7 +196,7 @@ void main() {
   );
 
   testWidgets(
-    "CardQuestion widget > longPress to delete question",
+    "CardRealTalk widget > longPress to delete question",
     (widgetTester) async {
       final deleteCompleter = Completer();
 
@@ -207,7 +207,7 @@ void main() {
           home: Scaffold(
             body: Builder(
               builder: (context) {
-                return CardQuestion(
+                return CardRealTalk(
                   listQuestions: [question!],
                   hintText: global.l10n.brandName,
                   onDeleted: (q) {
