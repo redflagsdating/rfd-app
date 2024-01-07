@@ -10,7 +10,7 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/services/utils.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
-import 'package:red_flags/widgets/label_kyc_status.dart';
+import 'package:red_flags/widgets/label/label_kyc_status.dart';
 
 class ProfileKyc extends StatefulWidget {
   const ProfileKyc({super.key, this.onboarding});

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/pages/onboard/page_onboard_splash.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/card_image_picker.dart';
+import 'package:red_flags/widgets/card/card_image_picker.dart';
 
 class ProfilePhotos extends StatefulWidget {
   const ProfilePhotos({

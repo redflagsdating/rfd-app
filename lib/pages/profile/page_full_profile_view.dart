@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/banner_user.dart';
 import 'package:red_flags/widgets/cached_image.dart';
+import 'package:red_flags/widgets/card/card_qod.dart';
 import 'package:red_flags/widgets/profile/user_profile_details.dart';
 
 class PageFullProfileView extends StatefulWidget {
@@ -143,7 +145,26 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                                       userModel: widget.userModel,
                                     )
                                   // TODO
-                                  : Text(l10n.questionOfDay),
+                                  : Container(
+                                      padding: const EdgeInsets.all(24),
+                                      child: CardQod(
+                                        qod: QodModel(
+                                          question:
+                                              "What is something about you that surprises most people?",
+                                          primaryUserId:
+                                              "WnWMFaYTcpWLVFMyUrVIGbhirU33",
+                                          primaryUserDisplayName: "Bryan",
+                                          primaryUserPhotoUrl:
+                                              "images/WnWMFaYTcpWLVFMyUrVIGbhirU33/0fab2cd0-f87a-487f-9183-df7f4570a84e",
+                                          secondaryUserId:
+                                              "hqtyg78d9jR9OhMHkb9eC96ham83",
+                                          secondaryDisplayName: "Brian",
+                                          secondaryUserPhotoUrl:
+                                              "images/hqtyg78d9jR9OhMHkb9eC96ham83/ed37bd90-cd3d-4552-8bc7-ea69fc203e5c",
+                                          createdAt: DateTime.now(),
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ],
                         );

@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/profile/page_full_profile_view.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/banner_user.dart';
 import 'package:red_flags/widgets/cached_image.dart';
+import 'package:red_flags/widgets/label/label_qod_status.dart';
 
 class CardUserProfile extends StatefulWidget {
   const CardUserProfile({
     super.key,
     required this.userModel,
-    required this.question,
+    required this.qod,
   });
   final UserModel userModel;
-  final String question;
+  final QodModel qod;
 
   @override
   State<CardUserProfile> createState() => _CardUserProfileState();
@@ -38,6 +40,10 @@ class _CardUserProfileState extends State<CardUserProfile> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final qodBtnLabel = widget.qod.primaryUserAnswer == null
+        ? l10n!.cardUserProfileAnswerBtn
+        : l10n!.cardUserProfileViewResponseBtn;
+    final qodRemainingTime = DateTime.now().difference(widget.qod.createdAt);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -106,31 +112,21 @@ class _CardUserProfileState extends State<CardUserProfile> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.question,
+                        widget.qod.question,
                         maxLines: 3,
                         style: theme.textTheme.titleMedium,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        // TODO: QoD status
-                        l10n!.cardUserProfileNoAnswerNote,
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w300,
-                          color: theme.colorScheme.outline,
-                        ),
-                      ),
+                      LabelQodStatus(qod: widget.qod),
                       const SizedBox(height: 8),
-                      // TODO: Change to question anwser status
-                      widget.question.length > 1
+                      // TODO: Add condition of unlock "Go on a date" CTA
+                      widget.qod.secondaryUserAnswer == null
                           ? Semantics(
-                              // TODO: Dynamic label base on condition
-                              label: l10n.cardUserProfileAnswerBtn,
+                              label: qodBtnLabel,
                               child: FilledButton(
                                 onPressed: () {
-                                  // TODO
+                                  // TODO: Example for later integration
                                   _scaffoldMessenger.showMaterialBanner(
                                     MaterialBanner(
                                       content: const Text(
@@ -162,8 +158,7 @@ class _CardUserProfileState extends State<CardUserProfile> {
                                 child: Column(
                                   children: [
                                     Text(
-                                      // TODO: Add condition to show different labels
-                                      l10n.cardUserProfileAnswerBtn,
+                                      qodBtnLabel,
                                       style: theme.textTheme
                                           .apply(
                                             fontSizeFactor: 1.1,
@@ -173,8 +168,9 @@ class _CardUserProfileState extends State<CardUserProfile> {
                                           .labelLarge,
                                     ),
                                     Text(
-                                      // TODO: Change to QoD hours left
-                                      l10n.cardUserProfileAnswerBtnNote(4),
+                                      l10n.cardUserProfileAnswerBtnNote(
+                                        qodRemainingTime.inHours,
+                                      ),
                                       style: TextStyle(
                                         fontSize: 13,
                                         fontStyle: FontStyle.italic,

@@ -20,6 +20,7 @@ import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/services/utils.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
+import 'package:red_flags/widgets/badge_kyc_status.dart';
 import 'package:red_flags/widgets/circle_avatar_user.dart';
 import 'package:red_flags/widgets/profile/dialog_delete_account.dart';
 import 'package:red_flags/widgets/profile/profile_settings_menu.dart';
@@ -57,7 +58,14 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
 
                 return Column(
                   children: [
-                    CircleAvatarUser(photoUrl: userProvider.getPhotoUrlCache()),
+                    BadgeKycStatus(
+                      alignment: Alignment.bottomRight,
+                      backgroundColor:
+                          theme.colorScheme.onSecondary.withOpacity(0.8),
+                      child: CircleAvatarUser(
+                        photoUrl: userProvider.getPhotoUrlCache(),
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     Text(
                       userProvider.getDisplayNameCache(),

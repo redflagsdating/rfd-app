@@ -2,8 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/card_user_profile.dart';
+import 'package:red_flags/widgets/card/card_user_profile.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({super.key});
@@ -47,8 +48,16 @@ class _PageHomeState extends State<PageHome> {
                   // TODO: Change to actual matches or placeholder
                   return CardUserProfile(
                     userModel: userProvider.getUserCache(),
-                    question:
-                        "What is something about you that surprises most people?",
+                    // TODO: Change to acutal qod data
+                    qod: QodModel(
+                      question:
+                          "What is something about you that surprises most people?",
+                      primaryUserId: "WnWMFaYTcpWLVFMyUrVIGbhirU33",
+                      primaryUserDisplayName: "Bryan",
+                      secondaryUserId: "hqtyg78d9jR9OhMHkb9eC96ham83",
+                      secondaryDisplayName: "Brian",
+                      createdAt: DateTime.now(),
+                    ),
                   );
                 },
               ),

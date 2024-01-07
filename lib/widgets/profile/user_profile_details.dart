@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_file.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
-import 'package:red_flags/widgets/card_realtalk.dart';
+import 'package:red_flags/widgets/card/card_realtalk.dart';
 import 'package:red_flags/widgets/image_placeholder.dart';
 
 class UserProfileDetails extends StatefulWidget {
