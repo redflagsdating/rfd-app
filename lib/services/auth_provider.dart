@@ -253,7 +253,6 @@ class AuthProvider extends ChangeNotifier {
       'public_profile',
       'user_birthday',
       'user_gender',
-      'user_friends',
       'user_location',
       'user_photos',
     ]);

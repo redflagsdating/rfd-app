@@ -26,34 +26,42 @@ class ListViewQuestions extends StatelessWidget {
           button: true,
           selected: isSelected,
           label: question,
-          child: GestureDetector(
-            key: const Key("listview_questions_item_card"),
-            onTap: () {
-              if (selected == null || !selected!.contains(question)) {
-                onSelect!(question);
-              }
-            },
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minHeight: 80),
             child: Card(
               elevation: isSelected ? 2 : 0,
               shape: isSelected
                   ? null
                   : RoundedRectangleBorder(
                       side: BorderSide(
-                        color: theme.colorScheme.outlineVariant,
+                        color:
+                            theme.colorScheme.outlineVariant.withOpacity(0.4),
                       ),
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  question,
-                  style: theme.textTheme
-                      .apply(
-                        bodyColor: isSelected
-                            ? theme.colorScheme.onPrimaryContainer
-                            : theme.colorScheme.onSurfaceVariant,
-                      )
-                      .titleMedium,
+              child: InkWell(
+                key: const Key("listview_questions_item_card"),
+                onTap: isSelected
+                    ? null
+                    : () {
+                        if (selected == null || !selected!.contains(question)) {
+                          onSelect!(question);
+                        }
+                      },
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Text(
+                    question,
+                    style: theme.textTheme
+                        .apply(
+                          decoration:
+                              isSelected ? TextDecoration.lineThrough : null,
+                          bodyColor: isSelected
+                              ? theme.colorScheme.outlineVariant
+                              : theme.colorScheme.onSurface,
+                        )
+                        .titleMedium,
+                  ),
                 ),
               ),
             ),

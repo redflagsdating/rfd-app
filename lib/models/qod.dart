@@ -1,3 +1,10 @@
+enum QodStatus {
+  unanswered,
+  primaryAnswered,
+  secondaryAnswered,
+  answered,
+}
+
 class QodModel {
   const QodModel({
     required this.question,
@@ -24,4 +31,15 @@ class QodModel {
   final String? primaryUserAnswer;
   final String? secondaryUserAnswer;
   final DateTime? answeredAt;
+
+  QodStatus get status =>
+      primaryUserAnswer != null && secondaryUserAnswer != null
+          ? QodStatus.answered
+          : primaryUserAnswer != null
+              ? QodStatus.primaryAnswered
+              : secondaryUserAnswer != null
+                  ? QodStatus.secondaryAnswered
+                  : QodStatus.unanswered;
+
+  bool get isNew => DateTime.now().difference(createdAt).inHours < 24;
 }

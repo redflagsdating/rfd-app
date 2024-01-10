@@ -66,8 +66,6 @@ class _CardUserProfileState extends State<CardUserProfile> {
             );
           },
           child: Card(
-            clipBehavior: Clip.hardEdge,
-            surfaceTintColor: theme.colorScheme.background,
             child: Column(
               children: [
                 Stack(

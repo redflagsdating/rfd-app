@@ -72,6 +72,7 @@
   "fieldYourRedFlagsErrorText": "The red flag already exists",
   "fieldYourGreenFlagsHintText": "Add your own green flags",
   "fieldYourGreenFlagsErrorText": "The green flag already exists",
+  "fieldQodResponseHintText": "Type your response",
   "textFieldChipsHelperText": "Use comma (,) to separate text",
   "cardImagePickerSheetTitle": "Upload photo",
   "cardImagePickerCropTitle": "Edit Photo",

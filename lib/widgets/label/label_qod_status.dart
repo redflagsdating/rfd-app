@@ -17,17 +17,16 @@ class _LabelQodStatusState extends State<LabelQodStatus> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final isPrimaryAnswered = widget.qod.primaryUserAnswer != null;
-    final isSecondaryAnswered = widget.qod.secondaryUserAnswer != null;
-    final isAllAnswered = widget.qod.answeredAt != null &&
-        isPrimaryAnswered &&
-        isSecondaryAnswered;
-    final label = isAllAnswered
+    final answeredAt = widget.qod.answeredAt;
+    final label = widget.qod.status == QodStatus.answered
         ? l10n!.labelQodStatusAllAnswered(
-            DateFormat.MMMd().format(widget.qod.answeredAt!))
-        : isPrimaryAnswered
+            answeredAt != null
+                ? DateFormat.MMMd().format(answeredAt)
+                : l10n.unknown,
+          )
+        : widget.qod.status == QodStatus.primaryAnswered
             ? l10n!.labelQodStatusOursAnswered(widget.qod.secondaryDisplayName)
-            : isSecondaryAnswered
+            : widget.qod.status == QodStatus.secondaryAnswered
                 ? l10n!.labelQodStatusTheirsAnswered(
                     widget.qod.primaryUserDisplayName)
                 : l10n!.labelQodStatusNew;

@@ -18,15 +18,12 @@ class _CardQodState extends State<CardQod> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final isNew = DateTime.now().difference(widget.qod.createdAt).inHours < 24;
 
     return Stack(
       clipBehavior: Clip.none,
       children: [
         Card(
           elevation: 2,
-          clipBehavior: Clip.hardEdge,
-          surfaceTintColor: theme.colorScheme.background,
           child: InkWell(
             onTap: widget.onTap,
             child: Padding(
@@ -74,7 +71,7 @@ class _CardQodState extends State<CardQod> {
             color: theme.colorScheme.primary,
           ),
         ),
-        if (isNew)
+        if (widget.qod.isNew)
           Positioned(
             top: -20,
             left: 20,

@@ -50,8 +50,6 @@ Copy the [debug token from the console as above](#setup), go to [Firebase App Ch
 
 Follow [step 2, 3](https://firebase.google.com/docs/app-check/android/play-integrity-provider#project-setup) to set up for production build.
 
-
-
 ### iOS
 
 See [Debug](#debug) setting to add debug token for iOS.

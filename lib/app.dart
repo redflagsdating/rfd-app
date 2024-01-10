@@ -75,8 +75,9 @@ class App extends StatelessWidget {
                 ),
                 highlightColor:
                     lightColorScheme.inversePrimary.withOpacity(0.3),
-                inputDecorationTheme: const InputDecorationTheme(
-                  hintStyle: TextStyle(
+                inputDecorationTheme: InputDecorationTheme(
+                  fillColor: lightColorScheme.primaryContainer,
+                  hintStyle: const TextStyle(
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w500,
                     color: Colors.black26,
@@ -114,6 +115,11 @@ class App extends StatelessWidget {
                 ),
                 chipTheme: chipTheme,
                 colorScheme: lightColorScheme,
+                cardTheme: CardTheme(
+                  clipBehavior: Clip.hardEdge,
+                  color: lightColorScheme.background,
+                  surfaceTintColor: lightColorScheme.background,
+                ),
                 useMaterial3: true,
                 pageTransitionsTheme: const PageTransitionsTheme(
                   builders: {

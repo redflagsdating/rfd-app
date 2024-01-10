@@ -50,6 +50,7 @@
 		// strings. This setting will prevent that.
 		"editor.wordBasedSuggestions": "off"
 	},
+	"workbench.editor.wrapTabs": true,
 	"workbench.colorCustomizations": {
 		"editorCodeLens.foreground": "#7982a9",
 		"errorLens.errorForegroundLight": "#e45454",

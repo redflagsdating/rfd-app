@@ -8,6 +8,7 @@ import 'package:red_flags/widgets/banner_user.dart';
 import 'package:red_flags/widgets/cached_image.dart';
 import 'package:red_flags/widgets/card/card_qod.dart';
 import 'package:red_flags/widgets/profile/user_profile_details.dart';
+import 'package:red_flags/widgets/qod_content.dart';
 
 class PageFullProfileView extends StatefulWidget {
   const PageFullProfileView({
@@ -23,6 +24,26 @@ class PageFullProfileView extends StatefulWidget {
 
 class _PageFullProfileViewState extends State<PageFullProfileView>
     with TickerProviderStateMixin {
+  late QodModel _qod;
+
+  @override
+  void initState() {
+    // TODO: Dummy QoD
+    _qod = QodModel(
+      question: "What is something about you that surprises most people?",
+      primaryUserId: widget.userModel.uid,
+      primaryUserDisplayName: widget.userModel.displayName ?? '',
+      primaryUserPhotoUrl: widget.userModel.photoUrl,
+      secondaryUserId: widget.userModel.uid,
+      secondaryDisplayName: widget.userModel.displayName ?? '',
+      secondaryUserPhotoUrl: widget.userModel.photoUrl,
+      secondaryUserAnswer:
+          "This is my QoD answer for demo purpose. This is my QoD answer for demo purpose. This is my QoD answer for demo purpose.",
+      createdAt: DateTime.now().subtract(const Duration(hours: 12)),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -95,7 +116,7 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                           label: l10n.back,
                           child: IconButton.filled(
                             onPressed: () => Navigator.of(context).pop(),
-                            icon: const Icon(Icons.keyboard_arrow_left_rounded),
+                            icon: const Icon(Icons.keyboard_arrow_down_rounded),
                           ),
                         ),
                       ),
@@ -144,25 +165,28 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                                   ? UserProfileDetails(
                                       userModel: widget.userModel,
                                     )
-                                  // TODO
+                                  // TODO: QoD integration
                                   : Container(
                                       padding: const EdgeInsets.all(24),
-                                      child: CardQod(
-                                        qod: QodModel(
-                                          question:
-                                              "What is something about you that surprises most people?",
-                                          primaryUserId:
-                                              "WnWMFaYTcpWLVFMyUrVIGbhirU33",
-                                          primaryUserDisplayName: "Bryan",
-                                          primaryUserPhotoUrl:
-                                              "images/WnWMFaYTcpWLVFMyUrVIGbhirU33/0fab2cd0-f87a-487f-9183-df7f4570a84e",
-                                          secondaryUserId:
-                                              "hqtyg78d9jR9OhMHkb9eC96ham83",
-                                          secondaryDisplayName: "Brian",
-                                          secondaryUserPhotoUrl:
-                                              "images/hqtyg78d9jR9OhMHkb9eC96ham83/ed37bd90-cd3d-4552-8bc7-ea69fc203e5c",
-                                          createdAt: DateTime.now(),
-                                        ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          CardQod(
+                                            qod: _qod,
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                showDragHandle: true,
+                                                useSafeArea: true,
+                                                isScrollControlled: true,
+                                                builder: (context) {
+                                                  return QodContent(qod: _qod);
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
                             ),
