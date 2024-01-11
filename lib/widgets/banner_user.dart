@@ -82,8 +82,6 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
     final displayName = widget.userModel.displayName;
     final firstName = widget.userModel.firstName;
     final lastName = widget.userModel.lastName;
-    // Split to cater long location string and prevent overflow
-    final locality = (widget.userModel.locality ?? '-').split(',');
     final isCompact = widget.compact == true;
 
     return Column(
@@ -218,21 +216,12 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
               size: isCompact ? 18 : null,
             ),
             const SizedBox(width: 2),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: List.generate(
-                locality.length,
-                (index) => Text(
-                  style: isCompact
-                      ? textWhiteTheme.bodySmall
-                      : textWhiteTheme.bodyLarge,
-                  locality[index].trim(),
-                  textHeightBehavior: const TextHeightBehavior(
-                    applyHeightToFirstAscent: false,
-                    applyHeightToLastDescent: false,
-                    leadingDistribution: TextLeadingDistribution.even,
-                  ),
-                ),
+            Flexible(
+              child: Text(
+                widget.userModel.locality ?? '-',
+                style: isCompact
+                    ? textWhiteTheme.bodySmall
+                    : textWhiteTheme.bodyLarge,
               ),
             ),
           ],

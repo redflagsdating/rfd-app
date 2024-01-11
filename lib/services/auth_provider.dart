@@ -254,7 +254,6 @@ class AuthProvider extends ChangeNotifier {
       'user_birthday',
       'user_gender',
       'user_location',
-      'user_photos',
     ]);
 
     switch (fbAuth.status) {
@@ -475,7 +474,8 @@ class AuthProvider extends ChangeNotifier {
   /// * `SocialAuthProvider`
   /// * String - Sign-in link in the email from `sendSignInLinkToEmail()`
   Future<bool> handleSignIn(dynamic input) async {
-    late UserCredential? credential;
+    UserCredential? credential;
+    Map<String, dynamic>? fbUserData;
 
     final providerId = input is SocialAuthProvider ? input.providerId : null;
     final emailLink = input is! SocialAuthProvider ? input : '';
@@ -495,6 +495,13 @@ class AuthProvider extends ChangeNotifier {
       credential = await _signInWithGoogle();
     } else if (providerId == SocialAuthProvider.facebook.providerId) {
       credential = await _signInWithFacebook();
+
+      /// Depends on Facebook App granted permissions
+      /// https://developers.facebook.com/apps/255952837340203/use_cases/?business_id=665975949032579
+      fbUserData = await fbSignIn?.getUserData(
+        fields: """short_name,first_name,last_name,birthday,location,gender,
+        picture""",
+      );
     } else if (emailLink.isNotEmpty) {
       credential = await signInWithEmailLink(emailLink);
     }
@@ -523,20 +530,40 @@ class AuthProvider extends ChangeNotifier {
     logger.d('Successfully query user in Firestore', time: DateTime.now());
 
     if (user.docs.isEmpty) {
-      logger.d('New user logged in', time: DateTime.now());
+      final displayName = firebaseUser.displayName ?? fbUserData?['short_name'];
+      // Facebook birthday format MM/DD/YYYY
+      final List<String>? birthday = fbUserData?['birthday']?.split("/");
+      final dob = birthday != null
+          ? DateTime.tryParse(
+              '${birthday.last}-${birthday.first}-${birthday.elementAt(1)}',
+            )
+          : null;
+      final gender = fbUserData?['gender'] == 'male'
+          ? 'man'
+          : fbUserData?['gender'] == 'female'
+              ? 'woman'
+              : null;
+
       await userProvider.createUser(UserModel(
         uid: firebaseUser.uid,
         email: firebaseUser.email ?? "",
         createdAt: DateTime.now(),
-        displayName: firebaseUser.displayName,
+        displayName: displayName,
+        firstName: fbUserData?['first_name'],
+        lastName: fbUserData?['last_name'],
+        dob: dob,
+        locality: fbUserData?['location']?['name'],
+        gender: gender,
         phoneNumber: firebaseUser.phoneNumber,
         onboarded: false,
         verified: false,
         verifySubmitted: false,
       ));
+
+      logger.d('New user logged in', time: DateTime.now());
     } else {
-      logger.d('Existing user logged in', time: DateTime.now());
       await userProvider.updateUserCache(user.docs.first.data());
+      logger.d('Existing user logged in', time: DateTime.now());
     }
 
     _status = AuthStatus.authenticated;

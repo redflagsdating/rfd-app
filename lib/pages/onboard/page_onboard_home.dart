@@ -70,13 +70,8 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
         title = l10n!.pgOnboardSplash1Title;
         buttonLabel = l10n.pgOnboardSplash1Btn;
         builder = Builder(
-          builder: (context) => PageOnboardStage1(
-            initStep: stage1Step1
-                ? 0
-                : stage1Step2
-                    ? 1
-                    : 2,
-          ),
+          // Always starts from step 0 to force user clarify legal name
+          builder: (context) => const PageOnboardStage1(initStep: 0),
         );
       }
 
