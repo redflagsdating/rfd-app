@@ -1,7 +1,7 @@
 {
   "back": "Back",
   "next": "Next",
-  "sent": "Sent",
+  "send": "Send",
   "save": "Save",
   "and": "and",
   "home": "Home",
@@ -73,7 +73,9 @@
   "fieldYourGreenFlagsHintText": "Add your own green flags",
   "fieldYourGreenFlagsErrorText": "The green flag already exists",
   "fieldQodResponseHintText": "Type your response",
+  "fieldQodResponseEmptyErrorText": "Start typing your response",
   "textFieldChipsHelperText": "Use comma (,) to separate text",
+  "cardQodAnswerLockedLabel": "Answer to see response",
   "cardImagePickerSheetTitle": "Upload photo",
   "cardImagePickerCropTitle": "Edit Photo",
   "cardRealTalkText": "Select a real talk",

@@ -8,6 +8,7 @@ import 'package:red_flags/widgets/banner_user.dart';
 import 'package:red_flags/widgets/cached_image.dart';
 import 'package:red_flags/widgets/card/card_qod.dart';
 import 'package:red_flags/widgets/profile/user_profile_details.dart';
+import 'package:red_flags/widgets/qod_calendar.dart';
 import 'package:red_flags/widgets/qod_content.dart';
 
 class PageFullProfileView extends StatefulWidget {
@@ -130,9 +131,22 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                                 (name) => Tab(
                                   child: SizedBox(
                                     width: 120,
-                                    child: Text(
-                                      name,
+                                    child: Text.rich(
                                       textAlign: TextAlign.center,
+                                      TextSpan(children: [
+                                        TextSpan(text: name),
+                                        if (name == l10n.questionOfDay)
+                                          const WidgetSpan(
+                                            alignment:
+                                                PlaceholderAlignment.middle,
+                                            child: Badge(
+                                              // TODO: Integration
+                                              label: Text('122'),
+                                              offset: Offset(10, -6),
+                                              child: Text(' '),
+                                            ),
+                                          ),
+                                      ]),
                                     ),
                                   ),
                                 ),
@@ -167,11 +181,19 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                                     )
                                   // TODO: QoD integration
                                   : Container(
-                                      padding: const EdgeInsets.all(24),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 24,
+                                      ),
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
+                                          QodCalendar(
+                                            firstDay: DateTime(2023, 12, 01),
+                                            lastDay: DateTime.now(),
+                                          ),
+                                          const SizedBox(height: 32),
                                           CardQod(
                                             qod: _qod,
                                             onTap: () {

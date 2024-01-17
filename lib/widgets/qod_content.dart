@@ -13,6 +13,7 @@ class QodContent extends StatefulWidget {
 }
 
 class _QodContentState extends State<QodContent> {
+  final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
 
   @override
@@ -27,11 +28,38 @@ class _QodContentState extends State<QodContent> {
     final l10n = AppLocalizations.of(context);
     final primaryAnswer = widget.qod.primaryUserAnswer;
     final secondaryAnswer = widget.qod.secondaryUserAnswer;
+    final isSecondaryAnswered =
+        widget.qod.status == QodStatus.secondaryAnswered;
 
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.only(
+        left: 20,
+        right: 20,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+      ),
       child: Column(
         children: [
+          Row(
+            children: [
+              Chip(
+                label: Text(
+                  l10n!.questionOfDay,
+                  style: theme.textTheme
+                      .apply(bodyColor: theme.colorScheme.onPrimary)
+                      .labelLarge,
+                ),
+                visualDensity: VisualDensity.compact,
+                side: MaterialStateBorderSide.resolveWith((states) {
+                  return const BorderSide(color: Colors.transparent);
+                }),
+                color: MaterialStateProperty.resolveWith(
+                  (states) {
+                    return theme.colorScheme.primary;
+                  },
+                ),
+              ),
+            ],
+          ),
           Text(
             widget.qod.question,
             semanticsLabel: widget.qod.question,
@@ -48,27 +76,54 @@ class _QodContentState extends State<QodContent> {
           if (secondaryAnswer != null)
             CardQodAnswer(
               answer: secondaryAnswer,
+              locked: isSecondaryAnswered,
               photoUrl: widget.qod.secondaryUserPhotoUrl,
             ),
           const SizedBox(height: 20),
-          LabelQodStatus(qod: widget.qod, fontSize: 16),
+          LabelQodStatus(qod: widget.qod, fontSize: 14),
           const Spacer(),
-          if (widget.qod.status == QodStatus.secondaryAnswered)
-            TextFormField(
-              enabled: true,
-              controller: _controller,
-              decoration: InputDecoration(
-                filled: true,
-                isDense: true,
-                border: const OutlineInputBorder(
-                  borderSide: BorderSide.none,
-                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          if (isSecondaryAnswered)
+            Form(
+              key: _form,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 110),
+                child: TextFormField(
+                  enabled: true,
+                  maxLines: null,
+                  controller: _controller,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                    filled: true,
+                    isDense: true,
+                    suffixIcon: InkWell(
+                      child: Icon(
+                        Icons.send_rounded,
+                        size: 28,
+                        color: theme.colorScheme.primary,
+                      ),
+                      onTap: () {
+                        if (!_form.currentState!.validate()) {
+                          return;
+                        }
+
+                        // TODO: QoD answer integration
+                      },
+                    ),
+                    border: const OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    hintText: l10n.fieldQodResponseHintText,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return l10n.fieldQodResponseEmptyErrorText;
+                    }
+
+                    return null;
+                  },
                 ),
-                hintText: l10n!.fieldQodResponseHintText,
               ),
-              validator: (value) {
-                return null;
-              },
             ),
         ],
       ),
