@@ -93,7 +93,7 @@ void main() {
       await widgetTester.pump();
       expect(
         find.text(global.l10n.realtalkEditorShortErrorText),
-        findsOneWidget,
+        findsNWidgets(2),
       );
 
       // Successfully added a question with an answer

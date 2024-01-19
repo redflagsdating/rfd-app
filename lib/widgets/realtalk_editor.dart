@@ -142,7 +142,6 @@ class _RealTalkEditorState extends State<RealTalkEditor> {
                   return l10n.realtalkEditorEmptyErrorText;
                 }
 
-                // TODO: Revisit later, meaningful sentence roughly 10-30 words
                 if (value.length < 100) {
                   return l10n.realtalkEditorShortErrorText;
                 }
