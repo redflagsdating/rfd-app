@@ -11,9 +11,7 @@ import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dar
 import 'package:red_flags/widgets/label/label_kyc_status.dart';
 
 class ProfileKyc extends StatefulWidget {
-  const ProfileKyc({super.key, this.onboarding});
-
-  final bool? onboarding;
+  const ProfileKyc({super.key});
 
   @override
   State<ProfileKyc> createState() => _ProfileKycState();
@@ -91,7 +89,9 @@ class _ProfileKycState extends State<ProfileKyc> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final userProvider = context.read<UserProvider>();
     final logger = Provider.of<LoggerProvider>(context).logger;
+    final isSubmitted = userProvider.getVerifySubmittedCache() == true;
 
     return Column(
       mainAxisSize: MainAxisSize.max,
@@ -124,9 +124,7 @@ class _ProfileKycState extends State<ProfileKyc> {
                 : Semantics(
                     button: true,
                     enabled: true,
-                    label: widget.onboarding == true
-                        ? l10n.pgKycOnboardBtn
-                        : l10n.pgKycBtn,
+                    label: !isSubmitted ? l10n.pgKycOnboardBtn : l10n.pgKycBtn,
                     child: FilledButton.icon(
                       icon: _verifying
                           ? Container(
@@ -139,7 +137,7 @@ class _ProfileKycState extends State<ProfileKyc> {
                               child: const CircularProgressIndicator(
                                   strokeWidth: 2),
                             )
-                          : Icon(widget.onboarding == true
+                          : Icon(!isSubmitted
                               ? Icons.fact_check_outlined
                               : Icons.refresh),
                       onPressed: _verifying
@@ -206,9 +204,8 @@ class _ProfileKycState extends State<ProfileKyc> {
                                 }
                               });
                             },
-                      label: Text(widget.onboarding == true
-                          ? l10n.pgKycOnboardBtn
-                          : l10n.pgKycBtn),
+                      label: Text(
+                          !isSubmitted ? l10n.pgKycOnboardBtn : l10n.pgKycBtn),
                     ),
                   ),
           ),
