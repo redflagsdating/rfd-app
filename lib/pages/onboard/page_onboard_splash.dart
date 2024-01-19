@@ -58,7 +58,7 @@ class _PageOnboardSplashState extends State<PageOnboardSplash> {
                     width: 120,
                   ),
                 ),
-                const SizedBox(height: 40),
+                const Spacer(),
                 Semantics(
                   readOnly: true,
                   label: widget.title,
@@ -70,7 +70,7 @@ class _PageOnboardSplashState extends State<PageOnboardSplash> {
                         .titleLarge,
                   ),
                 ),
-                const Spacer(),
+                const Spacer(flex: 2),
                 Semantics(
                   button: true,
                   label: widget.buttonLabel,

@@ -30,12 +30,12 @@ class ListViewQuestions extends StatelessWidget {
             constraints: const BoxConstraints(minHeight: 80),
             child: Card(
               elevation: isSelected ? 2 : 0,
+              color: isSelected ? theme.colorScheme.inversePrimary : null,
               shape: isSelected
                   ? null
                   : RoundedRectangleBorder(
                       side: BorderSide(
-                        color:
-                            theme.colorScheme.outlineVariant.withOpacity(0.4),
+                        color: theme.colorScheme.outlineVariant,
                       ),
                       borderRadius: const BorderRadius.all(Radius.circular(12)),
                     ),
@@ -50,17 +50,14 @@ class ListViewQuestions extends StatelessWidget {
                       },
                 child: Padding(
                   padding: const EdgeInsets.all(12),
-                  child: Text(
-                    question,
-                    style: theme.textTheme
-                        .apply(
-                          decoration:
-                              isSelected ? TextDecoration.lineThrough : null,
-                          bodyColor: isSelected
-                              ? theme.colorScheme.outlineVariant
-                              : theme.colorScheme.onSurface,
-                        )
-                        .titleMedium,
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      question,
+                      style: theme.textTheme
+                          .apply(bodyColor: theme.colorScheme.onSurface)
+                          .titleMedium,
+                    ),
                   ),
                 ),
               ),

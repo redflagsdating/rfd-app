@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +66,7 @@ class _PageOnboardStage2State extends State<PageOnboardStage2>
 
     final dob = _userProvider.getDobCache();
     if (dob != null) {
-      _birthdayCtrl.text = DateFormat.yMd().format(dob);
+      _birthdayCtrl.text = DateFormat.yMd(Platform.localeName).format(dob);
     }
 
     _localityCtrl.text = _userProvider.getLocalityCache();
@@ -113,7 +115,8 @@ class _PageOnboardStage2State extends State<PageOnboardStage2>
               } else if (step == 1) {
                 await _userProvider.setGenderFor(genderFor, localOnly: false);
               } else if (step == 2) {
-                final dob = DateFormat.yMd().parse(_birthdayCtrl.text);
+                final dob = DateFormat.yMd(Platform.localeName)
+                    .parse(_birthdayCtrl.text);
                 if (dobCache == null || !dob.isAtSameMomentAs(dobCache)) {
                   await _userProvider.setDob(dob, localOnly: false);
                 }

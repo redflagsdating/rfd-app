@@ -51,7 +51,7 @@ class _ProfileRedFlagsState extends State<ProfileRedFlags> {
           ],
         ),
         const SizedBox(height: 10),
-        Text(l10n.pgSelectFlagsBody),
+        Text(l10n.pgSelectRedFlagsBody),
         const SizedBox(height: 10),
         ListenableBuilder(
           listenable: userProvider,

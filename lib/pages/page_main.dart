@@ -63,6 +63,7 @@ class _PageMainState extends State<PageMain> with MixinKycState {
               semanticLabel: l10n!.calendar,
             ),
             label: l10n.calendar,
+            tooltip: 'Coming soon!',
           ),
           BottomNavigationBarItem(
             activeIcon: Image.asset(
@@ -87,6 +88,17 @@ class _PageMainState extends State<PageMain> with MixinKycState {
           ),
         ],
         onTap: (index) {
+          // TODO: Temporary disable it
+          if (index == 0) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text(
+                    'Coming soon! The feature is not included in the pre-launch.'),
+              ),
+            );
+            return;
+          }
+
           if (_currentIndex != index) {
             setState(() {
               _reverse = index < _currentIndex;

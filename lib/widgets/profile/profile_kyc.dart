@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_idensic_mobile_sdk_plugin/flutter_idensic_mobile_sdk_plugin.dart';
@@ -8,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/services/identity_verification.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/services/utils.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
 import 'package:red_flags/widgets/label/label_kyc_status.dart';
 
@@ -49,8 +47,8 @@ class _ProfileKycState extends State<ProfileKyc> {
     final accessToken = await _kycApi.fetchAccessToken();
     final snsMobileSDK =
         SNSMobileSDK.init(accessToken, _kycApi.fetchAccessToken)
+            // TODO: Customise theme
             // .withTheme({
-            //   // TODO: Customise theme
             //   "universal": {
             //     "colors": {
             //       "primaryButtonBackground": "0xFFFF0049",
@@ -116,8 +114,8 @@ class _ProfileKycState extends State<ProfileKyc> {
           style: theme.textTheme.headlineSmall,
         ),
         const SizedBox(height: 10),
-        Text(l10n.pgKycBody),
-        const SizedBox(height: 80),
+        Text(l10n.pgKycBody(l10n.brandName)),
+        const SizedBox(height: 60),
         Container(
           alignment: Alignment.center,
           child: FadeThroughTransitionSwitcher(
@@ -215,26 +213,13 @@ class _ProfileKycState extends State<ProfileKyc> {
                   ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 32),
         SizedBox(
           width: 320,
-          child: Text.rich(
+          child: Text(
+            l10n.pgKycFooter(l10n.businessName),
+            style: theme.textTheme.bodySmall,
             textAlign: TextAlign.center,
-            TextSpan(
-              style: theme.textTheme.bodySmall,
-              text: l10n.pgKycFooter(l10n.brandName),
-              children: [
-                const TextSpan(text: ' '),
-                TextSpan(
-                  text: l10n.privacyPolicy,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      await Utils.launchPrivacyPolicyWebview();
-                    },
-                ),
-              ],
-            ),
           ),
         ),
       ],

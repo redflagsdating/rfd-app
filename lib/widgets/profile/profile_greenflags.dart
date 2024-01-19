@@ -47,7 +47,7 @@ class _ProfileGreenFlagsState extends State<ProfileGreenFlags> {
           ],
         ),
         const SizedBox(height: 10),
-        Text(l10n.pgSelectFlagsBody),
+        Text(l10n.pgSelectGreenFlagsBody),
         const SizedBox(height: 10),
         ListenableBuilder(
           listenable: userProvider,

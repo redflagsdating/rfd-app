@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -37,7 +39,7 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
   void didChangeDependencies() {
     final dob = context.read<UserProvider>().getDobCache();
     if (dob != null) {
-      _controller.text = DateFormat.yMd().format(dob);
+      _controller.text = DateFormat.yMd(Platform.localeName).format(dob);
     }
 
     _scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -63,7 +65,8 @@ class _PageProfileSettingsAgeState extends State<PageProfileSettingsAge> {
               }
 
               final current = userProvider.getDobCache();
-              final dob = DateFormat.yMd().parse(_controller.text);
+              final dob =
+                  DateFormat.yMd(Platform.localeName).parse(_controller.text);
 
               if (current != null && dob.isAtSameMomentAs(current)) {
                 return;

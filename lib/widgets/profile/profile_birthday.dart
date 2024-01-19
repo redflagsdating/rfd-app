@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -37,10 +39,11 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
     final firstYear = DateTime(currentYear - 80);
     final lastYear = DateTime(currentYear - 18);
     final initialValue = widget.controller.text.isNotEmpty
-        ? DateFormat.yMd().parse(widget.controller.text)
+        ? DateFormat.yMd(Platform.localeName).parse(widget.controller.text)
         : null;
     final initialDate =
         initialValue ?? lastYear.subtract(const Duration(days: 1));
+    final locale = Platform.localeName.split("_");
 
     if (initialValue != null) {
       _setHelperText(
@@ -69,6 +72,11 @@ class _ProfileBirthdayState extends State<ProfileBirthday> {
             initialDate: initialDate,
             inputType: InputType.date,
             controller: widget.controller,
+            // For its inline TextField in editor to display locale-sensitive
+            // date format
+            locale: Locale(locale.first, locale.last),
+            // For its TextField to display DateTime value
+            format: DateFormat.yMd(Platform.localeName),
             autovalidateMode: AutovalidateMode.onUserInteraction,
             enabled: widget.enabled != false,
             validator: (value) {
