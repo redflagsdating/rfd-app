@@ -19,12 +19,12 @@ void main() {
   });
 
   test(
-      'UserProvider > createUser / getCurrentUser / getUserCache / cache getter methods',
+      'UserProvider > createUser / getUserModel / getUserModelCacheForProfile / cache getter methods',
       () async {
     final userModel = global.userModel;
     final userProvider = global.userProvider;
-    final user = await userProvider.getCurrentUser();
-    final userCache = userProvider.getUserCache();
+    final user = await userProvider.getUserModel();
+    final userCache = userProvider.getUserModelCacheForProfile();
 
     expect(user, isNotNull);
     // Not need to verify all fields as test is covered by user_test.dart
@@ -61,14 +61,14 @@ void main() {
     // String field local cache only
     expect(await global.userProvider.setId('123456789'), isTrue);
     expect(global.userProvider.getIdCache() == '123456789', isTrue);
-    expect((await global.userProvider.getCurrentUser())?.uid == global.uid,
-        isTrue);
+    expect(
+        (await global.userProvider.getUserModel())?.uid == global.uid, isTrue);
 
     // String field local and remote database
     expect(await global.userProvider.setId('abcdefghijk', localOnly: false),
         isTrue);
     expect(global.userProvider.getIdCache() == 'abcdefghijk', isTrue);
-    expect((await global.userProvider.getCurrentUser())?.uid == 'abcdefghijk',
+    expect((await global.userProvider.getUserModel())?.uid == 'abcdefghijk',
         isTrue);
   });
 
@@ -78,7 +78,7 @@ void main() {
     expect(listEq(global.userProvider.getRedFlagsCache(), ['Smoker']), isTrue);
     expect(
         listEq(
-          (await global.userProvider.getCurrentUser())?.redFlags,
+          (await global.userProvider.getUserModel())?.redFlags,
           global.userModel.redFlags,
         ),
         isTrue);
@@ -92,7 +92,7 @@ void main() {
         isTrue);
     expect(
         listEq(
-          (await global.userProvider.getCurrentUser())?.redFlags,
+          (await global.userProvider.getUserModel())?.redFlags,
           ['Smoker', 'Ego'],
         ),
         isTrue);
@@ -102,13 +102,13 @@ void main() {
     // Bool field local cache only
     expect(await global.userProvider.setOnboarded(true), isTrue);
     expect(global.userProvider.getOnboardedCache(), isTrue);
-    expect((await global.userProvider.getCurrentUser())?.onboarded, isFalse);
+    expect((await global.userProvider.getUserModel())?.onboarded, isFalse);
 
     // Bool field local and remote database
     expect(
         await global.userProvider.setOnboarded(true, localOnly: false), isTrue);
     expect(global.userProvider.getOnboardedCache(), isTrue);
-    expect((await global.userProvider.getCurrentUser())?.onboarded, isTrue);
+    expect((await global.userProvider.getUserModel())?.onboarded, isTrue);
   });
 
   test('UserProvider.setDob()', () async {
@@ -120,7 +120,7 @@ void main() {
             .isAtSameMomentAs(global.userProvider.getDobCache()!),
         isTrue);
     expect(
-        (await global.userProvider.getCurrentUser())
+        (await global.userProvider.getUserModel())
             ?.dob
             ?.isAtSameMomentAs(DateTime(1980, 12, 12, 0, 0)),
         isFalse);
@@ -135,7 +135,7 @@ void main() {
             .isAtSameMomentAs(global.userProvider.getDobCache()!),
         isTrue);
     expect(
-        (await global.userProvider.getCurrentUser())
+        (await global.userProvider.getUserModel())
             ?.dob
             ?.isAtSameMomentAs(DateTime(1980, 12, 12, 0, 0)),
         isTrue);
@@ -147,7 +147,7 @@ void main() {
     expect(mapEquals(global.userProvider.getRealTalkCache(), {"aaa": "bbb"}),
         isTrue);
     expect(
-        mapEquals((await global.userProvider.getCurrentUser())?.realTalk,
+        mapEquals((await global.userProvider.getUserModel())?.realTalk,
             {"aaa": "bbb"}),
         isFalse);
 
@@ -158,12 +158,12 @@ void main() {
     expect(mapEquals(global.userProvider.getRealTalkCache(), {"aaa": "bbb"}),
         isTrue);
     expect(
-        (await global.userProvider.getCurrentUser())
+        (await global.userProvider.getUserModel())
             ?.realTalk
             ?.containsKey(global.userModel.realTalk?.keys.first),
         isTrue);
     expect(
-        (await global.userProvider.getCurrentUser())
+        (await global.userProvider.getUserModel())
             ?.realTalk
             ?.containsKey('aaa'),
         isTrue);

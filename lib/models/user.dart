@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart'
-    show Timestamp, FirebaseFirestore;
+    show DocumentReference, FirebaseFirestore, Timestamp;
 import 'package:flutter/material.dart';
 
 enum Gender {
@@ -57,6 +57,7 @@ enum UserFields {
   realTalk,
   redFlags,
   greenFlags,
+  connections,
 }
 
 @immutable
@@ -80,6 +81,7 @@ class UserModel {
     this.realTalk,
     this.redFlags,
     this.greenFlags,
+    this.connections,
   });
 
   final String uid;
@@ -100,6 +102,8 @@ class UserModel {
   final Map<String, String>? realTalk;
   final List<String>? redFlags;
   final List<String>? greenFlags;
+  // List of reference to the collection "connection"
+  final List<DocumentReference<Map<String, dynamic>>>? connections;
 
   Map<String, dynamic> toJson() {
     return {
@@ -121,6 +125,7 @@ class UserModel {
       UserFields.realTalk.name: realTalk,
       UserFields.redFlags.name: redFlags,
       UserFields.greenFlags.name: greenFlags,
+      UserFields.connections.name: connections,
     };
   }
 
@@ -146,6 +151,8 @@ class UserModel {
           realTalk: json[UserFields.realTalk.name]?.cast<String, String>(),
           redFlags: json[UserFields.redFlags.name]?.cast<String>(),
           greenFlags: json[UserFields.greenFlags.name]?.cast<String>(),
+          connections: json[UserFields.connections.name]
+              ?.cast<DocumentReference<Map<String, dynamic>>>(),
         );
 }
 

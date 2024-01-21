@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
+import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/user.dart' hide usersRef;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,8 +22,8 @@ class UserProvider extends ChangeNotifier {
   final CollectionReference<UserModel> usersRef;
 
   // General user filed getter method from Firebase
-  Future<dynamic> _getField(String field) async {
-    final json = (await getCurrentUser())?.toJson();
+  Future<dynamic> _getField(String field, [GetOptions? options]) async {
+    final json = (await getUserModel(options))?.toJson();
     return json != null ? json[field] : null;
   }
 
@@ -195,6 +196,7 @@ class UserProvider extends ChangeNotifier {
     result &= await localStorage.remove(UserFields.realTalk.name);
     result &= await localStorage.remove(UserFields.redFlags.name);
     result &= await localStorage.remove(UserFields.greenFlags.name);
+    result &= await localStorage.remove(UserFields.connections.name);
 
     logger.d('Local storage purged', time: DateTime.now());
 
@@ -223,6 +225,7 @@ class UserProvider extends ChangeNotifier {
     await setOnboarded(user.onboarded);
     await setVerified(user.verified);
     await setVerifySubmitted(user.verifySubmitted);
+    await setConnections(user.connections ?? []);
 
     if (dob != null) {
       await setDob(dob);
@@ -238,7 +241,7 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  UserModel getUserCache() {
+  UserModel getUserModelCacheForProfile() {
     return UserModel(
       uid: getIdCache(),
       email: getEmailCache(),
@@ -268,12 +271,13 @@ class UserProvider extends ChangeNotifier {
   ///
   /// Common methods
   ///
-  Future<UserModel?> getCurrentUser() async {
-    return (await _userDocRef?.get())?.data();
+  Future<UserModel?> getUserModel([GetOptions? options]) async {
+    return (await _userDocRef?.get(options))?.data();
   }
 
-  Future<QuerySnapshot<UserModel>> getUserById(String? uid) async {
-    return usersRef.where(UserFields.uid.name, isEqualTo: uid).get();
+  Future<QuerySnapshot<UserModel>> getUserModelById(String? uid,
+      [GetOptions? options]) async {
+    return usersRef.where(UserFields.uid.name, isEqualTo: uid).get(options);
   }
 
   ///
@@ -460,6 +464,37 @@ class UserProvider extends ChangeNotifier {
     return null;
   }
 
+  Future<List<ConnectionModel?>> getConnections() async {
+    final cached = getConnectionsCache();
+
+    if (cached != null) {
+      return Future.value(cached);
+    }
+
+    final List<DocumentReference<Map<String, dynamic>>> connections =
+        await _getField(UserFields.connections.name);
+    final prefetched = await Future.wait(
+      connections.map(
+        (doc) async {
+          return (await doc.get()).data();
+        },
+      ),
+    );
+
+    return prefetched.map((json) => ConnectionModel.fromJson(json!)).toList();
+  }
+
+  List<ConnectionModel>? getConnectionsCache() {
+    // JSON encoded String data
+    final connections = localStorage.getStringList(UserFields.connections.name);
+
+    return connections != null
+        ? connections
+            .map((json) => ConnectionModel.fromJson(jsonDecode(json)))
+            .toList()
+        : [];
+  }
+
   ///
   ///** External setters */
   ///
@@ -467,8 +502,11 @@ class UserProvider extends ChangeNotifier {
   ///
   /// String field setter functions
   ///
-  Future<bool?> setId(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setId(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.uid,
       value,
@@ -477,8 +515,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setEmail(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setEmail(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.email,
       value,
@@ -487,8 +528,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setFirstName(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setFirstName(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.firstName,
       value,
@@ -497,8 +541,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setLastName(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setLastName(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.lastName,
       value,
@@ -507,8 +554,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setDisplayName(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setDisplayName(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.displayName,
       value,
@@ -517,8 +567,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setPhotoUrl(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setPhotoUrl(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.photoUrl,
       value,
@@ -527,8 +580,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setPhoneNumber(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setPhoneNumber(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.phoneNumber,
       value,
@@ -537,8 +593,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setGender(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setGender(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.gender,
       value,
@@ -547,8 +606,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setLocality(String value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setLocality(
+    String value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setStringField(
       UserStringFields.locality,
       value,
@@ -560,8 +622,11 @@ class UserProvider extends ChangeNotifier {
   ///
   /// List<String> field setter functions
   ///
-  Future<bool?> setGenderFor(List<String> genders,
-      {bool? silent = true, bool? localOnly = true}) async {
+  Future<bool?> setGenderFor(
+    List<String> genders, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
     return _setStingListField(
       UserStringListFields.genderFor,
       genders,
@@ -570,8 +635,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setRedFlags(List<String> flags,
-      {bool? silent = true, bool? localOnly = true}) async {
+  Future<bool?> setRedFlags(
+    List<String> flags, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
     return _setStingListField(
       UserStringListFields.redFlags,
       flags,
@@ -580,8 +648,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setGreenFlags(List<String> flags,
-      {bool? silent = true, bool? localOnly = true}) async {
+  Future<bool?> setGreenFlags(
+    List<String> flags, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
     return _setStingListField(
       UserStringListFields.greenFlags,
       flags,
@@ -594,8 +665,11 @@ class UserProvider extends ChangeNotifier {
   /// Boolean field setter functions
   ///
 
-  Future<bool?> setOnboarded(bool value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setOnboarded(
+    bool value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setBoolField(
       UserBoolFields.onboarded,
       value,
@@ -604,8 +678,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setVerified(bool value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setVerified(
+    bool value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setBoolField(
       UserBoolFields.verified,
       value,
@@ -614,8 +691,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setVerifySubmitted(bool value,
-      {bool? silent = true, bool? localOnly = true}) {
+  Future<bool?> setVerifySubmitted(
+    bool value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) {
     return _setBoolField(
       UserBoolFields.verifySubmitted,
       value,
@@ -627,8 +707,11 @@ class UserProvider extends ChangeNotifier {
   ///
   /// DateTime field setter functions
   ///
-  Future<bool?> setDob(DateTime value,
-      {bool? silent = true, bool? localOnly = true}) async {
+  Future<bool?> setDob(
+    DateTime value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
     return _setDateTimeField(
       UserDateTimeFields.dob,
       value,
@@ -637,8 +720,11 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
-  Future<bool?> setCreatedAt(DateTime value,
-      {bool? silent = true, bool? localOnly = true}) async {
+  Future<bool?> setCreatedAt(
+    DateTime value, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
     return _setDateTimeField(
       UserDateTimeFields.createdAt,
       value,
@@ -650,8 +736,11 @@ class UserProvider extends ChangeNotifier {
   ///
   /// Other types setter functions
   ///
-  Future<bool?> setRealTalk(Map<String, String> realtalk,
-      {bool? silent = true, bool? localOnly = true}) async {
+  Future<bool?> setRealTalk(
+    Map<String, String> realtalk, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
     String? realTalkStr;
 
     try {
@@ -667,6 +756,36 @@ class UserProvider extends ChangeNotifier {
 
     if (localOnly != true) {
       await _userDocRef?.update({UserFields.realTalk.name: realtalk});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
+  Future<bool?> setConnections(
+    List<DocumentReference<Map<String, dynamic>>> connections, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
+    final result = localStorage.setStringList(
+      UserFields.connections.name,
+
+      /// Prefetched connection document from Firestore then JSON encode the Map
+      /// into String in order to save in SharedPreference
+      await Future.wait(
+        connections.map(
+          (doc) async {
+            return jsonEncode((await doc.get()).data());
+          },
+        ),
+      ),
+    );
+
+    if (localOnly != true) {
+      await _userDocRef?.update({UserFields.connections.name: connections});
     }
 
     if (silent != true) {

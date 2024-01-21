@@ -81,7 +81,8 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                             PageFadeRouteBuilder(
                               page: Builder(
                                 builder: (context) => PageFullProfileView(
-                                  userModel: userProvider.getUserCache(),
+                                  userModel: userProvider
+                                      .getUserModelCacheForProfile(),
                                 ),
                               ),
                             ),

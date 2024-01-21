@@ -35,7 +35,7 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
 
       // Fetch user data from Firestore and update local cache at launch time
       if (widget.fromStage == null) {
-        final userModel = await userProvider.getCurrentUser();
+        final userModel = await userProvider.getUserModel();
 
         if (userModel != null) {
           await userProvider.updateUserCache(userModel);

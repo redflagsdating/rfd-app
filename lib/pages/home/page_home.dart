@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/services/user_provider.dart';
-import 'package:red_flags/widgets/card/card_user_profile.dart';
+import 'package:red_flags/widgets/card/card_connection.dart';
 
 class PageHome extends StatefulWidget {
   const PageHome({super.key});
@@ -19,6 +19,7 @@ class _PageHomeState extends State<PageHome> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
+    final connections = userProvider.getConnectionsCache() ?? [];
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
@@ -37,17 +38,18 @@ class _PageHomeState extends State<PageHome> {
             const SizedBox(height: 24),
             CarouselSlider(
               options: CarouselOptions(
+                initialPage: 1,
                 enlargeFactor: 0.4,
                 enlargeCenterPage: true,
+                enableInfiniteScroll: false,
                 enlargeStrategy: CenterPageEnlargeStrategy.zoom,
-                height: 520,
+                height: 480,
               ),
               items: List.generate(
-                3,
+                connections.length,
                 (index) {
-                  // TODO: Change to actual matches or placeholder
-                  return CardUserProfile(
-                    userModel: userProvider.getUserCache(),
+                  return CardConnection(
+                    connection: connections[index],
                     // TODO: Change to acutal qod data
                     qod: QodModel(
                       question:
