@@ -1,45 +1,40 @@
-enum QodStatus {
-  unanswered,
-  primaryAnswered,
-  secondaryAnswered,
-  answered,
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:red_flags/models/connection.dart';
+
+enum QodFields {
+  question,
+  createdAt,
 }
 
 class QodModel {
   const QodModel({
     required this.question,
-    required this.primaryUserId,
-    required this.primaryUserDisplayName,
-    this.primaryUserPhotoUrl,
-    required this.secondaryUserId,
-    required this.secondaryDisplayName,
-    this.secondaryUserPhotoUrl,
     required this.createdAt,
-    this.primaryUserAnswer,
-    this.secondaryUserAnswer,
-    this.answeredAt,
   });
 
   final String question;
-  final String primaryUserId;
-  final String primaryUserDisplayName;
-  final String? primaryUserPhotoUrl;
-  final String secondaryUserId;
-  final String secondaryDisplayName;
-  final String? secondaryUserPhotoUrl;
   final DateTime createdAt;
-  final String? primaryUserAnswer;
-  final String? secondaryUserAnswer;
-  final DateTime? answeredAt;
 
-  QodStatus get status =>
-      primaryUserAnswer != null && secondaryUserAnswer != null
-          ? QodStatus.answered
-          : primaryUserAnswer != null
-              ? QodStatus.primaryAnswered
-              : secondaryUserAnswer != null
-                  ? QodStatus.secondaryAnswered
-                  : QodStatus.unanswered;
+  Map<String, dynamic> toJson() {
+    return {
+      QodFields.question.name: question,
+      QodFields.createdAt.name: createdAt,
+    };
+  }
 
-  bool get isNew => DateTime.now().difference(createdAt).inHours < 24;
+  QodModel.fromJson(Map<String, dynamic> json)
+      : this(
+          question: json[QodFields.question.name],
+          createdAt: (json[QodFields.createdAt.name]! as Timestamp).toDate(),
+        );
+}
+
+CollectionReference<QodModel> qodRef(String connectionId) {
+  return connectionRef
+      .doc(connectionId)
+      .collection('qod')
+      .withConverter<QodModel>(
+        fromFirestore: (snapshots, _) => QodModel.fromJson(snapshots.data()!),
+        toFirestore: (qod, _) => qod.toJson(),
+      );
 }

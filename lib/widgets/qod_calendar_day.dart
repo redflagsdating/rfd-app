@@ -33,7 +33,7 @@ class _QodCalendarDayState extends State<QodCalendarDay> {
               Icons.check,
               size: 16,
               color: Colors.green,
-              semanticLabel: l10n!.labelQodStatusAllAnswered(widget.day),
+              semanticLabel: l10n!.labelQodStatusAnswered(widget.day),
             ),
           ),
         ],

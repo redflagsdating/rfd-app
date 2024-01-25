@@ -48,9 +48,9 @@
   "btnGoOnDate": "Go on a date",
   "labelNew": "New",
   "labelQodStatusNew": "Be the first to answer!",
-  "labelQodStatusOursAnswered": "Awaiting {displayName}'s response!",
-  "labelQodStatusTheirsAnswered": "{displayName} has answered!",
-  "labelQodStatusAllAnswered": "Answered on {answeredAt}",
+  "labelQodStatusAwaitingByYou": "Awaiting {displayName}'s response!",
+  "labelQodStatusAwaitingByThem": "{displayName} has answered!",
+  "labelQodStatusAnswered": "Answered on {answeredAt}",
   "fieldFirstNameHintText": "Your first name",
   "fieldFirstNameHelperText": "Ensure your first name matches your ID",
   "fieldFirstNameErrorText": "First name cannot be empty",
@@ -83,6 +83,9 @@
   "cardUserProfileAnswerBtn": "Tap to answer",
   "cardUserProfileViewResponseBtn": "View Response",
   "cardUserProfileAnswerBtnNote": "{hour, plural, =0{Less than 1 hour} =1{{hour} hour} other{{hour} hours}} until connection lost",
+  "cardConnectionEmptyData": "Unable to retrieve connection (id: {id}) data",
+  "cardConnectionEmptyUserData": "Unable to retrieve user (uid: {id}) data",
+  "cardConnectionEmptyQod": "No QoD for your connection yet!",
   "dialogDeletePrimaryPhotoTitle": "Delete spotlight photo?",
   "dialogDeletePrimaryPhotoBody": "This image is used by your profile as spotlight. Your profile will appear with an empty photo to your connections. Try to set a new spotlight photo before deleting it.",
   "dialogDeleteRealTalkCardTitle": "Delete real talk?",
@@ -173,5 +176,6 @@
   "pgProfileMenuItemDeleteAccount": "Delete account",
   "pgProfileSuccessfulUpdated": "Profile updated successfully.",
   "pgProfileFailedUpdated": "Profile updated failed.",
-  "pgHomeTitle": "Your connections"
+  "pgHomeTitle": "Your connections",
+  "pgHomeEmpty": "We're still finding your connections!"
 }

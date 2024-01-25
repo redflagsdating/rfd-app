@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
-import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/user.dart' hide usersRef;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -261,6 +260,7 @@ class UserProvider extends ChangeNotifier {
       realTalk: getRealTalkCache(),
       redFlags: getRedFlagsCache(),
       greenFlags: getGreenFlagsCache(),
+      connections: getConnectionsCache(),
     );
   }
 
@@ -335,6 +335,10 @@ class UserProvider extends ChangeNotifier {
     return _getStringListFieldCache(UserStringListFields.greenFlags);
   }
 
+  List<String> getConnectionsCache() {
+    return _getStringListFieldCache(UserStringListFields.connections);
+  }
+
   ///
   /// String field getter functions catch-first (fallback to Firebase DB)
   ///
@@ -384,6 +388,10 @@ class UserProvider extends ChangeNotifier {
 
   Future<List<String>?> getRedFlags() async {
     return await _getStringListField(UserStringListFields.redFlags);
+  }
+
+  Future<List<String>?> getConnections() async {
+    return await _getStringListField(UserStringListFields.connections);
   }
 
   ///
@@ -462,37 +470,6 @@ class UserProvider extends ChangeNotifier {
     }
 
     return null;
-  }
-
-  Future<List<ConnectionModel?>> getConnections() async {
-    final cached = getConnectionsCache();
-
-    if (cached != null) {
-      return Future.value(cached);
-    }
-
-    final List<DocumentReference<Map<String, dynamic>>> connections =
-        await _getField(UserFields.connections.name);
-    final prefetched = await Future.wait(
-      connections.map(
-        (doc) async {
-          return (await doc.get()).data();
-        },
-      ),
-    );
-
-    return prefetched.map((json) => ConnectionModel.fromJson(json!)).toList();
-  }
-
-  List<ConnectionModel>? getConnectionsCache() {
-    // JSON encoded String data
-    final connections = localStorage.getStringList(UserFields.connections.name);
-
-    return connections != null
-        ? connections
-            .map((json) => ConnectionModel.fromJson(jsonDecode(json)))
-            .toList()
-        : [];
   }
 
   ///
@@ -661,6 +638,19 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
+  Future<bool?> setConnections(
+    List<String> connections, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
+    return _setStingListField(
+      UserStringListFields.connections,
+      connections,
+      silent: silent,
+      localOnly: localOnly,
+    );
+  }
+
   ///
   /// Boolean field setter functions
   ///
@@ -756,36 +746,6 @@ class UserProvider extends ChangeNotifier {
 
     if (localOnly != true) {
       await _userDocRef?.update({UserFields.realTalk.name: realtalk});
-    }
-
-    if (silent != true) {
-      notifyListeners();
-    }
-
-    return result;
-  }
-
-  Future<bool?> setConnections(
-    List<DocumentReference<Map<String, dynamic>>> connections, {
-    bool? silent = true,
-    bool? localOnly = true,
-  }) async {
-    final result = localStorage.setStringList(
-      UserFields.connections.name,
-
-      /// Prefetched connection document from Firestore then JSON encode the Map
-      /// into String in order to save in SharedPreference
-      await Future.wait(
-        connections.map(
-          (doc) async {
-            return jsonEncode((await doc.get()).data());
-          },
-        ),
-      ),
-    );
-
-    if (localOnly != true) {
-      await _userDocRef?.update({UserFields.connections.name: connections});
     }
 
     if (silent != true) {

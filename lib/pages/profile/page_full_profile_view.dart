@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:red_flags/extensions/firestore_extension.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
-import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/banner_user.dart';
 import 'package:red_flags/widgets/cached_image.dart';
 import 'package:red_flags/widgets/card/card_qod.dart';
@@ -11,13 +12,156 @@ import 'package:red_flags/widgets/profile/user_profile_details.dart';
 import 'package:red_flags/widgets/qod_calendar.dart';
 import 'package:red_flags/widgets/qod_content.dart';
 
+//** Internal widget */
+class _PageFullProfileViewTab extends StatefulWidget {
+  const _PageFullProfileViewTab({
+    required this.name,
+    required this.qodCollectionRef,
+  });
+
+  final String name;
+  final CollectionReference<QodModel> qodCollectionRef;
+
+  @override
+  State<_PageFullProfileViewTab> createState() =>
+      _PageFullProfileViewTabState();
+}
+
+class _PageFullProfileViewTabState extends State<_PageFullProfileViewTab> {
+  @override
+  PreferredSizeWidget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Tab(
+      child: SizedBox(
+        width: 120,
+        child: Text.rich(
+          textAlign: TextAlign.center,
+          TextSpan(
+            children: [
+              TextSpan(text: widget.name),
+              if (widget.name == l10n!.questionOfDay)
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: FutureBuilder(
+                    future: widget.qodCollectionRef.getCacheFirst(),
+                    builder: (context, snapshot) {
+                      final isDone =
+                          snapshot.connectionState == ConnectionState.done;
+                      final count = snapshot.data?.docs.length;
+
+                      if (isDone && count != null) {
+                        return Badge(
+                          label: Text(count.toString()),
+                          offset: const Offset(10, -6),
+                          child: const Text(' '),
+                        );
+                      }
+
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+//** Internal widget */
+
+class _PageFullProfileQodView extends StatefulWidget {
+  const _PageFullProfileQodView({
+    required this.userModel,
+    required this.qodCollectionRef,
+  });
+
+  final UserModel userModel;
+  final CollectionReference<QodModel> qodCollectionRef;
+
+  @override
+  State<_PageFullProfileQodView> createState() =>
+      _PageFullProfileQodViewState();
+}
+
+class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 24,
+      ),
+      child: FutureBuilder(
+        future: widget.qodCollectionRef
+            .orderBy(
+              QodFields.createdAt.name,
+              descending: true,
+            )
+            .getCacheFirst(),
+        builder: (context, snapshot) {
+          final qods = snapshot.data?.docs.firstOrNull;
+          final isWaiting = snapshot.connectionState == ConnectionState.waiting;
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // TODO: Integration
+              QodCalendar(
+                firstDay: DateTime(2023, 12, 01),
+                lastDay: DateTime.now(),
+                onRangeSelected: (start, end, focusedDay) {
+                  // TODO
+                },
+              ),
+              const SizedBox(height: 32),
+              isWaiting
+                  ? LoadingAnimationWidget.threeArchedCircle(
+                      color: theme.colorScheme.primary,
+                      size: 32,
+                    )
+                  : CardQod(
+                      qodModel: qods!.data(),
+                      userModel: widget.userModel,
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          showDragHandle: true,
+                          useSafeArea: true,
+                          isScrollControlled: true,
+                          builder: (context) {
+                            // TODO: Refactory
+                            return QodContent(
+                              qodModel: qods.data(),
+                              userModel: widget.userModel,
+                            );
+                          },
+                        );
+                      },
+                    ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+//** External widget */
+
 class PageFullProfileView extends StatefulWidget {
   const PageFullProfileView({
     super.key,
     required this.userModel,
+    this.qodCollectionRef,
   });
 
   final UserModel userModel;
+  final CollectionReference<QodModel>? qodCollectionRef;
 
   @override
   State<PageFullProfileView> createState() => _PageFullProfileViewState();
@@ -25,37 +169,15 @@ class PageFullProfileView extends StatefulWidget {
 
 class _PageFullProfileViewState extends State<PageFullProfileView>
     with TickerProviderStateMixin {
-  late QodModel _qod;
-
-  @override
-  void initState() {
-    // TODO: Dummy QoD
-    _qod = QodModel(
-      question: "What is something about you that surprises most people?",
-      primaryUserId: widget.userModel.uid,
-      primaryUserDisplayName: widget.userModel.displayName ?? '',
-      primaryUserPhotoUrl: widget.userModel.photoUrl,
-      secondaryUserId: widget.userModel.uid,
-      secondaryDisplayName: widget.userModel.displayName ?? '',
-      secondaryUserPhotoUrl: widget.userModel.photoUrl,
-      secondaryUserAnswer:
-          "This is my QoD answer for demo purpose. This is my QoD answer for demo purpose. This is my QoD answer for demo purpose.",
-      createdAt: DateTime.now().subtract(const Duration(hours: 12)),
-    );
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final userProvider = context.read<UserProvider>();
     final tabs = [l10n!.profile];
+    final qodCollectionRef = widget.qodCollectionRef;
+    final hasQod = qodCollectionRef != null;
 
-    // Default assume self preview profile when uid is identical
-    final isPreview = widget.userModel.uid == userProvider.getIdCache();
-
-    if (!isPreview) {
+    if (hasQod) {
       tabs.add(l10n.questionOfDay);
     }
 
@@ -72,15 +194,15 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                 sliver: SliverAppBar(
                   pinned: true,
                   primary: false,
-                  expandedHeight: isPreview ? 360 : 320,
-                  collapsedHeight: isPreview ? 240 : 300,
+                  expandedHeight: !hasQod ? 360 : 320,
+                  collapsedHeight: !hasQod ? 240 : 300,
                   automaticallyImplyLeading: false,
                   forceElevated: innerBoxIsScrolled,
                   flexibleSpace: Stack(
                     children: [
                       CachedImage(
                         photoUrl: widget.userModel.photoUrl,
-                        height: isPreview ? 360 : 300,
+                        height: !hasQod ? 360 : 300,
                       ),
                       Positioned(
                         top: 0,
@@ -123,36 +245,18 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                       ),
                     ],
                   ),
-                  bottom: isPreview
-                      ? null
-                      : TabBar(
+                  bottom: hasQod
+                      ? TabBar(
                           tabs: tabs
                               .map(
-                                (name) => Tab(
-                                  child: SizedBox(
-                                    width: 120,
-                                    child: Text.rich(
-                                      textAlign: TextAlign.center,
-                                      TextSpan(children: [
-                                        TextSpan(text: name),
-                                        if (name == l10n.questionOfDay)
-                                          const WidgetSpan(
-                                            alignment:
-                                                PlaceholderAlignment.middle,
-                                            child: Badge(
-                                              // TODO: Integration
-                                              label: Text('122'),
-                                              offset: Offset(10, -6),
-                                              child: Text(' '),
-                                            ),
-                                          ),
-                                      ]),
-                                    ),
-                                  ),
+                                (name) => _PageFullProfileViewTab(
+                                  name: name,
+                                  qodCollectionRef: qodCollectionRef,
                                 ),
                               )
                               .toList(),
-                        ),
+                        )
+                      : null,
                 ),
               ),
             ];
@@ -179,38 +283,12 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                                   ? UserProfileDetails(
                                       userModel: widget.userModel,
                                     )
-                                  // TODO: QoD integration
-                                  : Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16,
-                                        vertical: 24,
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          QodCalendar(
-                                            firstDay: DateTime(2023, 12, 01),
-                                            lastDay: DateTime.now(),
-                                          ),
-                                          const SizedBox(height: 32),
-                                          CardQod(
-                                            qod: _qod,
-                                            onTap: () {
-                                              showModalBottomSheet(
-                                                context: context,
-                                                showDragHandle: true,
-                                                useSafeArea: true,
-                                                isScrollControlled: true,
-                                                builder: (context) {
-                                                  return QodContent(qod: _qod);
-                                                },
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                  : name == l10n.questionOfDay && hasQod
+                                      ? _PageFullProfileQodView(
+                                          userModel: widget.userModel,
+                                          qodCollectionRef: qodCollectionRef,
+                                        )
+                                      : null,
                             ),
                           ],
                         );

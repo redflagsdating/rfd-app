@@ -184,24 +184,20 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
             FutureBuilder(
               future: _getDistance(),
               builder: (context, snapshot) {
-                final distance = snapshot.data;
-
                 return Text.rich(
                   style: isCompact
                       ? textWhiteTheme.bodySmall
                       : textWhiteTheme.bodyLarge,
                   TextSpan(
                     children: [
-                      distance == null
+                      snapshot.connectionState == ConnectionState.waiting
                           ? WidgetSpan(
                               child: LoadingAnimationWidget.prograssiveDots(
                                 color: theme.colorScheme.surfaceVariant,
                                 size: isCompact ? 16 : 20,
                               ),
                             )
-                          : TextSpan(
-                              text: distance.toString(),
-                            ),
+                          : TextSpan(text: snapshot.data.toString()),
                       const TextSpan(text: ' '),
                       TextSpan(text: l10n!.kilometer)
                     ],

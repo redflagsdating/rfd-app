@@ -43,13 +43,15 @@ class _BadgeKycStatusState extends State<BadgeKycStatus> {
               : FutureBuilder(
                   future: userProvider.getVerified(),
                   builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return snapshot.data == true
+                    final isVerified = snapshot.data;
+
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return isVerified == true
                           ? Icon(
                               Icons.verified,
                               color: Colors.green.shade400,
                             )
-                          : snapshot.data == false
+                          : isVerified == false
                               ? Icon(
                                   Icons.error,
                                   color: theme.colorScheme.error,

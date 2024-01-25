@@ -40,5 +40,5 @@ final connectionRef = FirebaseFirestore.instance
     .withConverter<ConnectionModel>(
       fromFirestore: (snapshots, _) =>
           ConnectionModel.fromJson(snapshots.data()!),
-      toFirestore: (user, _) => user.toJson(),
+      toFirestore: (connection, _) => connection.toJson(),
     );

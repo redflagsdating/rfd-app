@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/models/qod.dart';
+import 'package:red_flags/models/user.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/circle_avatar_user.dart';
-import 'package:red_flags/widgets/label/label_qod_status.dart';
 
 class CardQod extends StatefulWidget {
-  const CardQod({super.key, required this.qod, this.onTap});
-  final QodModel qod;
+  const CardQod({
+    super.key,
+    required this.qodModel,
+    required this.userModel,
+    this.onTap,
+  });
+
+  final QodModel qodModel;
+  final UserModel userModel;
   final void Function()? onTap;
 
   @override
@@ -18,6 +27,8 @@ class _CardQodState extends State<CardQod> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final userProvider = Provider.of<UserProvider>(context);
+    final isNew = DateTime.now().compareTo(widget.qodModel.createdAt) <= 24;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -34,9 +45,9 @@ class _CardQodState extends State<CardQod> {
                   Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: Text(
-                      widget.qod.question,
+                      widget.qodModel.question,
                       maxLines: 2,
-                      semanticsLabel: widget.qod.question,
+                      semanticsLabel: widget.qodModel.question,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
@@ -44,15 +55,15 @@ class _CardQodState extends State<CardQod> {
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      LabelQodStatus(qod: widget.qod),
+                      // LabelQodStatus(qod: widget.qod),
                       const Spacer(),
                       CircleAvatarUser(
-                        photoUrl: widget.qod.primaryUserPhotoUrl,
+                        photoUrl: userProvider.getPhotoUrlCache(),
                         size: 40,
                       ),
                       const SizedBox(width: 6),
                       CircleAvatarUser(
-                        photoUrl: widget.qod.secondaryUserPhotoUrl,
+                        photoUrl: widget.userModel.photoUrl,
                         size: 40,
                       ),
                     ],
@@ -71,7 +82,7 @@ class _CardQodState extends State<CardQod> {
             color: theme.colorScheme.primary,
           ),
         ),
-        if (widget.qod.isNew)
+        if (isNew)
           Positioned(
             top: -20,
             left: 20,
