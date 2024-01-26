@@ -177,20 +177,22 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
           children: [
             Icon(
               Icons.location_on_rounded,
-              size: isCompact ? 18 : null,
+              size: isCompact ? 18 : 20,
               color: Colors.white,
             ),
             const SizedBox(width: 2),
             FutureBuilder(
               future: _getDistance(),
               builder: (context, snapshot) {
+                final distance = snapshot.data;
+
                 return Text.rich(
                   style: isCompact
                       ? textWhiteTheme.bodySmall
-                      : textWhiteTheme.bodyLarge,
+                      : textWhiteTheme.bodyMedium,
                   TextSpan(
                     children: [
-                      snapshot.connectionState == ConnectionState.waiting
+                      distance == null
                           ? WidgetSpan(
                               child: LoadingAnimationWidget.prograssiveDots(
                                 color: theme.colorScheme.surfaceVariant,
@@ -209,7 +211,7 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
             Icon(
               Icons.home,
               color: Colors.white,
-              size: isCompact ? 18 : null,
+              size: isCompact ? 18 : 20,
             ),
             const SizedBox(width: 2),
             Flexible(
@@ -217,7 +219,7 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                 widget.userModel.locality ?? '-',
                 style: isCompact
                     ? textWhiteTheme.bodySmall
-                    : textWhiteTheme.bodyLarge,
+                    : textWhiteTheme.bodyMedium,
               ),
             ),
           ],

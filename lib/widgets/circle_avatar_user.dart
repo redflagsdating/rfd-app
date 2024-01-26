@@ -28,7 +28,7 @@ class _CircleAvatarUserState extends State<CircleAvatarUser> with MixinFile {
     return FutureBuilder(
       future: storageProvider.cacheImage(widget.photoUrl),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (!snapshot.hasData) {
           return CircleAvatar(
             maxRadius: radius,
             minRadius: radius,

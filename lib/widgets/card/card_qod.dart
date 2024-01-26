@@ -28,7 +28,11 @@ class _CardQodState extends State<CardQod> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final userProvider = Provider.of<UserProvider>(context);
-    final isNew = DateTime.now().compareTo(widget.qodModel.createdAt) <= 24;
+    final createdDays = DateTime.now()
+        .difference(
+          widget.qodModel.createdAt,
+        )
+        .inDays;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -82,7 +86,7 @@ class _CardQodState extends State<CardQod> {
             color: theme.colorScheme.primary,
           ),
         ),
-        if (isNew)
+        if (createdDays <= 1)
           Positioned(
             top: -20,
             left: 20,

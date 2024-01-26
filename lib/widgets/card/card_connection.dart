@@ -122,7 +122,7 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                 : l10n!.cardUserProfileViewResponseBtn;
 
         return FadeThroughTransitionSwitcher(
-          child: snapshot.connectionState == ConnectionState.waiting
+          child: !snapshot.hasData
               ? const SizedBox(height: 48)
               : status == QodStatus.awaiting
                   ? Semantics(
@@ -194,8 +194,9 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                               // TODO: view response integration
                             },
                             style: FilledButton.styleFrom(
+                              // Don't go over 16 mainly for iPhone smallest screen
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8)),
@@ -212,7 +213,7 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                             },
                             style: FilledButton.styleFrom(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               shape: const RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(8)),
@@ -318,10 +319,9 @@ class _CardConnectionContentState extends State<_CardConnectionContent> {
                   final latestQod = latestQodSnapshot?.data();
 
                   return FadeThroughTransitionSwitcher(
-                    child: snapshot.connectionState == ConnectionState.waiting
+                    child: !snapshot.hasData
                         ? const SizedBox(height: 160)
                         : Container(
-                            width: double.maxFinite,
                             padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,7 +400,7 @@ class _CardConnectionState extends State<CardConnection> {
       child: FutureBuilder(
         future: connectionDocRef.getCacheFirst(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (!snapshot.hasData) {
             return const _CardConnectionPlaceholder();
           }
 
@@ -434,7 +434,7 @@ class _CardConnectionState extends State<CardConnection> {
                   ? snapshot.error.toString()
                   : l10n!.cardConnectionEmptyUserData(uid);
 
-              return snapshot.connectionState == ConnectionState.waiting
+              return !snapshot.hasData
                   ? const _CardConnectionPlaceholder()
                   : isEmpty
                       ? _CardConnectionError(message: message)

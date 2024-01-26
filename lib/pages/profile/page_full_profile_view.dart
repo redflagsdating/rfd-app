@@ -46,11 +46,9 @@ class _PageFullProfileViewTabState extends State<_PageFullProfileViewTab> {
                   child: FutureBuilder(
                     future: widget.qodCollectionRef.getCacheFirst(),
                     builder: (context, snapshot) {
-                      final isDone =
-                          snapshot.connectionState == ConnectionState.done;
                       final count = snapshot.data?.docs.length;
 
-                      if (isDone && count != null) {
+                      if (snapshot.hasData && count != null) {
                         return Badge(
                           label: Text(count.toString()),
                           offset: const Offset(10, -6),
@@ -87,6 +85,20 @@ class _PageFullProfileQodView extends StatefulWidget {
 }
 
 class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
+  bool _visible = false;
+  DateTime? _rangeStart;
+  DateTime? _rangeEnd;
+
+  @override
+  void initState() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      setState(() {
+        _visible = true;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -98,52 +110,101 @@ class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
       ),
       child: FutureBuilder(
         future: widget.qodCollectionRef
-            .orderBy(
-              QodFields.createdAt.name,
-              descending: true,
-            )
+            .orderBy(QodFields.createdAt.name, descending: true)
             .getCacheFirst(),
         builder: (context, snapshot) {
-          final qods = snapshot.data?.docs.firstOrNull;
-          final isWaiting = snapshot.connectionState == ConnectionState.waiting;
+          final qods = snapshot.data?.docs;
 
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // TODO: Integration
-              QodCalendar(
-                firstDay: DateTime(2023, 12, 01),
-                lastDay: DateTime.now(),
-                onRangeSelected: (start, end, focusedDay) {
-                  // TODO
-                },
-              ),
-              const SizedBox(height: 32),
-              isWaiting
-                  ? LoadingAnimationWidget.threeArchedCircle(
-                      color: theme.colorScheme.primary,
-                      size: 32,
-                    )
-                  : CardQod(
-                      qodModel: qods!.data(),
-                      userModel: widget.userModel,
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          showDragHandle: true,
-                          useSafeArea: true,
-                          isScrollControlled: true,
-                          builder: (context) {
-                            // TODO: Refactory
-                            return QodContent(
-                              qodModel: qods.data(),
-                              userModel: widget.userModel,
-                            );
-                          },
-                        );
-                      },
-                    ),
-            ],
+          final firstDay = qods?.lastOrNull?.data().createdAt ?? DateTime.now();
+
+          return StatefulBuilder(
+            builder: (context, setState) {
+              final selectedQods = qods?.where((qod) {
+                final createdAt = qod.data().createdAt;
+
+                return _rangeStart == null ||
+                    _rangeEnd == null ||
+                    (_rangeStart != null &&
+                        createdAt.isAfter(_rangeStart!) &&
+                        _rangeEnd != null &&
+                        createdAt.isBefore(_rangeEnd!));
+              }).toList();
+
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  QodCalendar(
+                    firstDay: firstDay,
+                    lastDay: DateTime.now(),
+                    onRangeSelected: (start, end, focusedDay) {
+                      if (start != null) {
+                        /// Ignore time due to timezone difference.
+                        /// TableCalendar always calls back UTC but createdAt
+                        /// of QoD is saved by user's timezone.
+                        _rangeStart =
+                            DateTime(start.year, start.month, start.day)
+                                .toLocal();
+                      }
+
+                      if (end != null) {
+                        _rangeEnd = DateTime(end.year, end.month, end.day + 1)
+                            .toLocal();
+                      }
+
+                      if (start != null && end != null) {
+                        setState(() {
+                          _visible = false;
+                        });
+
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          setState(() {
+                            _visible = true;
+                          });
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  !snapshot.hasData
+                      ? LoadingAnimationWidget.threeArchedCircle(
+                          color: theme.colorScheme.primary,
+                          size: 32,
+                        )
+                      : Wrap(
+                          spacing: 4,
+                          children: List.generate(
+                            selectedQods?.length ?? 0,
+                            (index) {
+                              final qodModel = selectedQods![index].data();
+
+                              return AnimatedOpacity(
+                                opacity: _visible ? 1 : 0,
+                                duration: const Duration(milliseconds: 500),
+                                child: CardQod(
+                                  qodModel: qodModel,
+                                  userModel: widget.userModel,
+                                  onTap: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      showDragHandle: true,
+                                      useSafeArea: true,
+                                      isScrollControlled: true,
+                                      builder: (context) {
+                                        return QodContent(
+                                          qodModel: qodModel,
+                                          userModel: widget.userModel,
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                ],
+              );
+            },
           );
         },
       ),
@@ -167,8 +228,7 @@ class PageFullProfileView extends StatefulWidget {
   State<PageFullProfileView> createState() => _PageFullProfileViewState();
 }
 
-class _PageFullProfileViewState extends State<PageFullProfileView>
-    with TickerProviderStateMixin {
+class _PageFullProfileViewState extends State<PageFullProfileView> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -214,7 +274,7 @@ class _PageFullProfileViewState extends State<PageFullProfileView>
                             gradient: LinearGradient(
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
-                              stops: const [0, 0.3],
+                              stops: const [0, 0.4],
                               colors: [
                                 theme.colorScheme.shadow.withOpacity(0.7),
                                 theme.colorScheme.shadow.withOpacity(0)

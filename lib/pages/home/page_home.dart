@@ -61,7 +61,6 @@ class _PageHomeState extends State<PageHome> {
                         QodFields.createdAt.name,
                         descending: true,
                       )
-                      .limit(1)
                       .get();
 
                   // Refetch qodAnswer documents of the latest QoD

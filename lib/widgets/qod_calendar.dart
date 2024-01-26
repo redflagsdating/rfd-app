@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:red_flags/widgets/qod_calendar_day.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -37,6 +39,7 @@ class _QodCalendarState extends State<QodCalendar> {
     );
 
     return TableCalendar(
+      locale: Platform.localeName,
       focusedDay: _focusedDay,
       firstDay: widget.firstDay,
       lastDay: widget.lastDay,

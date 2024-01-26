@@ -45,7 +45,7 @@ class _BadgeKycStatusState extends State<BadgeKycStatus> {
                   builder: (context, snapshot) {
                     final isVerified = snapshot.data;
 
-                    if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasData) {
                       return isVerified == true
                           ? Icon(
                               Icons.verified,
