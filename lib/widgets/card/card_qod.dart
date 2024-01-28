@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/mixins/mixin_qod.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/user_provider.dart';
@@ -22,17 +23,12 @@ class CardQod extends StatefulWidget {
   State<CardQod> createState() => _CardQodState();
 }
 
-class _CardQodState extends State<CardQod> {
+class _CardQodState extends State<CardQod> with MixinQod {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final userProvider = Provider.of<UserProvider>(context);
-    final createdDays = DateTime.now()
-        .difference(
-          widget.qodModel.createdAt,
-        )
-        .inDays;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -86,7 +82,7 @@ class _CardQodState extends State<CardQod> {
             color: theme.colorScheme.primary,
           ),
         ),
-        if (createdDays <= 1)
+        if (isQodNew(widget.qodModel))
           Positioned(
             top: -20,
             left: 20,

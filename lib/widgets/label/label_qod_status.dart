@@ -39,7 +39,7 @@ class _LabelQodStatusState extends State<LabelQodStatus> with MixinQod {
 
         final qodSnapshot = snapshot.data;
         final status = getQodStatus(qodSnapshot);
-        final latestAnswer = getLatestAnswer(qodSnapshot);
+        final latestAnswer = getLatestQodAnswer(qodSnapshot);
         final yourUid = userProvider.getIdCache();
 
         if (status == QodStatus.answered) {

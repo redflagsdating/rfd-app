@@ -175,13 +175,13 @@ class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
                           children: List.generate(
                             selectedQods?.length ?? 0,
                             (index) {
-                              final qodModel = selectedQods![index].data();
+                              final docSnapshot = selectedQods![index];
 
                               return AnimatedOpacity(
                                 opacity: _visible ? 1 : 0,
                                 duration: const Duration(milliseconds: 500),
                                 child: CardQod(
-                                  qodModel: qodModel,
+                                  qodModel: docSnapshot.data(),
                                   userModel: widget.userModel,
                                   onTap: () {
                                     showModalBottomSheet(
@@ -191,7 +191,8 @@ class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
                                       isScrollControlled: true,
                                       builder: (context) {
                                         return QodContent(
-                                          qodModel: qodModel,
+                                          qodModel: docSnapshot.data(),
+                                          qodDocRef: docSnapshot.reference,
                                           userModel: widget.userModel,
                                         );
                                       },

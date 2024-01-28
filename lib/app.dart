@@ -76,6 +76,7 @@ class App extends StatelessWidget {
                 highlightColor:
                     lightColorScheme.inversePrimary.withOpacity(0.3),
                 inputDecorationTheme: InputDecorationTheme(
+                  counterStyle: const TextStyle(fontSize: 12),
                   fillColor: lightColorScheme.primaryContainer,
                   hintStyle: const TextStyle(
                     fontStyle: FontStyle.italic,

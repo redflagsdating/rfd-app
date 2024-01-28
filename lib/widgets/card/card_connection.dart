@@ -16,6 +16,7 @@ import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/banner_user.dart';
 import 'package:red_flags/widgets/cached_image.dart';
 import 'package:red_flags/widgets/label/label_qod_status.dart';
+import 'package:red_flags/widgets/qod_content.dart';
 
 //* Internal widget */
 class _CardConnectionPlaceholder extends StatelessWidget {
@@ -80,8 +81,10 @@ class _CardConnectionActions extends StatefulWidget {
   const _CardConnectionActions({
     required this.qodModel,
     required this.qodDocRef,
+    required this.userModel,
   });
 
+  final UserModel userModel;
   final QodModel qodModel;
   final DocumentReference<QodModel> qodDocRef;
 
@@ -105,6 +108,22 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
     super.dispose();
   }
 
+  Future<void> _showQod() {
+    return showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      useSafeArea: true,
+      isScrollControlled: true,
+      builder: (context) {
+        return QodContent(
+          qodModel: widget.qodModel,
+          qodDocRef: widget.qodDocRef,
+          userModel: widget.userModel,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -116,10 +135,11 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
       builder: (context, snapshot) {
         final qodSnapshot = snapshot.data;
         final status = getQodStatus(qodSnapshot);
-        final qodBtnLabel =
-            isAwaitingByThem(qodSnapshot, userProvider.getIdCache())
-                ? l10n!.cardUserProfileAnswerBtn
-                : l10n!.cardUserProfileViewResponseBtn;
+        final isWaitingYours =
+            isAwaitingByThem(qodSnapshot, userProvider.getIdCache());
+        final qodBtnLabel = isWaitingYours
+            ? l10n!.cardUserProfileAnswerBtn
+            : l10n!.cardUserProfileViewResponseBtn;
 
         return FadeThroughTransitionSwitcher(
           child: !snapshot.hasData
@@ -129,26 +149,11 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                       label: qodBtnLabel,
                       child: FilledButton(
                         onPressed: () async {
-                          // TODO: Placeholder for later integration
-                          _scaffoldMessenger.showMaterialBanner(
-                            MaterialBanner(
-                              content:
-                                  const Text('Hello, I am a Material Banner'),
-                              leading: Icon(
-                                Icons.agriculture_outlined,
-                                color: theme.colorScheme.onSecondary,
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentMaterialBanner();
-                                  },
-                                  child: const Text('DISMISS'),
-                                ),
-                              ],
-                            ),
-                          );
+                          await _showQod();
+                          // Refresh widget on closed to reflect answer
+                          if (isWaitingYours) {
+                            setState(() {});
+                          }
                         },
                         style: FilledButton.styleFrom(
                           minimumSize: const Size.fromHeight(56),
@@ -190,9 +195,7 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                         Semantics(
                           label: l10n.cardUserProfileViewResponseBtn,
                           child: OutlinedButton(
-                            onPressed: () {
-                              // TODO: view response integration
-                            },
+                            onPressed: _showQod,
                             style: FilledButton.styleFrom(
                               // Don't go over 16 mainly for iPhone smallest screen
                               padding:
@@ -210,6 +213,27 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                           child: FilledButton(
                             onPressed: () {
                               // TODO: Go on a date integration
+
+                              // TODO: Placeholder for later integration
+                              _scaffoldMessenger.showMaterialBanner(
+                                MaterialBanner(
+                                  content: const Text(
+                                      'Hello, I am a Material Banner'),
+                                  leading: Icon(
+                                    Icons.agriculture_outlined,
+                                    color: theme.colorScheme.onSecondary,
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        ScaffoldMessenger.of(context)
+                                            .hideCurrentMaterialBanner();
+                                      },
+                                      child: const Text('DISMISS'),
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                             style: FilledButton.styleFrom(
                               padding:
@@ -314,8 +338,6 @@ class _CardConnectionContentState extends State<_CardConnectionContent> {
                     .getCacheFirst(),
                 builder: (context, snapshot) {
                   final latestQodSnapshot = snapshot.data?.docs.firstOrNull;
-                  final latestQodDocRef =
-                      widget.qodCollectionRef.doc(latestQodSnapshot?.id);
                   final latestQod = latestQodSnapshot?.data();
 
                   return FadeThroughTransitionSwitcher(
@@ -346,13 +368,14 @@ class _CardConnectionContentState extends State<_CardConnectionContent> {
                                 LabelQodStatus(
                                   displayName:
                                       widget.userModel.displayName ?? '',
-                                  qodDocRef: latestQodDocRef,
+                                  qodDocRef: latestQodSnapshot!.reference,
                                 ),
                                 const SizedBox(height: 8),
                                 if (latestQod != null)
                                   _CardConnectionActions(
                                     qodModel: latestQod,
-                                    qodDocRef: latestQodDocRef,
+                                    userModel: widget.userModel,
+                                    qodDocRef: latestQodSnapshot.reference,
                                   )
                               ],
                             ),

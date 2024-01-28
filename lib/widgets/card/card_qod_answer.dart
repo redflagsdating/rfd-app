@@ -28,7 +28,10 @@ class _CardQodAnswerState extends State<CardQodAnswer> {
     return Stack(
       children: [
         ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: 80),
+          constraints: const BoxConstraints(
+            minHeight: 80,
+            minWidth: double.maxFinite,
+          ),
           child: Card(
             elevation: 0,
             color: widget.color ?? theme.colorScheme.surfaceVariant,

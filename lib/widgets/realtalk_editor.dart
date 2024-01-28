@@ -124,7 +124,7 @@ class _RealTalkEditorState extends State<RealTalkEditor> {
                     "$currentLength/$maxLength",
                     style: theme.textTheme
                         .apply(bodyColor: theme.colorScheme.outline)
-                        .labelMedium,
+                        .labelSmall,
                   ),
                 );
               },
