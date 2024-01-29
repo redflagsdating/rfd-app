@@ -75,6 +75,8 @@
   "fieldYourGreenFlagsErrorText": "The green flag already exists",
   "fieldQodResponseHintText": "Type your response",
   "fieldQodResponseEmptyErrorText": "Start typing your response",
+  "fieldQodResponseSaved": "The response has been saved",
+  "fieldQodResponseUpdated": "The response has been updated",
   "textFieldChipsHelperText": "Use comma (,) to separate your inputs",
   "cardQodAnswerLockedLabel": "Answer to see response",
   "cardImagePickerSheetTitle": "Upload photo",

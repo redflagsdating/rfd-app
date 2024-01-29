@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -46,6 +47,9 @@ void main() async {
     name: 'rfd-firebase-dev',
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  //** Firestore database clear cached data of the previous sessions */
+  await FirebaseFirestore.instance.clearPersistence();
 
   // ** Firebase App Check */
   await FirebaseAppCheck.instance.activate(

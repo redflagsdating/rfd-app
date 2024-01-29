@@ -80,15 +80,33 @@ class _QodContentState extends State<QodContent> with MixinQod {
                 await myQodAnswer.reference.update({
                   "answer": _controller.text,
                   "answeredAt": DateTime.now(),
-                });
+                }).then(
+                  (value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n!.fieldQodResponseUpdated),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                );
               } else {
+                final qodAnswerModel = QodAnswerModel(
+                  uid: myUid,
+                  answer: _controller.text,
+                  answeredAt: DateTime.now(),
+                );
+
                 // Add answer to the QoD
-                await answerCollectionRef.add(
-                  QodAnswerModel(
-                    uid: myUid,
-                    answer: _controller.text,
-                    answeredAt: DateTime.now(),
-                  ),
+                await answerCollectionRef.add(qodAnswerModel).then(
+                  (value) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(l10n!.fieldQodResponseSaved),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  },
                 );
               }
 

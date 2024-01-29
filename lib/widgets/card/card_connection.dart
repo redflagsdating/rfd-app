@@ -114,11 +114,15 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
       showDragHandle: true,
       useSafeArea: true,
       isScrollControlled: true,
+      backgroundColor: Colors.white,
       builder: (context) {
-        return QodContent(
-          qodModel: widget.qodModel,
-          qodDocRef: widget.qodDocRef,
-          userModel: widget.userModel,
+        // Wrapped inside Scaffold mainly for Snackbar
+        return Scaffold(
+          body: QodContent(
+            qodModel: widget.qodModel,
+            qodDocRef: widget.qodDocRef,
+            userModel: widget.userModel,
+          ),
         );
       },
     );
@@ -130,126 +134,140 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
 
-    return FutureBuilder(
-      future: qodAnswerRef(widget.qodDocRef).getCacheFirst(),
-      builder: (context, snapshot) {
-        final qodSnapshot = snapshot.data;
-        final status = getQodStatus(qodSnapshot);
-        final isWaitingYours =
-            isAwaitingByThem(qodSnapshot, userProvider.getIdCache());
-        final qodBtnLabel = isWaitingYours
-            ? l10n!.cardUserProfileAnswerBtn
-            : l10n!.cardUserProfileViewResponseBtn;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        /// Tight LabelQodStatus in this context mainly for setState to trigger
+        /// refresh the widget
+        LabelQodStatus(
+          displayName: widget.userModel.displayName ?? '',
+          qodDocRef: widget.qodDocRef,
+        ),
+        const SizedBox(height: 8),
+        FutureBuilder(
+          future: qodAnswerRef(widget.qodDocRef).getCacheFirst(),
+          builder: (context, snapshot) {
+            final qodSnapshot = snapshot.data;
+            final status = getQodStatus(qodSnapshot);
+            final isWaitingYours = status == QodStatus.unanswered ||
+                isAwaitingByThem(qodSnapshot, userProvider.getIdCache());
+            final qodBtnLabel = isWaitingYours
+                ? l10n!.cardUserProfileAnswerBtn
+                : l10n!.cardUserProfileViewResponseBtn;
 
-        return FadeThroughTransitionSwitcher(
-          child: !snapshot.hasData
-              ? const SizedBox(height: 48)
-              : status == QodStatus.awaiting
-                  ? Semantics(
-                      label: qodBtnLabel,
-                      child: FilledButton(
-                        onPressed: () async {
-                          await _showQod();
-                          // Refresh widget on closed to reflect answer
-                          if (isWaitingYours) {
-                            setState(() {});
-                          }
-                        },
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(56),
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                          ),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              qodBtnLabel,
-                              style: theme.textTheme
-                                  .apply(
-                                    fontSizeFactor: 1.1,
-                                    bodyColor: theme.colorScheme.onPrimary,
-                                  )
-                                  .labelLarge,
-                            ),
-                            Text(
-                              l10n.cardUserProfileAnswerBtnNote(
-                                DateTime.now()
-                                    .difference(widget.qodModel.createdAt)
-                                    .inHours,
+            return FadeThroughTransitionSwitcher(
+              child: !snapshot.hasData
+                  ? const SizedBox(height: 48)
+                  : status != QodStatus.answered
+                      ? Semantics(
+                          label: qodBtnLabel,
+                          child: FilledButton(
+                            onPressed: () async {
+                              await _showQod();
+                              // Refresh widget on closed to reflect answer
+                              if (isWaitingYours) {
+                                setState(() {});
+                              }
+                            },
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size.fromHeight(56),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
                               ),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.w400,
-                                color: theme.colorScheme.onPrimary,
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  qodBtnLabel,
+                                  style: theme.textTheme
+                                      .apply(
+                                        fontSizeFactor: 1.1,
+                                        bodyColor: theme.colorScheme.onPrimary,
+                                      )
+                                      .labelLarge,
+                                ),
+                                Text(
+                                  l10n.cardUserProfileAnswerBtnNote(
+                                    DateTime.now()
+                                        .difference(widget.qodModel.createdAt)
+                                        .inHours,
+                                  ),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontStyle: FontStyle.italic,
+                                    fontWeight: FontWeight.w400,
+                                    color: theme.colorScheme.onPrimary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Semantics(
+                              label: l10n.cardUserProfileViewResponseBtn,
+                              child: OutlinedButton(
+                                onPressed: _showQod,
+                                style: FilledButton.styleFrom(
+                                  // Don't go over 16 mainly for iPhone smallest screen
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                ),
+                                child:
+                                    Text(l10n.cardUserProfileViewResponseBtn),
+                              ),
+                            ),
+                            Semantics(
+                              label: l10n.btnGoOnDate,
+                              child: FilledButton(
+                                onPressed: () {
+                                  // TODO: Go on a date integration
+
+                                  // TODO: Placeholder for later integration
+                                  _scaffoldMessenger.showMaterialBanner(
+                                    MaterialBanner(
+                                      content: const Text(
+                                          'Hello, I am a Material Banner'),
+                                      leading: Icon(
+                                        Icons.agriculture_outlined,
+                                        color: theme.colorScheme.onSecondary,
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            ScaffoldMessenger.of(context)
+                                                .hideCurrentMaterialBanner();
+                                          },
+                                          child: const Text('DISMISS'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                style: FilledButton.styleFrom(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                  ),
+                                ),
+                                child: Text(l10n.btnGoOnDate),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Semantics(
-                          label: l10n.cardUserProfileViewResponseBtn,
-                          child: OutlinedButton(
-                            onPressed: _showQod,
-                            style: FilledButton.styleFrom(
-                              // Don't go over 16 mainly for iPhone smallest screen
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                              ),
-                            ),
-                            child: Text(l10n.cardUserProfileViewResponseBtn),
-                          ),
-                        ),
-                        Semantics(
-                          label: l10n.btnGoOnDate,
-                          child: FilledButton(
-                            onPressed: () {
-                              // TODO: Go on a date integration
-
-                              // TODO: Placeholder for later integration
-                              _scaffoldMessenger.showMaterialBanner(
-                                MaterialBanner(
-                                  content: const Text(
-                                      'Hello, I am a Material Banner'),
-                                  leading: Icon(
-                                    Icons.agriculture_outlined,
-                                    color: theme.colorScheme.onSecondary,
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        ScaffoldMessenger.of(context)
-                                            .hideCurrentMaterialBanner();
-                                      },
-                                      child: const Text('DISMISS'),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            style: FilledButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8)),
-                              ),
-                            ),
-                            child: Text(l10n.btnGoOnDate),
-                          ),
-                        ),
-                      ],
-                    ),
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 }
@@ -365,17 +383,11 @@ class _CardConnectionContentState extends State<_CardConnectionContent> {
                                         ),
                                       ),
                                 const SizedBox(height: 4),
-                                LabelQodStatus(
-                                  displayName:
-                                      widget.userModel.displayName ?? '',
-                                  qodDocRef: latestQodSnapshot!.reference,
-                                ),
-                                const SizedBox(height: 8),
                                 if (latestQod != null)
                                   _CardConnectionActions(
                                     qodModel: latestQod,
                                     userModel: widget.userModel,
-                                    qodDocRef: latestQodSnapshot.reference,
+                                    qodDocRef: latestQodSnapshot!.reference,
                                   )
                               ],
                             ),
