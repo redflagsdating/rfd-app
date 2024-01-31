@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/models/connection.dart';
-import 'package:red_flags/models/qod.dart';
-import 'package:red_flags/models/qod_answer.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_kyc.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/card/card_connection.dart';
 
@@ -17,6 +15,66 @@ class PageHome extends StatefulWidget {
 }
 
 class _PageHomeState extends State<PageHome> {
+  late ScaffoldMessengerState _scaffoldMessenger;
+
+  @override
+  void initState() {
+    Future.delayed(
+      const Duration(milliseconds: 300),
+      () {
+        final theme = Theme.of(context);
+        final l10n = AppLocalizations.of(context);
+        final isSubmitted =
+            context.read<UserProvider>().getVerifySubmittedCache();
+
+        _scaffoldMessenger = ScaffoldMessenger.of(context);
+
+        if (isSubmitted != true) {
+          _scaffoldMessenger.showMaterialBanner(
+            MaterialBanner(
+              content: const Text(
+                'Be the very first to experience how to be authentic',
+              ),
+              leading: Icon(
+                Icons.verified_rounded,
+                color: theme.colorScheme.onSecondary,
+              ),
+              actions: [
+                FilledButton.tonal(
+                  onPressed: () async {
+                    _scaffoldMessenger.clearMaterialBanners();
+
+                    await Future.delayed(const Duration(milliseconds: 300));
+
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PageProfileSettingsKyc(
+                          title: Text(
+                            l10n!.verification,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  child: const Text('Verify'),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scaffoldMessenger.clearMaterialBanners();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -31,49 +89,49 @@ class _PageHomeState extends State<PageHome> {
       child: RefreshIndicator(
         onRefresh: () async {
           // Refetch current logged in userModel
-          final userModel = await userProvider.getUserModel();
+          // final userModel = await userProvider.getUserModel();
 
-          if (userModel != null) {
-            // Update cache in SharedPreference
-            await userProvider.updateUserCache(userModel);
-            final connections = userModel.connections;
+          // if (userModel != null) {
+          //   // Update cache in SharedPreference
+          //   await userProvider.updateUserCache(userModel);
+          //   final connections = userModel.connections;
 
-            // Below fetches are mainly for CardConnection to update cache
-            if (connections != null) {
-              await Future.wait(
-                connections.map((id) async {
-                  // Refetch DocumentSnapshot of the connection document
-                  final snapshot = await connectionRef.doc(id).get();
+          //   // Below fetches are mainly for CardConnection to update cache
+          //   if (connections != null) {
+          //     await Future.wait(
+          //       connections.map((id) async {
+          //         // Refetch DocumentSnapshot of the connection document
+          //         final snapshot = await connectionRef.doc(id).get();
 
-                  // Find the connection uid
-                  final uid = snapshot
-                      .data()
-                      ?.uids
-                      .firstWhere((uid) => uid != userModel.uid);
+          //         // Find the connection uid
+          //         final uid = snapshot
+          //             .data()
+          //             ?.uids
+          //             .firstWhere((uid) => uid != userModel.uid);
 
-                  /// Refetch connected with userModel
-                  if (uid != null) {
-                    await userProvider.getUserModelById(uid);
-                  }
+          //         /// Refetch connected with userModel
+          //         if (uid != null) {
+          //           await userProvider.getUserModelById(uid);
+          //         }
 
-                  /// Refetch the latest QoD of the connection document
-                  final qodSnapshot = await qodRef(id)
-                      .orderBy(
-                        QodFields.createdAt.name,
-                        descending: true,
-                      )
-                      .get();
+          //         /// Refetch the latest QoD of the connection document
+          //         final qodSnapshot = await qodRef(id)
+          //             .orderBy(
+          //               QodFields.createdAt.name,
+          //               descending: true,
+          //             )
+          //             .get();
 
-                  // Refetch qodAnswer documents of the latest QoD
-                  await qodAnswerRef(
-                          qodRef(id).doc(qodSnapshot.docs.firstOrNull?.id))
-                      .get();
-                }),
-              );
-            }
-          }
+          //         // Refetch qodAnswer documents of the latest QoD
+          //         await qodAnswerRef(
+          //                 qodRef(id).doc(qodSnapshot.docs.firstOrNull?.id))
+          //             .get();
+          //       }),
+          //     );
+          //   }
+          // }
 
-          setState(() {});
+          // setState(() {});
         },
         child: CustomScrollView(
           slivers: [
@@ -87,7 +145,9 @@ class _PageHomeState extends State<PageHome> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 28),
                             child: Text(
-                              l10n!.pgHomeEmpty,
+                              // l10n!.pgHomeEmpty,
+                              // TODO: Temporary for marketing
+                              "Coming soon!",
                               textAlign: TextAlign.center,
                               style: theme.textTheme
                                   .apply(bodyColor: theme.colorScheme.secondary)
@@ -97,7 +157,7 @@ class _PageHomeState extends State<PageHome> {
                           SvgPicture.asset(
                             "assets/rfi-daily-profile-transparent.svg",
                             height: MediaQuery.of(context).size.width,
-                            semanticsLabel: l10n.pgHomeEmpty,
+                            semanticsLabel: l10n!.pgHomeEmpty,
                           ),
                         ]
                       : [
