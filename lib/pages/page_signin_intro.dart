@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_onboard_state.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
@@ -38,6 +39,11 @@ class _PageSignInIntroState extends State<PageSignInIntro>
     final l10n = AppLocalizations.of(context);
     final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
+    final illustration = step == 1
+        ? "assets/rfi-red-flags.svg"
+        : step == 2
+            ? "assets/rfi-real-talk.svg"
+            : "assets/rfi-daily-profile.svg";
     final headline = step == 1
         ? l10n!.pgIntroHeadline2(l10n.brandName)
         : step == 2
@@ -67,7 +73,7 @@ class _PageSignInIntroState extends State<PageSignInIntro>
         },
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 36),
+          padding: const EdgeInsets.all(36),
           child: Column(
             children: [
               const Spacer(),
@@ -77,14 +83,10 @@ class _PageSignInIntroState extends State<PageSignInIntro>
                 child: Column(
                   key: ValueKey(step),
                   children: [
-                    // TODO: Placeholder, need to change to illustration
-                    Container(
-                      margin: const EdgeInsets.all(40),
-                      height: 240,
-                      decoration: const BoxDecoration(
-                        color: Colors.black12,
-                        shape: BoxShape.circle,
-                      ),
+                    SvgPicture.asset(
+                      illustration,
+                      height: MediaQuery.of(context).size.width,
+                      semanticsLabel: headline,
                     ),
                     Semantics(
                       readOnly: true,

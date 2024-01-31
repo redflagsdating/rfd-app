@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/qod.dart';
@@ -81,45 +82,50 @@ class _PageHomeState extends State<PageHome> {
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      l10n!.pgHomeTitle,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme
-                          .apply(bodyColor: theme.colorScheme.secondary)
-                          .titleMedium,
-                    ),
-                    const SizedBox(height: 24),
-                    // TODO: Change to illustration
-                    if (connections.isEmpty)
-                      SizedBox(
-                        height: 460,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            l10n.pgHomeEmpty,
-                            style: theme.textTheme.bodySmall,
+                  children: connections.isEmpty
+                      ? [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 28),
+                            child: Text(
+                              l10n!.pgHomeEmpty,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme
+                                  .apply(bodyColor: theme.colorScheme.secondary)
+                                  .titleLarge,
+                            ),
                           ),
-                        ),
-                      ),
-                    if (connections.isNotEmpty)
-                      CarouselSlider(
-                        options: CarouselOptions(
-                          initialPage: 1,
-                          enlargeFactor: 0.4,
-                          enlargeCenterPage: true,
-                          enableInfiniteScroll: false,
-                          enlargeStrategy: CenterPageEnlargeStrategy.zoom,
-                          height: 480,
-                        ),
-                        items: List.generate(
-                          connections.length,
-                          (index) {
-                            return CardConnection(id: connections[index]);
-                          },
-                        ),
-                      ),
-                  ],
+                          SvgPicture.asset(
+                            "assets/rfi-daily-profile-transparent.svg",
+                            height: MediaQuery.of(context).size.width,
+                            semanticsLabel: l10n.pgHomeEmpty,
+                          ),
+                        ]
+                      : [
+                          Text(
+                            l10n!.pgHomeTitle,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme
+                                .apply(bodyColor: theme.colorScheme.secondary)
+                                .titleMedium,
+                          ),
+                          const SizedBox(height: 24),
+                          CarouselSlider(
+                            options: CarouselOptions(
+                              initialPage: 1,
+                              enlargeFactor: 0.4,
+                              enlargeCenterPage: true,
+                              enableInfiniteScroll: false,
+                              enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                              height: 480,
+                            ),
+                            items: List.generate(
+                              connections.length,
+                              (index) {
+                                return CardConnection(id: connections[index]);
+                              },
+                            ),
+                          ),
+                        ],
                 ),
               ),
             ),
