@@ -7,6 +7,7 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_display_name.dart';
 import 'package:red_flags/widgets/profile/profile_full_name.dart';
+import 'package:red_flags/widgets/profile/profile_kyc.dart';
 import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 
 /// Step 1 - First/Last name
@@ -133,25 +134,20 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
       content: Form(
         key: onboardForm,
         child: SlideTransitionSwitcher(
-            reverse: slideTransitionReverse,
-            child: step == 0
-                ? ProfileFullName(
-                    enabled: !submitting,
-                    firstNameCtrl: _firstNameCtrl,
-                    lastNameCtrl: _lastNameCtrl,
-                  )
-                : ProfileDisplayName(
-                    enabled: !submitting,
-                    controller: _displayNameCtrl,
-                  )
-            // TODO: Temporary disable it
-            // : step == 1
-            //     ? ProfileDisplayName(
-            //         enabled: !submitting,
-            //         controller: _displayNameCtrl,
-            //       )
-            //     : const ProfileKyc(onboarding: true),
-            ),
+          reverse: slideTransitionReverse,
+          child: step == 0
+              ? ProfileFullName(
+                  enabled: !submitting,
+                  firstNameCtrl: _firstNameCtrl,
+                  lastNameCtrl: _lastNameCtrl,
+                )
+              : step == 1
+                  ? ProfileDisplayName(
+                      enabled: !submitting,
+                      controller: _displayNameCtrl,
+                    )
+                  : const ProfileKyc(),
+        ),
       ),
     );
   }

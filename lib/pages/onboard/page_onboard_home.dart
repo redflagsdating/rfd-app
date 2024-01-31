@@ -45,11 +45,9 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       final stage1Step1 = userProvider.getFirstNameCache().isEmpty ||
           userProvider.getLastNameCache().isEmpty;
       final stage1Step2 = userProvider.getDisplayNameCache().isEmpty;
-      final stage1 = stage1Step1 || stage1Step2;
-      // TODO: Temporary disable it
-      // final stage1 = stage1Step1 ||
-      //     stage1Step2 ||
-      //     userProvider.getVerifySubmittedCache() != true;
+      final stage1 = stage1Step1 ||
+          stage1Step2 ||
+          userProvider.getVerifySubmittedCache() != true;
 
       final stage2Step1 = userProvider.getGenderCache().isEmpty;
       final stage2Step2 = userProvider.getGenderForCache().isEmpty;
