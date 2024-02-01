@@ -33,7 +33,7 @@ class _PageHomeState extends State<PageHome> {
           _scaffoldMessenger.showMaterialBanner(
             MaterialBanner(
               content: const Text(
-                'Be the very first to experience how to be authentic',
+                'You are creating the worlds safest dating community. Verify your account now.',
               ),
               leading: Icon(
                 Icons.verified_rounded,
