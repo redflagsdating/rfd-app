@@ -217,18 +217,6 @@ void main() {
     expect(await global.userProvider.getGreenFlags(), isNotEmpty);
   });
 
-  test('UserProvider.getAge', () {
-    expect(
-      global.userProvider.getAge(
-            DateTime.fromMillisecondsSinceEpoch(
-              DateTime.now().millisecondsSinceEpoch - 94608000000,
-            ),
-          ) ==
-          3,
-      isTrue,
-    );
-  });
-
   test('UserProvider.deleteUser', () async {
     expect(global.userProvider.userDocRef != null, isTrue);
     expect(global.userProvider.userDocRef?.id != null, isTrue);

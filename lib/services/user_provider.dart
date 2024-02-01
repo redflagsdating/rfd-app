@@ -450,10 +450,6 @@ class UserProvider extends ChangeNotifier {
     return await _getField(UserFields.dob.name);
   }
 
-  int getAge(DateTime dob) {
-    return (DateTime.now().difference(dob).inDays / 365).floor();
-  }
-
   Map<String, String>? getRealTalkCache() {
     final rawData = _getStringFieldCache(UserStringFields.realTalk);
 

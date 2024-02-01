@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/logger_provider.dart';
-import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/badge_kyc_status.dart';
 
 class BannerUser extends StatefulWidget {
@@ -72,7 +72,6 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final userProvider = context.read<UserProvider>();
     final textWhiteTheme = theme.textTheme.apply(
       bodyColor: Colors.white,
       displayColor: Colors.white,
@@ -107,7 +106,9 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                   child: SizedBox(
                     width: isCompact ? 60 : 70,
                     child: Text(
-                      dob != null ? userProvider.getAge(dob).toString() : "-",
+                      dob != null
+                          ? AgeCalculator.age(dob).years.toString()
+                          : "-",
                       style: isCompact
                           ? textWhiteTheme.titleLarge
                           : textWhiteTheme.headlineMedium,

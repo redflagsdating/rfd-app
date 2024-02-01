@@ -1,3 +1,4 @@
+import 'package:age_calculator/age_calculator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,7 +37,7 @@ void main() {
   testWidgets("UserProfileBanner", (widgetTester) async {
     await widgetTester.pumpWidget(widget);
     await widgetTester.pump();
-    final age = global.userProvider.getAge(global.userModel.dob!).toString();
+    final age = AgeCalculator.age(global.userModel.dob!).years.toString();
 
     expect(find.text('${global.userModel.displayName!},'), findsOneWidget);
     expect(find.text(age), findsOneWidget);
