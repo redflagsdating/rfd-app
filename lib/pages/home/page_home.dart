@@ -19,54 +19,52 @@ class _PageHomeState extends State<PageHome> {
 
   @override
   void initState() {
-    Future.delayed(
-      const Duration(milliseconds: 300),
-      () {
-        final theme = Theme.of(context);
-        final l10n = AppLocalizations.of(context);
-        final isSubmitted =
-            context.read<UserProvider>().getVerifySubmittedCache();
-
-        _scaffoldMessenger = ScaffoldMessenger.of(context);
-
-        if (isSubmitted != true) {
-          _scaffoldMessenger.showMaterialBanner(
-            MaterialBanner(
-              content: const Text(
-                'You are creating the worlds safest dating community. Verify your account now.',
-              ),
-              leading: Icon(
-                Icons.verified_rounded,
-                color: theme.colorScheme.onSecondary,
-              ),
-              actions: [
-                FilledButton.tonal(
-                  onPressed: () async {
-                    _scaffoldMessenger.clearMaterialBanners();
-
-                    await Future.delayed(const Duration(milliseconds: 300));
-
-                    // ignore: use_build_context_synchronously
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => PageProfileSettingsKyc(
-                          title: Text(
-                            l10n!.verification,
-                            style: theme.textTheme.titleMedium,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                  child: const Text('Verify'),
-                ),
-              ],
-            ),
-          );
-        }
-      },
-    );
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => _showBanner());
+  }
+
+  void _showBanner() {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final isSubmitted = context.read<UserProvider>().getVerifySubmittedCache();
+
+    _scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    if (isSubmitted != true) {
+      _scaffoldMessenger.showMaterialBanner(
+        MaterialBanner(
+          content: const Text(
+            'You are creating the worlds safest dating community. Verify your account now.',
+          ),
+          leading: Icon(
+            Icons.verified_rounded,
+            color: theme.colorScheme.onSecondary,
+          ),
+          actions: [
+            FilledButton.tonal(
+              onPressed: () async {
+                _scaffoldMessenger.clearMaterialBanners();
+
+                await Future.delayed(const Duration(milliseconds: 300));
+
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => PageProfileSettingsKyc(
+                      title: Text(
+                        l10n!.verification,
+                        style: theme.textTheme.titleMedium,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: const Text('Verify'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
