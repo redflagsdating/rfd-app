@@ -163,12 +163,15 @@ class _UserProfileDetailsState extends State<UserProfileDetails>
                             ),
                           )
                         : _loading
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: ImagePlaceholder(
-                                  height: 300,
-                                  loading: _loading,
-                                  width: double.infinity,
+                            ? Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: ImagePlaceholder(
+                                    height: 300,
+                                    loading: _loading,
+                                    width: double.infinity,
+                                  ),
                                 ),
                               )
                             : const SizedBox.shrink(),
