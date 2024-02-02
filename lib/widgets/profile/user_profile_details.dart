@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_file.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/fire_storage_provider.dart';
-import 'package:red_flags/widgets/card/card_realtalk.dart';
 import 'package:red_flags/widgets/image_placeholder.dart';
 
 class UserProfileDetails extends StatefulWidget {
@@ -142,33 +141,37 @@ class _UserProfileDetailsState extends State<UserProfileDetails>
                 return Column(
                   children: [
                     imageUrl != null
-                        ? CachedNetworkImage(
-                            imageUrl: imageUrl,
-                            width: double.infinity,
-                            height: 300,
-                            useOldImageOnUrlChange: true,
-                            errorWidget: (context, url, error) {
-                              return ImagePlaceholder(error: error);
-                            },
-                            imageBuilder: (context, imageProvider) {
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: Image(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            },
-                          )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: ImagePlaceholder(
-                              height: 300,
-                              loading: _loading,
+                        ? Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: CachedNetworkImage(
+                              imageUrl: imageUrl,
                               width: double.infinity,
+                              height: 300,
+                              useOldImageOnUrlChange: true,
+                              errorWidget: (context, url, error) {
+                                return ImagePlaceholder(error: error);
+                              },
+                              imageBuilder: (context, imageProvider) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image(
+                                    image: imageProvider,
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                    const SizedBox(height: 12),
+                          )
+                        : _loading
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: ImagePlaceholder(
+                                  height: 300,
+                                  loading: _loading,
+                                  width: double.infinity,
+                                ),
+                              )
+                            : const SizedBox.shrink(),
                     prompt != null
                         ? Container(
                             width: double.infinity,
@@ -203,11 +206,7 @@ class _UserProfileDetailsState extends State<UserProfileDetails>
                               ],
                             ),
                           )
-                        : CardRealTalk(
-                            listQuestions: const [],
-                            hintText: l10n.brandTagLine,
-                          ),
-                    const SizedBox(height: 32),
+                        : const SizedBox.shrink(),
                   ],
                 );
               },
@@ -241,15 +240,17 @@ class _UserProfileDetailsState extends State<UserProfileDetails>
                           );
                         },
                       )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: ImagePlaceholder(
-                          height: size,
-                          width: size,
-                          iconSize: 32,
-                          loading: _loading,
-                        ),
-                      );
+                    : _loading
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: ImagePlaceholder(
+                              height: size,
+                              width: size,
+                              iconSize: 32,
+                              loading: _loading,
+                            ),
+                          )
+                        : const SizedBox.shrink();
               },
             ),
           ),

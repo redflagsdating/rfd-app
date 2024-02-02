@@ -13,7 +13,7 @@ import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 /// Step 1 - First/Last name
 /// Step 2 - Preferred (display) name
 /// Step 3 - ID verification (KYC)
-const maxSteps = 2;
+const maxSteps = 3;
 
 /// Onboarding stage 1 Account verification Scaffold
 class PageOnboardStage1 extends StatefulWidget {
