@@ -45,9 +45,7 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
       final stage1Step1 = userProvider.getFirstNameCache().isEmpty ||
           userProvider.getLastNameCache().isEmpty;
       final stage1Step2 = userProvider.getDisplayNameCache().isEmpty;
-      final stage1 = stage1Step1 ||
-          stage1Step2 ||
-          userProvider.getVerifySubmittedCache() != true;
+      final stage1 = stage1Step1 || stage1Step2;
 
       final stage2Step1 = userProvider.getGenderCache().isEmpty;
       final stage2Step2 = userProvider.getGenderForCache().isEmpty;
@@ -67,12 +65,14 @@ class _PageOnboardHomeState extends State<PageOnboardHome> {
 
       ///** Onboarding stage 1 - Account verification
       if (stage1) {
-        title = l10n!.pgOnboardSplash1Title;
-        buttonLabel = l10n.pgOnboardSplash1Btn;
-        builder = Builder(
-          // Always starts from step 0 to force user clarify legal name
-          builder: (context) => const PageOnboardStage1(initStep: 0),
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const PageOnboardStage1(initStep: 0),
+          ),
         );
+
+        return;
       }
 
       ///** Onboarding stage 2 - Profile
