@@ -138,37 +138,37 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
             ),
           ),
           const SizedBox(height: 8),
-          Semantics(
-            button: true,
-            enabled: true,
-            label: l10n.pgSignInWithBtn("Facebook"),
-            child: FilledButton(
-              key: const Key("page_signin_facebook"),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              onPressed: () {
-                authProvider
-                    .handleSignIn(SocialAuthProvider.facebook)
-                    .whenComplete(
-                  () {
-                    if (authProvider.message.isNotEmpty) {
-                      _scaffoldMessenger.showSnackBar(
-                        SnackBar(
-                          content: Text(authProvider.message),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-              child: Text(
-                l10n.pgSignInWithBtn("Facebook"),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
+          // Semantics(
+          //   button: true,
+          //   enabled: true,
+          //   label: l10n.pgSignInWithBtn("Facebook"),
+          //   child: FilledButton(
+          //     key: const Key("page_signin_facebook"),
+          //     style: FilledButton.styleFrom(
+          //       minimumSize: const Size.fromHeight(40),
+          //     ),
+          //     onPressed: () {
+          //       authProvider
+          //           .handleSignIn(SocialAuthProvider.facebook)
+          //           .whenComplete(
+          //         () {
+          //           if (authProvider.message.isNotEmpty) {
+          //             _scaffoldMessenger.showSnackBar(
+          //               SnackBar(
+          //                 content: Text(authProvider.message),
+          //               ),
+          //             );
+          //           }
+          //         },
+          //       );
+          //     },
+          //     child: Text(
+          //       l10n.pgSignInWithBtn("Facebook"),
+          //       textAlign: TextAlign.center,
+          //     ),
+          //   ),
+          // ),
+          // const SizedBox(height: 8),
           Semantics(
             button: true,
             enabled: true,
