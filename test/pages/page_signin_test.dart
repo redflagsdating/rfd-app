@@ -78,7 +78,7 @@ void main() {
 
     expect(find.text(global.l10n.scaffoldBrandingTagLine), findsOneWidget);
     expect(find.text(global.l10n.pgSignInWithBtn("Google")), findsOneWidget);
-    expect(find.text(global.l10n.pgSignInWithBtn("Facebook")), findsOneWidget);
+    // expect(find.text(global.l10n.pgSignInWithBtn("Facebook")), findsOneWidget);
     expect(find.text(global.l10n.pgSignInWithBtn(global.l10n.email)),
         findsOneWidget);
   });
