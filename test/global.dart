@@ -29,6 +29,8 @@ final userModel = UserModel(
   genderFor: [Gender.woman.name],
   phoneNumber: "+61411111111",
   locality: 'Sydney',
+  // Latitude and longitude of locality
+  latlng: const [-33.962008, 151.05542],
   redFlags: const ['Selfish', 'Cocky'],
   greenFlags: const ['Kind', 'Thoughtful'],
   realTalk: const {

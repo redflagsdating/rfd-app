@@ -15,11 +15,13 @@ class TextFormFieldLocation extends StatefulWidget {
   const TextFormFieldLocation({
     super.key,
     this.enabled,
+    this.onChangeCoordinates,
     required this.controller,
   });
 
   final bool? enabled;
   final TextEditingController controller;
+  final void Function(List<double>)? onChangeCoordinates;
 
   @override
   State<TextFormFieldLocation> createState() => _TextFormFieldLocationState();
@@ -92,7 +94,9 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
         setLoading(true);
         // ignore: use_build_context_synchronously
         FocusScope.of(context).requestFocus(_location);
+
         _pos = await Geolocator.getCurrentPosition();
+        widget.onChangeCoordinates!([_pos!.latitude, _pos!.longitude]);
       } catch (e) {
         rethrow;
       } finally {
@@ -126,15 +130,22 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
               _throttle = Timer(const Duration(milliseconds: 300), () async {
                 setLoading(true);
 
+                /// Reverse manually input locality to coordinates to verify
+                /// the location
                 try {
                   List<Location> locations = await locationFromAddress(
                     value,
                     localeIdentifier: Platform.localeName,
                   );
 
-                  _errorText = locations.isEmpty
-                      ? l10n.fieldLocationResolvedErrorText
-                      : null;
+                  if (locations.isEmpty) {
+                    _errorText = l10n.fieldLocationResolvedErrorText;
+                  } else {
+                    _errorText = null;
+                    widget.onChangeCoordinates!(
+                      [locations[0].latitude, locations[0].longitude],
+                    );
+                  }
                 } catch (e) {
                   logger.d(e, time: DateTime.now());
                   _errorText = l10n.fieldLocationResolvedErrorText;

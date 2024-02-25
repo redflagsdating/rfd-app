@@ -6,11 +6,13 @@ class ProfileLocality extends StatefulWidget {
   const ProfileLocality({
     super.key,
     this.enabled,
+    this.onChangeCoordinates,
     required this.controller,
   });
 
   final bool? enabled;
   final TextEditingController controller;
+  final void Function(List<double>)? onChangeCoordinates;
 
   @override
   State<ProfileLocality> createState() => _ProfileLocalityState();
@@ -35,6 +37,7 @@ class _ProfileLocalityState extends State<ProfileLocality> {
         TextFormFieldLocation(
           enabled: widget.enabled,
           controller: widget.controller,
+          onChangeCoordinates: widget.onChangeCoordinates,
         )
       ],
     );

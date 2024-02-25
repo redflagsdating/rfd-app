@@ -31,6 +31,7 @@ class PageOnboardStage2 extends StatefulWidget {
 
 class _PageOnboardStage2State extends State<PageOnboardStage2>
     with MixinOnboardState {
+  List<double>? _coordinates;
   late UserProvider _userProvider;
   final _birthdayCtrl = TextEditingController();
   final _localityCtrl = TextEditingController();
@@ -122,6 +123,10 @@ class _PageOnboardStage2State extends State<PageOnboardStage2>
                 }
               } else if (step == 3) {
                 await _userProvider.setLocality(locality, localOnly: false);
+                await _userProvider.setLatlng(
+                  _coordinates ?? [],
+                  localOnly: false,
+                );
               }
 
               setSubmitting(false);
@@ -149,6 +154,9 @@ class _PageOnboardStage2State extends State<PageOnboardStage2>
                           ? ProfileLocality(
                               enabled: !submitting,
                               controller: _localityCtrl,
+                              onChangeCoordinates: (values) {
+                                _coordinates = values;
+                              },
                             )
                           : ProfilePhotos(
                               enabled: !submitting,

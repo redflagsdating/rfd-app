@@ -21,6 +21,10 @@ enum UserStringListFields {
   connections,
 }
 
+enum UserDoubleListFields {
+  latlng,
+}
+
 enum UserDateTimeFields {
   dob,
   createdAt,
@@ -51,6 +55,7 @@ enum UserFields {
   gender,
   genderFor,
   locality,
+  latlng,
   phoneNumber,
   onboarded,
   verified,
@@ -78,6 +83,7 @@ class UserModel {
     this.gender,
     this.genderFor,
     this.locality,
+    this.latlng,
     this.phoneNumber,
     this.realTalk,
     this.redFlags,
@@ -99,6 +105,7 @@ class UserModel {
   final String? gender;
   final List<String>? genderFor;
   final String? locality;
+  final List<double>? latlng;
   final String? phoneNumber;
   final Map<String, String>? realTalk;
   final List<String>? redFlags;
@@ -122,6 +129,7 @@ class UserModel {
       UserFields.gender.name: gender,
       UserFields.genderFor.name: genderFor,
       UserFields.locality.name: locality,
+      UserFields.latlng.name: latlng,
       UserFields.phoneNumber.name: phoneNumber,
       UserFields.realTalk.name: realTalk,
       UserFields.redFlags.name: redFlags,
@@ -148,6 +156,7 @@ class UserModel {
           gender: json[UserFields.gender.name],
           genderFor: json[UserFields.genderFor.name]?.cast<String>(),
           locality: json[UserFields.locality.name],
+          latlng: json[UserFields.latlng.name]?.cast<double>(),
           phoneNumber: json[UserFields.phoneNumber.name],
           realTalk: json[UserFields.realTalk.name]?.cast<String, String>(),
           redFlags: json[UserFields.redFlags.name]?.cast<String>(),

@@ -17,6 +17,7 @@ class PageProfileSettingsLocality extends StatefulWidget {
 class _PageProfileSettingsLocalityState
     extends State<PageProfileSettingsLocality> {
   bool _enabled = true;
+  List<double>? _coordinates;
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
   late ScaffoldMessengerState _scaffoldMessenger;
@@ -68,15 +69,23 @@ class _PageProfileSettingsLocalityState
 
               _setEnabled(false);
 
-              final result = await userProvider.setLocality(
-                locality,
-                localOnly: false,
-              );
+              final results = await Future.wait([
+                userProvider.setLocality(
+                  locality,
+                  localOnly: false,
+                ),
+                _coordinates != null
+                    ? userProvider.setLatlng(
+                        _coordinates!,
+                        localOnly: false,
+                      )
+                    : Future.value(true),
+              ]);
 
               _scaffoldMessenger.showSnackBar(
                 SnackBar(
                   duration: const Duration(seconds: 2),
-                  content: Text(result == true
+                  content: Text(results.every((result) => result == true)
                       ? l10n.pgProfileSuccessfulUpdated
                       : l10n.pgProfileFailedUpdated),
                 ),
@@ -89,7 +98,11 @@ class _PageProfileSettingsLocalityState
       ],
       content: Form(
         key: _form,
-        child: ProfileLocality(enabled: _enabled, controller: _controller),
+        child: ProfileLocality(
+          enabled: _enabled,
+          controller: _controller,
+          onChangeCoordinates: (values) => _coordinates = values,
+        ),
       ),
       onBackPressed: () {
         Navigator.of(context).pop();

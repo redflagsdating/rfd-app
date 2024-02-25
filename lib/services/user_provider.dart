@@ -78,6 +78,16 @@ class UserProvider extends ChangeNotifier {
     return await _getField(field.name);
   }
 
+  Future<List<double>?> _getDoubleListField(UserDoubleListFields field) async {
+    final cached = localStorage.getStringList(field.name);
+
+    if (cached != null) {
+      return Future.value(cached.map((v) => double.parse(v)).toList());
+    }
+
+    return await _getField(field.name);
+  }
+
   Future<bool?> _setStringField(UserStringFields field, String value,
       {bool? silent, bool? localOnly}) async {
     final result = await localStorage.setString(field.name, value);
@@ -99,6 +109,25 @@ class UserProvider extends ChangeNotifier {
     final result = localStorage.setStringList(
       field.name,
       list.toList(),
+    );
+
+    if (localOnly != true) {
+      await _userDocRef?.update({field.name: list.toList()});
+    }
+
+    if (silent != true) {
+      notifyListeners();
+    }
+
+    return result;
+  }
+
+  Future<bool?> _setDoubleListField(
+      UserDoubleListFields field, List<double> list,
+      {bool? silent, bool? localOnly}) async {
+    final result = localStorage.setStringList(
+      field.name,
+      list.map((v) => v.toString()).toList(),
     );
 
     if (localOnly != true) {
@@ -188,6 +217,7 @@ class UserProvider extends ChangeNotifier {
     result &= await localStorage.remove(UserFields.gender.name);
     result &= await localStorage.remove(UserFields.genderFor.name);
     result &= await localStorage.remove(UserFields.locality.name);
+    result &= await localStorage.remove(UserFields.latlng.name);
     result &= await localStorage.remove(UserFields.phoneNumber.name);
     result &= await localStorage.remove(UserFields.onboarded.name);
     result &= await localStorage.remove(UserFields.verified.name);
@@ -216,6 +246,7 @@ class UserProvider extends ChangeNotifier {
     await setPhoneNumber(user.phoneNumber ?? "");
     await setGender(user.gender ?? "");
     await setLocality(user.locality ?? "");
+    await setLatlng(user.latlng ?? []);
     await setPhotoUrl(user.photoUrl ?? "");
     await setGenderFor(user.genderFor ?? []);
     await setRealTalk(user.realTalk ?? {});
@@ -257,6 +288,7 @@ class UserProvider extends ChangeNotifier {
       gender: getGenderCache(),
       genderFor: getGenderForCache(),
       locality: getLocalityCache(),
+      latlng: getLatlngCache(),
       realTalk: getRealTalkCache(),
       redFlags: getRedFlagsCache(),
       greenFlags: getGreenFlagsCache(),
@@ -322,7 +354,6 @@ class UserProvider extends ChangeNotifier {
   ///
   /// List<String> field getter functions catch-only (from SharedPreference)
   ///
-
   List<String> getGenderForCache() {
     return _getStringListFieldCache(UserStringListFields.genderFor);
   }
@@ -337,6 +368,16 @@ class UserProvider extends ChangeNotifier {
 
   List<String> getConnectionsCache() {
     return _getStringListFieldCache(UserStringListFields.connections);
+  }
+
+  ///
+  /// List<double> field getter functions catch-only (from SharedPreference)
+  ///
+  List<double> getLatlngCache() {
+    final cached =
+        localStorage.getStringList(UserDoubleListFields.latlng.name) ?? [];
+
+    return cached.map((v) => double.parse(v)).toList();
   }
 
   ///
@@ -376,7 +417,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   ///
-  /// List<String? getter functions catch-first (fallback to Firebase DB)
+  /// List<String?> getter functions catch-first (fallback to Firebase DB)
   ///
   Future<List<String>?> getGenderFor() async {
     return await _getStringListField(UserStringListFields.genderFor);
@@ -392,6 +433,13 @@ class UserProvider extends ChangeNotifier {
 
   Future<List<String>?> getConnections() async {
     return await _getStringListField(UserStringListFields.connections);
+  }
+
+  ///
+  /// List<double?> getter functions catch-first (fallback to Firebase DB)
+  ///
+  Future<List<double>?> getLatlng() async {
+    return await _getDoubleListField(UserDoubleListFields.latlng);
   }
 
   ///
@@ -642,6 +690,22 @@ class UserProvider extends ChangeNotifier {
     return _setStingListField(
       UserStringListFields.connections,
       connections,
+      silent: silent,
+      localOnly: localOnly,
+    );
+  }
+
+  ///
+  /// List<double> field setter functions
+  ///
+  Future<bool?> setLatlng(
+    List<double> latlng, {
+    bool? silent = true,
+    bool? localOnly = true,
+  }) async {
+    return _setDoubleListField(
+      UserDoubleListFields.latlng,
+      latlng,
       silent: silent,
       localOnly: localOnly,
     );

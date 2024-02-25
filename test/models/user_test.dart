@@ -32,6 +32,7 @@ void main() {
     expect(listEq(userData.genderFor, userModel.genderFor), isTrue);
     expect(userData.phoneNumber == userModel.phoneNumber, isTrue);
     expect(userData.locality == userModel.locality, isTrue);
+    expect(listEq(userData.latlng, userModel.latlng), isTrue);
     expect(listEq(userData.redFlags, userModel.redFlags), isTrue);
     expect(listEq(userData.greenFlags, userModel.greenFlags), isTrue);
     expect(mapEquals(userData.realTalk, userModel.realTalk), isTrue);
