@@ -329,17 +329,22 @@ class AuthProvider extends ChangeNotifier {
     _code = e.code;
     _message = e.message ?? '';
 
+    /// Note: 29.03.2024 Brian Liu
+    /// Due to Email enumeration protection, fetchSignInMethodsForEmail function
+    /// is deprecated for that purpose to increase security.
+    /// TODO: We shall revisit either remove the snippet or alternative
+    ///
     // An existing account has been signed in with a different auth provider
-    if (_code == 'account-exists-with-different-credential') {
-      final email = (e as FirebaseAuthException).email;
+    // if (_code == 'account-exists-with-different-credential') {
+    //   final email = (e as FirebaseAuthException).email;
 
-      if (email != null) {
-        final providers = await firebaseAuth.fetchSignInMethodsForEmail(email);
+    //   if (email != null) {
+    //     final providers = await firebaseAuth.fetchSignInMethodsForEmail(email);
 
-        _message =
-            '$_message We have detected that your last signed in with ${providers.first}.';
-      }
-    }
+    //     _message =
+    //         '$_message We have detected that your last signed in with ${providers.first}.';
+    //   }
+    // }
 
     _status = AuthStatus.authenticateError;
     notifyListeners();
