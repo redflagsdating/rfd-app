@@ -128,6 +128,7 @@
   "pgOnboardSplash3Title": "We are challenging the way we connect with others on dating apps by making self-awareness and vulnerability the expectation and core focus. Authenticity and open communication create stronger and longer lasting relationships. Take it slow, be honest and keep it real.",
   "pgOnboardSplash3Btn": "Begin real talk",
   "pgOnboardSplashCompleteTagline": "All done {displayName}! We're now preparing your first 3 daily profiles",
+  "pgOnboardSplashCompleteEmptyErrorText": "No new connections can be found at the moment, please try again later.",
   "pgLocationSplashTitle": "Improving your chances of meeting someone nearby for a better match.",
   "pgLocationSplashBtn": "Turn on location",
   "pgFullNameHeadline": "What's your full name?",
@@ -179,5 +180,5 @@
   "pgProfileSuccessfulUpdated": "Profile updated successfully.",
   "pgProfileFailedUpdated": "Profile updated failed.",
   "pgHomeTitle": "Your connections",
-  "pgHomeEmpty": "We're still searching your authentic connections!"
+  "pgHomeEmpty": "No connections yet! Swipe down to search more authentic connections."
 }

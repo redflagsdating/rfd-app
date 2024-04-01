@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:red_flags/mixins/mixin_api.dart';
 import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/qod_answer.dart';
@@ -16,7 +17,7 @@ class PageHome extends StatefulWidget {
   State<PageHome> createState() => _PageHomeState();
 }
 
-class _PageHomeState extends State<PageHome> {
+class _PageHomeState extends State<PageHome> with MixinApi {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -30,18 +31,23 @@ class _PageHomeState extends State<PageHome> {
       alignment: Alignment.center,
       child: RefreshIndicator(
         onRefresh: () async {
+          // Attempt to find new connections on refresh
+          if (connections.length < 3) {
+            await addUserNewConnections();
+          }
+
           // Refetch current logged in userModel
           final userModel = await userProvider.getUserModel();
 
           if (userModel != null) {
             // Update cache in SharedPreference
             await userProvider.updateUserCache(userModel);
-            final connections = userModel.connections;
+            final latestConnections = userModel.connections;
 
             // Below fetches are mainly for CardConnection to update cache
-            if (connections != null) {
+            if (latestConnections != null) {
               await Future.wait(
-                connections.map((id) async {
+                latestConnections.map((id) async {
                   // Refetch DocumentSnapshot of the connection document
                   final snapshot = await connectionRef.doc(id).get();
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:red_flags/mixins/mixin_api.dart';
 import 'package:red_flags/models/user.dart' show UserModel;
 import 'package:red_flags/services/user_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,7 +37,7 @@ enum AuthStatus {
 
 /// AuthProvider can be retrieved anywhere if you have access to the `context`
 /// e.g. `AuthProvider authProvider = Provider.of<AuthProvider>(context);`
-class AuthProvider extends ChangeNotifier {
+class AuthProvider extends ChangeNotifier with MixinApi {
   // Required parameters for testability in order to init instance externally
   // so we can init mock/fake instance for testing.
   AuthProvider({
@@ -419,11 +421,34 @@ class AuthProvider extends ChangeNotifier {
     );
 
     if (userInfo != null) {
-      final user = await userProvider.getUserModelById(uid);
+      QuerySnapshot<UserModel> user = await userProvider.getUserModelById(uid);
 
       // Update cache user data from database to keep it up-to-date
       if (user.docs.isNotEmpty) {
-        userProvider.updateUserCache(user.docs.first.data());
+        UserModel userModel = user.docs.first.data();
+        final connections = userModel.connections;
+
+        // Attempt to find new connections on refresh
+        if (userModel.onboarded == true &&
+            userModel.verified == true &&
+            (connections == null || connections.length < 3)) {
+          try {
+            final result = await addUserNewConnections();
+
+            // Refetch userModel when connections field is updated
+            if (result.data.isNotEmpty &&
+                result.data.every((id) => id != null)) {
+              userModel =
+                  (await userProvider.getUserModelById(uid)).docs.first.data();
+            }
+          } catch (error) {
+            logger.e(
+              "Invoke [addUserNewConnections] on isSignedIn() check but with error $error",
+            );
+          }
+        }
+
+        userProvider.updateUserCache(userModel);
       }
       _status = AuthStatus.authenticated;
       notifyListeners();
