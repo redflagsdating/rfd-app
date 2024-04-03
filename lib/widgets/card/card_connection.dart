@@ -353,7 +353,7 @@ class _CardConnectionContentState extends State<_CardConnectionContent> {
                       QodFields.createdAt.name,
                       descending: true,
                     )
-                    .getCacheFirst(),
+                    .get(),
                 builder: (context, snapshot) {
                   final latestQodSnapshot = snapshot.data?.docs.firstOrNull;
                   final latestQod = latestQodSnapshot?.data();
@@ -421,7 +421,6 @@ class _CardConnectionState extends State<CardConnection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
-    final qodCollectionRef = qodRef(widget.id);
     final connectionDocRef = connectionRef.doc(widget.id);
 
     return ConstrainedBox(
@@ -475,7 +474,7 @@ class _CardConnectionState extends State<CardConnection> {
                       ? _CardConnectionError(message: message)
                       : _CardConnectionContent(
                           userModel: docs.first.data(),
-                          qodCollectionRef: qodCollectionRef,
+                          qodCollectionRef: qodRef(widget.id),
                         );
             },
           );

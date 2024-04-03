@@ -7,6 +7,7 @@ import 'package:red_flags/mixins/mixin_api.dart';
 import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/qod_answer.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/card/card_connection.dart';
 
@@ -22,6 +23,7 @@ class _PageHomeState extends State<PageHome> with MixinApi {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final logger = context.read<LoggerProvider>().logger;
     final userProvider = Provider.of<UserProvider>(context);
     final connections = userProvider.getConnectionsCache();
 
@@ -33,7 +35,11 @@ class _PageHomeState extends State<PageHome> with MixinApi {
         onRefresh: () async {
           // Attempt to find new connections on refresh
           if (connections.length < 3) {
-            await addUserNewConnections();
+            try {
+              await addUserNewConnections();
+            } catch (error) {
+              logger.e(error, time: DateTime.now());
+            }
           }
 
           // Refetch current logged in userModel
@@ -47,9 +53,9 @@ class _PageHomeState extends State<PageHome> with MixinApi {
             // Below fetches are mainly for CardConnection to update cache
             if (latestConnections != null) {
               await Future.wait(
-                latestConnections.map((id) async {
+                latestConnections.map((connectionId) async {
                   // Refetch DocumentSnapshot of the connection document
-                  final snapshot = await connectionRef.doc(id).get();
+                  final snapshot = await connectionRef.doc(connectionId).get();
 
                   // Find the connection uid
                   final uid = snapshot
@@ -63,7 +69,7 @@ class _PageHomeState extends State<PageHome> with MixinApi {
                   }
 
                   /// Refetch the latest QoD of the connection document
-                  final qodSnapshot = await qodRef(id)
+                  final qodSnapshot = await qodRef(connectionId)
                       .orderBy(
                         QodFields.createdAt.name,
                         descending: true,
@@ -71,8 +77,8 @@ class _PageHomeState extends State<PageHome> with MixinApi {
                       .get();
 
                   // Refetch qodAnswer documents of the latest QoD
-                  await qodAnswerRef(
-                          qodRef(id).doc(qodSnapshot.docs.firstOrNull?.id))
+                  await qodAnswerRef(qodRef(connectionId)
+                          .doc(qodSnapshot.docs.firstOrNull?.id))
                       .get();
                 }),
               );
