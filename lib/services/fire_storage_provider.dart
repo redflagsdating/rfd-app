@@ -78,23 +78,4 @@ class FireStorageProvider {
 
     return imageUrl;
   }
-
-  // Purge images in Firebase storage for delete account scenario mainly
-  Future<void> deleteImgStorage([String? uid]) async {
-    final ref = uid != null ? imgStorageForRef(uid) : imgStorageRef;
-    final files = await ref.listAll();
-
-    try {
-      for (var file in files.items) {
-        await file.delete();
-      }
-
-      logger.d(
-        "Successfully erase user storage of images",
-        time: DateTime.now(),
-      );
-    } catch (e) {
-      logger.e(e, time: DateTime.now());
-    }
-  }
 }

@@ -7,7 +7,6 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/services/auth_provider.dart';
-import 'package:red_flags/services/fire_storage_provider.dart';
 import 'package:red_flags/services/identity_verification.dart';
 import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
@@ -32,7 +31,6 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
     final userProvider = context.read<UserProvider>();
     final authProvider = context.read<AuthProvider>();
     final logger = context.read<LoggerProvider>().logger;
-    final storageProvider = context.read<FireStorageProvider>();
     final lastProviderId = authProvider.getLastLoggedInAuthProvider();
 
     setState(() {
@@ -67,7 +65,6 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
 
       return true;
     } else if (await authProvider.handleReAuthenticate(lastProviderId)) {
-      await storageProvider.deleteImgStorage();
       await authProvider.deleteUser();
 
       // ignore: use_build_context_synchronously
@@ -106,10 +103,8 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
       _subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) async {
           final authProvider = context.read<AuthProvider>();
-          final storageProvider = context.read<FireStorageProvider>();
 
           if (await authProvider.handleReAuthenticate(event.link.toString())) {
-            await storageProvider.deleteImgStorage();
             await authProvider.deleteUser();
             await _subscription.cancel();
 
