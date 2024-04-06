@@ -353,46 +353,44 @@ class _CardConnectionContentState extends State<_CardConnectionContent> {
                       QodFields.createdAt.name,
                       descending: true,
                     )
-                    .get(),
+                    .getCacheFirst(),
                 builder: (context, snapshot) {
                   final latestQodSnapshot = snapshot.data?.docs.firstOrNull;
                   final latestQod = latestQodSnapshot?.data();
 
-                  return FadeThroughTransitionSwitcher(
-                    child: !snapshot.hasData
-                        ? const SizedBox(height: 160)
-                        : Container(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                latestQod != null
-                                    ? Text(
-                                        latestQod.question,
-                                        maxLines: 3,
-                                        style: theme.textTheme.titleMedium,
-                                        overflow: TextOverflow.ellipsis,
-                                      )
-                                    : Text(
-                                        l10n!.cardConnectionEmptyQod,
-                                        style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w300,
-                                          color: theme.colorScheme.outline,
-                                        ),
+                  return !snapshot.hasData
+                      ? const SizedBox(height: 160)
+                      : Container(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              latestQod != null
+                                  ? Text(
+                                      latestQod.question,
+                                      maxLines: 3,
+                                      style: theme.textTheme.titleMedium,
+                                      overflow: TextOverflow.ellipsis,
+                                    )
+                                  : Text(
+                                      l10n!.cardConnectionEmptyQod,
+                                      style: TextStyle(
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w300,
+                                        color: theme.colorScheme.outline,
                                       ),
-                                const SizedBox(height: 4),
-                                if (latestQod != null)
-                                  _CardConnectionActions(
-                                    qodModel: latestQod,
-                                    userModel: widget.userModel,
-                                    qodDocRef: latestQodSnapshot!.reference,
-                                  )
-                              ],
-                            ),
+                                    ),
+                              const SizedBox(height: 4),
+                              if (latestQod != null)
+                                _CardConnectionActions(
+                                  qodModel: latestQod,
+                                  userModel: widget.userModel,
+                                  qodDocRef: latestQodSnapshot!.reference,
+                                )
+                            ],
                           ),
-                  );
+                        );
                 },
               ),
             ],
