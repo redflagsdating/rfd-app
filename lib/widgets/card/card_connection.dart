@@ -189,8 +189,11 @@ class _CardConnectionActionsState extends State<_CardConnectionActions>
                                 ),
                                 Text(
                                   l10n.cardUserProfileAnswerBtnNote(
-                                    DateTime.now()
-                                        .difference(widget.qodModel.createdAt)
+                                    widget.qodModel.createdAt
+                                        .add(
+                                          const Duration(days: 1),
+                                        )
+                                        .difference(DateTime.now())
                                         .inHours,
                                   ),
                                   style: TextStyle(
