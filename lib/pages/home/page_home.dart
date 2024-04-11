@@ -26,6 +26,7 @@ class _PageHomeState extends State<PageHome> with MixinApi {
     final logger = context.read<LoggerProvider>().logger;
     final userProvider = Provider.of<UserProvider>(context);
     final connections = userProvider.getConnectionsCache();
+    final isVerified = userProvider.getVerifiedCache() == true;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24),
@@ -33,8 +34,8 @@ class _PageHomeState extends State<PageHome> with MixinApi {
       alignment: Alignment.center,
       child: RefreshIndicator(
         onRefresh: () async {
-          // Attempt to find new connections on refresh
-          if (connections.length < 3) {
+          // Search new connections
+          if (isVerified && connections.length < 3) {
             try {
               await addUserNewConnections();
             } catch (error) {
@@ -99,7 +100,9 @@ class _PageHomeState extends State<PageHome> with MixinApi {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 28),
                             child: Text(
-                              l10n!.pgHomeEmpty,
+                              isVerified
+                                  ? l10n!.pgHomeVerifiedEmpty
+                                  : l10n!.pgHomeNotVerifiedEmpty,
                               textAlign: TextAlign.center,
                               style: theme.textTheme
                                   .apply(bodyColor: theme.colorScheme.secondary)
@@ -109,7 +112,9 @@ class _PageHomeState extends State<PageHome> with MixinApi {
                           SvgPicture.asset(
                             "assets/rfi-daily-profile-transparent.svg",
                             height: MediaQuery.of(context).size.width,
-                            semanticsLabel: l10n.pgHomeEmpty,
+                            semanticsLabel: isVerified
+                                ? l10n.pgHomeVerifiedEmpty
+                                : l10n.pgHomeNotVerifiedEmpty,
                           ),
                         ]
                       : [

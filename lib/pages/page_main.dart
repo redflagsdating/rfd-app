@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_kyc_state.dart';
 import 'package:red_flags/pages/home/page_home.dart';
 import 'package:red_flags/pages/profile/page_profile_settings.dart';
+import 'package:red_flags/pages/profile/page_profile_settings_kyc.dart';
+import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
 class PageMain extends StatefulWidget {
@@ -20,6 +23,52 @@ class _PageMainState extends State<PageMain> with MixinKycState {
   void initState() {
     updateKycStatus();
     super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => _showKycBanner());
+  }
+
+  void _showKycBanner() {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+    final isSubmitted = context.read<UserProvider>().getVerifySubmittedCache();
+
+    if (isSubmitted != true) {
+      scaffoldMessenger.showMaterialBanner(
+        MaterialBanner(
+          content: Text(
+            l10n!.pgHomeKycBanner,
+          ),
+          leading: Icon(
+            Icons.verified_rounded,
+            color: theme.colorScheme.onSecondary,
+          ),
+          actions: [
+            FilledButton.tonal(
+              onPressed: () {
+                scaffoldMessenger.clearMaterialBanners();
+
+                Future.delayed(const Duration(milliseconds: 300)).whenComplete(
+                  () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PageProfileSettingsKyc(
+                          title: Text(
+                            l10n.verification,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: Text(l10n.verify),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override

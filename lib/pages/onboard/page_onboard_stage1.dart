@@ -7,13 +7,11 @@ import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 import 'package:red_flags/widgets/profile/profile_display_name.dart';
 import 'package:red_flags/widgets/profile/profile_full_name.dart';
-import 'package:red_flags/widgets/profile/profile_kyc.dart';
 import 'package:red_flags/widgets/scaffold_page_onboard.dart';
 
 /// Step 1 - First/Last name
 /// Step 2 - Preferred (display) name
-/// Step 3 - ID verification (KYC)
-const maxSteps = 3;
+const maxSteps = 2;
 
 /// Onboarding stage 1 Account verification Scaffold
 class PageOnboardStage1 extends StatefulWidget {
@@ -141,12 +139,10 @@ class _PageOnboardStage1State extends State<PageOnboardStage1>
                   firstNameCtrl: _firstNameCtrl,
                   lastNameCtrl: _lastNameCtrl,
                 )
-              : step == 1
-                  ? ProfileDisplayName(
-                      enabled: !submitting,
-                      controller: _displayNameCtrl,
-                    )
-                  : const ProfileKyc(),
+              : ProfileDisplayName(
+                  enabled: !submitting,
+                  controller: _displayNameCtrl,
+                ),
         ),
       ),
     );

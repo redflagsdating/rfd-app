@@ -31,6 +31,7 @@
   "age": "Age",
   "questionOfDay": "QoD",
   "kilometer": "km",
+  "verify": "Verify",
   "verification": "Verification",
   "photo": "{count, plural, =1{Photo} other{Photos}}",
   "contactUs": "Contact us",
@@ -127,7 +128,7 @@
   "pgOnboardSplash2Btn": "Create basic profile",
   "pgOnboardSplash3Title": "We are challenging the way we connect with others on dating apps by making self-awareness and vulnerability the expectation and core focus. Authenticity and open communication create stronger and longer lasting relationships. Take it slow, be honest and keep it real.",
   "pgOnboardSplash3Btn": "Begin real talk",
-  "pgOnboardSplashCompleteTagline": "All done {displayName}! We're now preparing your first 3 daily profiles",
+  "pgOnboardSplashCompleteTagline": "All done {displayName}! We're now preparing your profile.",
   "pgOnboardSplashCompleteEmptyErrorText": "No new connections can be found at the moment, please try again later.",
   "pgLocationSplashTitle": "Improving your chances of meeting someone nearby for a better match.",
   "pgLocationSplashBtn": "Turn on location",
@@ -180,5 +181,7 @@
   "pgProfileSuccessfulUpdated": "Profile updated successfully.",
   "pgProfileFailedUpdated": "Profile updated failed.",
   "pgHomeTitle": "Your connections",
-  "pgHomeEmpty": "No connections yet! Swipe down to search more authentic connections."
+  "pgHomeVerifiedEmpty": "No connections yet! Swipe down to search more authentic connections.",
+  "pgHomeNotVerifiedEmpty": "No connections yet! Verify your account now to start connecting.",
+  "pgHomeKycBanner": "You are creating the worlds safest dating community. Verify your account now."
 }
