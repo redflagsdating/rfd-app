@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/extensions/firestore_extension.dart';
 import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
@@ -27,7 +26,6 @@ class _CardConnectionState extends State<CardConnection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
-    final connectionDocRef = connectionRef.doc(widget.id);
 
     return ConstrainedBox(
       constraints: BoxConstraints(
@@ -37,8 +35,8 @@ class _CardConnectionState extends State<CardConnection> {
         maxHeight: (MediaQuery.of(context).size.height * 0.7).ceil().toDouble(),
       ),
       // Fetch connection document data
-      child: FutureBuilder(
-        future: connectionDocRef.getCacheFirst(),
+      child: StreamBuilder(
+        stream: connectionRef.doc(widget.id).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const CardConnectionPlaceholder();
@@ -60,13 +58,13 @@ class _CardConnectionState extends State<CardConnection> {
             (uid) => uid != uidMyself,
           );
 
-          return FutureBuilder(
+          return StreamBuilder(
             /// Exception use case not using userProvider.getUserModelById
             /// mainly to use getCacheFirst() extension function for server
             /// fallback.
-            future: userProvider.usersRef
+            stream: userProvider.usersRef
                 .where(UserFields.uid.name, isEqualTo: uid)
-                .getCacheFirst(),
+                .snapshots(),
             builder: (context, snapshot) {
               final docs = snapshot.data?.docs;
               final isEmpty = docs == null || docs.isEmpty;

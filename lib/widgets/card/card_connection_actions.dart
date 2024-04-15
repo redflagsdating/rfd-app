@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:red_flags/extensions/firestore_extension.dart';
 import 'package:red_flags/mixins/mixin_qod.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/qod_answer.dart';
@@ -83,8 +82,8 @@ class CardConnectionActionsState extends State<CardConnectionActions>
           qodDocRef: widget.qodDocRef,
         ),
         const SizedBox(height: 8),
-        FutureBuilder(
-          future: qodAnswerRef(widget.qodDocRef).getCacheFirst(),
+        StreamBuilder(
+          stream: qodAnswerRef(widget.qodDocRef).snapshots(),
           builder: (context, snapshot) {
             final qodSnapshot = snapshot.data;
             final status = getQodStatus(qodSnapshot);

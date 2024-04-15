@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:red_flags/extensions/firestore_extension.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/profile/page_full_profile_view.dart';
@@ -83,14 +82,14 @@ class CardConnectionContentState extends State<CardConnectionContent> {
                   )
                 ],
               ),
-              FutureBuilder(
+              StreamBuilder(
                 // Latest Qod of the connection
-                future: widget.qodCollectionRef
+                stream: widget.qodCollectionRef
                     .orderBy(
                       QodFields.createdAt.name,
                       descending: true,
                     )
-                    .getCacheFirst(),
+                    .snapshots(),
                 builder: (context, snapshot) {
                   final latestQodSnapshot = snapshot.data?.docs.firstOrNull;
                   final latestQod = latestQodSnapshot?.data();
