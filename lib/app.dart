@@ -69,10 +69,6 @@ class App extends StatelessWidget {
                 fontFamily: 'Nunito',
                 textTheme: typographyTheme,
                 splashColor: lightColorScheme.inversePrimary.withOpacity(0.3),
-                appBarTheme: AppBarTheme(
-                  backgroundColor: lightColorScheme.background,
-                  surfaceTintColor: lightColorScheme.background,
-                ),
                 highlightColor:
                     lightColorScheme.inversePrimary.withOpacity(0.3),
                 inputDecorationTheme: InputDecorationTheme(

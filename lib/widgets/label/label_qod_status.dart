@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,7 +47,8 @@ class _LabelQodStatusState extends State<LabelQodStatus> with MixinQod {
         if (status == QodStatus.answered) {
           label = latestAnswer?.answeredAt != null
               ? l10n.labelQodStatusAnswered(
-                  DateFormat.MMMd().format(latestAnswer!.answeredAt),
+                  DateFormat.MMMd(Platform.localeName)
+                      .format(latestAnswer!.answeredAt),
                 )
               : l10n.unknown;
         } else if (isAwaitingByYou(qodSnapshot, yourUid)) {

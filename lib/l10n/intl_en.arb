@@ -7,12 +7,15 @@
   "home": "Home",
   "done": "Done",
   "skip": "Skip",
+  "today": "Today",
+  "yesterday": "Yesterday",
   "delete": "Delete",
   "camera": "Camera",
   "gallery": "Gallery",
   "resend": "Resend",
   "email": "Email",
   "allow": "Allow",
+  "message": "Message",
   "calendar": "Calendar",
   "confirm": "Confirm",
   "cancel": "Cancel",
@@ -185,7 +188,8 @@
   "pgHomeVerifiedEmpty": "No connections yet! Swipe down to search more authentic connections.",
   "pgHomeNotVerifiedEmpty": "No connections yet! Verify your account now to start connecting.",
   "pgHomeKycBanner": "You are creating the worlds safest dating community. Verify your account now.",
-  "pgFreeChatHeadline": "You don’t have access to chat yet",
-  "pgFreeChatBody": "Continue answering ‘Question of the Day’ on a 3 day streak to unlock free chat with {displayName}",
-  "pgFreeChatBtn": "Back to Profile"
+  "pgFreeChatSplashHeadline": "You don’t have access to chat yet",
+  "pgFreeChatSplashBody": "Continue answering ‘Question of the Day’ on a 3 day streak to unlock free chat with {displayName}",
+  "pgFreeChatSplashBtn": "Back to Profile",
+  "pgFreeChatActionMoreLabel": "More actions to {displayName}"
 }

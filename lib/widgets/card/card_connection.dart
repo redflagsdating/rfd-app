@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/connection.dart';
-import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/card/card_connection_content.dart';
@@ -78,7 +77,7 @@ class _CardConnectionState extends State<CardConnection> {
                       ? CardConnectionError(message: message)
                       : CardConnectionContent(
                           userModel: docs.first.data(),
-                          qodCollectionRef: qodRef(widget.id),
+                          connectionId: widget.id,
                         );
             },
           );

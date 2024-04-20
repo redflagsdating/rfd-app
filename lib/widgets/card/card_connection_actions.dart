@@ -7,24 +7,23 @@ import 'package:red_flags/mixins/mixin_qod.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/qod_answer.dart';
 import 'package:red_flags/models/user.dart';
-import 'package:red_flags/pages/page_freechat_splash.dart';
+import 'package:red_flags/pages/page_freechat.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
-import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/label/label_qod_status.dart';
 import 'package:red_flags/widgets/qod_content.dart';
 
 class CardConnectionActions extends StatefulWidget {
   const CardConnectionActions({
     super.key,
-    required this.qodModel,
-    required this.qodDocRef,
     required this.userModel,
+    required this.connectionId,
+    required this.lastQodSnapshot,
   });
 
   final UserModel userModel;
-  final QodModel qodModel;
-  final DocumentReference<QodModel> qodDocRef;
+  final String connectionId;
+  final QueryDocumentSnapshot<QodModel> lastQodSnapshot;
 
   @override
   State<CardConnectionActions> createState() => CardConnectionActionsState();
@@ -57,8 +56,8 @@ class CardConnectionActionsState extends State<CardConnectionActions>
         // Wrapped inside Scaffold mainly for Snackbar
         return Scaffold(
           body: QodContent(
-            qodModel: widget.qodModel,
-            qodDocRef: widget.qodDocRef,
+            qodModel: widget.lastQodSnapshot.data(),
+            qodDocRef: widget.lastQodSnapshot.reference,
             userModel: widget.userModel,
           ),
         );
@@ -71,6 +70,8 @@ class CardConnectionActionsState extends State<CardConnectionActions>
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
+    final lastQodDocRef = widget.lastQodSnapshot.reference;
+    final lastQodModel = widget.lastQodSnapshot.data();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,11 +80,11 @@ class CardConnectionActionsState extends State<CardConnectionActions>
         /// refresh the widget
         LabelQodStatus(
           displayName: widget.userModel.displayName ?? '',
-          qodDocRef: widget.qodDocRef,
+          qodDocRef: lastQodDocRef,
         ),
         const SizedBox(height: 8),
         StreamBuilder(
-          stream: qodAnswerRef(widget.qodDocRef).snapshots(),
+          stream: qodAnswerRef(lastQodDocRef).snapshots(),
           builder: (context, snapshot) {
             final qodSnapshot = snapshot.data;
             final status = getQodStatus(qodSnapshot);
@@ -127,7 +128,7 @@ class CardConnectionActionsState extends State<CardConnectionActions>
                                 ),
                                 Text(
                                   l10n.cardConnectionBtnDescription(
-                                    widget.qodModel.createdAt
+                                    lastQodModel.createdAt
                                         .add(
                                           const Duration(days: 1),
                                         )
@@ -155,10 +156,12 @@ class CardConnectionActionsState extends State<CardConnectionActions>
                                 style: FilledButton.styleFrom(
                                   // Don't go over 16 mainly for iPhone smallest screen
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
+                                    horizontal: 16,
+                                  ),
                                   shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(8),
+                                    ),
                                   ),
                                 ),
                                 child: Text(l10n.cardConnectionBtnViewQod),
@@ -169,14 +172,10 @@ class CardConnectionActionsState extends State<CardConnectionActions>
                               child: FilledButton.icon(
                                 onPressed: () {
                                   Navigator.of(context).push(
-                                    PageFadeRouteBuilder(
-                                      page: Builder(
-                                        builder: (context) =>
-                                            PageFreeChatSplash(
-                                          displayName:
-                                              widget.userModel.displayName ??
-                                                  '',
-                                        ),
+                                    MaterialPageRoute(
+                                      builder: (context) => PageFreeChat(
+                                        connectionId: widget.connectionId,
+                                        userModel: widget.userModel,
                                       ),
                                     ),
                                   );

@@ -33,9 +33,9 @@ class _PageFreeChatSplashState extends State<PageFreeChatSplash> {
         children: [
           Semantics(
             readOnly: true,
-            label: l10n!.pgFreeChatHeadline,
+            label: l10n!.pgFreeChatSplashHeadline,
             child: Text(
-              l10n.pgFreeChatHeadline,
+              l10n.pgFreeChatSplashHeadline,
               style: theme.textTheme.headlineLarge,
               textAlign: TextAlign.center,
             ),
@@ -43,9 +43,9 @@ class _PageFreeChatSplashState extends State<PageFreeChatSplash> {
           const SizedBox(height: 24),
           Semantics(
             readOnly: true,
-            label: l10n.pgFreeChatBody(widget.displayName),
+            label: l10n.pgFreeChatSplashBody(widget.displayName),
             child: Text(
-              l10n.pgFreeChatBody(widget.displayName),
+              l10n.pgFreeChatSplashBody(widget.displayName),
               style: theme.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -60,7 +60,7 @@ class _PageFreeChatSplashState extends State<PageFreeChatSplash> {
                 ),
               ),
             ),
-            child: Text(l10n.pgFreeChatBtn),
+            child: Text(l10n.pgFreeChatSplashBtn),
             onPressed: () {
               Navigator.of(context).pop();
             },

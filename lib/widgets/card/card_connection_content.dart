@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/profile/page_full_profile_view.dart';
@@ -13,11 +11,11 @@ class CardConnectionContent extends StatefulWidget {
   const CardConnectionContent({
     super.key,
     required this.userModel,
-    required this.qodCollectionRef,
+    required this.connectionId,
   });
 
   final UserModel userModel;
-  final CollectionReference<QodModel> qodCollectionRef;
+  final String connectionId;
 
   @override
   State<CardConnectionContent> createState() => CardConnectionContentState();
@@ -27,7 +25,7 @@ class CardConnectionContentState extends State<CardConnectionContent> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context);
+    final qodCollectionRef = qodRef(widget.connectionId);
 
     return SingleChildScrollView(
       child: InkWell(
@@ -37,7 +35,7 @@ class CardConnectionContentState extends State<CardConnectionContent> {
               page: Builder(
                 builder: (context) => PageFullProfileView(
                   userModel: widget.userModel,
-                  qodCollectionRef: widget.qodCollectionRef,
+                  qodCollectionRef: qodCollectionRef,
                 ),
               ),
             ),
@@ -84,7 +82,7 @@ class CardConnectionContentState extends State<CardConnectionContent> {
               ),
               StreamBuilder(
                 // Latest Qod of the connection
-                stream: widget.qodCollectionRef
+                stream: qodCollectionRef
                     .orderBy(
                       QodFields.createdAt.name,
                       descending: true,
@@ -92,38 +90,26 @@ class CardConnectionContentState extends State<CardConnectionContent> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   final latestQodSnapshot = snapshot.data?.docs.firstOrNull;
-                  final latestQod = latestQodSnapshot?.data();
 
-                  return !snapshot.hasData
+                  return latestQodSnapshot == null || !latestQodSnapshot.exists
                       ? const SizedBox(height: 160)
                       : Container(
                           padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              latestQod != null
-                                  ? Text(
-                                      latestQod.question,
-                                      maxLines: 3,
-                                      style: theme.textTheme.titleMedium,
-                                      overflow: TextOverflow.ellipsis,
-                                    )
-                                  : Text(
-                                      l10n!.cardConnectionEmptyQod,
-                                      style: TextStyle(
-                                        fontStyle: FontStyle.italic,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w300,
-                                        color: theme.colorScheme.outline,
-                                      ),
-                                    ),
+                              Text(
+                                latestQodSnapshot.data().question,
+                                maxLines: 3,
+                                style: theme.textTheme.titleMedium,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                               const SizedBox(height: 4),
-                              if (latestQod != null)
-                                CardConnectionActions(
-                                  qodModel: latestQod,
-                                  userModel: widget.userModel,
-                                  qodDocRef: latestQodSnapshot!.reference,
-                                )
+                              CardConnectionActions(
+                                userModel: widget.userModel,
+                                connectionId: widget.connectionId,
+                                lastQodSnapshot: latestQodSnapshot,
+                              )
                             ],
                           ),
                         );
