@@ -2,12 +2,16 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/message.dart';
 import 'package:red_flags/models/user.dart';
+import 'package:red_flags/services/fire_storage_provider.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/card/card_freechat_message.dart';
 import 'package:red_flags/widgets/circle_avatar_user.dart';
@@ -29,7 +33,11 @@ class PageFreeChat extends StatefulWidget {
 class _PageFreeChatState extends State<PageFreeChat> {
   final _form = GlobalKey<FormState>();
   final _controller = TextEditingController();
+  final _scrollCtrl = ScrollController();
+  final _imgPicker = ImagePicker();
 
+  bool _sending = false;
+  XFile? _imgFile;
   Timer? _throttle;
   DocumentReference<MessageModel>? _textingDocRef;
 
@@ -40,11 +48,65 @@ class _PageFreeChatState extends State<PageFreeChat> {
     }
   }
 
+  Future<void> _sendImage() async {
+    if (_imgFile != null) {
+      final userProvider = context.read<UserProvider>();
+      final logger = context.read<LoggerProvider>().logger;
+      final newImgRef = context
+          .read<FireStorageProvider>()
+          .newImgStorageForRef(widget.connectionId);
+
+      setState(() {
+        _sending = true;
+      });
+
+      try {
+        // Create new message document to show transition placeholder
+        final newMsgDocRef = await messageRef(widget.connectionId).add(
+          MessageModel(
+            uid: userProvider.getIdCache(),
+            createdAt: DateTime.now(),
+            type: MessageType.image,
+          ),
+        );
+
+        await newImgRef.putFile(
+          File(_imgFile!.path),
+          SettableMetadata(contentType: _imgFile!.mimeType),
+        );
+        await newMsgDocRef.update({
+          "content": newImgRef.fullPath,
+        });
+      } catch (e) {
+        logger.e(e, time: DateTime.now());
+
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      } finally {
+        setState(() {
+          _sending = false;
+        });
+
+        _imgFile == null;
+        _scrollCtrl.animateTo(
+          0.0,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    }
+  }
+
   @override
   void dispose() async {
     super.dispose();
     _controller.dispose();
     _cancelThrottle();
+    _scrollCtrl.dispose();
     await _textingDocRef?.delete();
   }
 
@@ -54,7 +116,6 @@ class _PageFreeChatState extends State<PageFreeChat> {
     final l10n = AppLocalizations.of(context);
     final userProvider = Provider.of<UserProvider>(context);
     final messageCollectionRef = messageRef(widget.connectionId);
-    final displayName = widget.userModel.displayName ?? l10n!.unknown;
 
     return Scaffold(
       appBar: AppBar(
@@ -79,21 +140,22 @@ class _PageFreeChatState extends State<PageFreeChat> {
             ),
           ],
         ),
-        actions: [
-          Semantics(
-            button: true,
-            label: l10n!.pgFreeChatActionMoreLabel(displayName),
-            child: IconButton(
-              icon: const Icon(Icons.more_vert_outlined),
-              onPressed: () {
-                // TODO: More actions such as remove connection
-              },
-            ),
-          )
-        ],
+        // TODO: Add more actions later
+        // actions: [
+        //   Semantics(
+        //     button: true,
+        //     label: l10n!.pgFreeChatActionMoreLabel(displayName),
+        //     child: IconButton(
+        //       icon: const Icon(Icons.more_vert_outlined),
+        //       onPressed: () {
+        //         // TODO: More actions such as remove connection
+        //       },
+        //     ),
+        //   )
+        // ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 18, right: 18, bottom: 18),
+      body: Container(
+        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
         child: Column(
           children: [
             Expanded(
@@ -112,15 +174,14 @@ class _PageFreeChatState extends State<PageFreeChat> {
                     shrinkWrap: true,
                     reverse: true,
                     itemCount: docs.length + 1,
+                    controller: _scrollCtrl,
                     scrollDirection: Axis.vertical,
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     itemBuilder: (context, index) {
                       final snapshot = docs.elementAtOrNull(index);
 
                       return snapshot != null
-                          ? CardFreechatMessage(
-                              message: snapshot.data(),
-                            )
+                          ? CardFreechatMessage(message: snapshot.data())
                           : null;
                     },
                     separatorBuilder: (context, index) {
@@ -136,15 +197,17 @@ class _PageFreeChatState extends State<PageFreeChat> {
                       final isCrossedDays = msgDay - nextMsgDay >= 1;
                       final isMine = message.uid == userProvider.getIdCache();
 
-                      if (isMine && message.content == null) {
+                      if (isMine &&
+                          message.content == null &&
+                          message.type == MessageType.text) {
                         return const SizedBox.shrink();
                       }
 
                       if (isCrossedDays) {
                         final label = distance == 0
-                            ? l10n.today
+                            ? l10n!.today
                             : distance == 1
-                                ? l10n.yesterday
+                                ? l10n!.yesterday
                                 : distance <= 7
                                     ? DateFormat.EEEE(Platform.localeName)
                                         .format(message.createdAt)
@@ -191,6 +254,11 @@ class _PageFreeChatState extends State<PageFreeChat> {
               key: _form,
               child: TextFormField(
                 controller: _controller,
+                style: const TextStyle(
+                  fontFamily: '',
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16,
+                ),
                 textCapitalization: TextCapitalization.sentences,
                 onChanged: (value) {
                   if (value.isEmpty) {
@@ -208,6 +276,7 @@ class _PageFreeChatState extends State<PageFreeChat> {
                         MessageModel(
                           uid: userProvider.getIdCache(),
                           createdAt: DateTime.now(),
+                          type: MessageType.text,
                         ),
                       );
                     },
@@ -233,8 +302,6 @@ class _PageFreeChatState extends State<PageFreeChat> {
                     await _textingDocRef!.update(
                       {
                         "content": _controller.text,
-                        // TODO: Dynamic type
-                        "type": 'text',
                         "createdAt": DateTime.now(),
                       },
                     );
@@ -245,29 +312,65 @@ class _PageFreeChatState extends State<PageFreeChat> {
                       MessageModel(
                         uid: userProvider.getIdCache(),
                         createdAt: DateTime.now(),
-                        // TODO: Dynamic type
                         type: MessageType.text,
-                        content: _controller.text,
+                        content: value.trim(),
                       ),
                     );
                   }
 
                   _controller.clear();
+                  _scrollCtrl.animateTo(
+                    0.0,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeOut,
+                  );
                 },
                 decoration: InputDecoration(
                   filled: true,
                   isDense: true,
-                  hintText: l10n.message,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-                  suffixIcon: InkWell(
-                    onTap: () {
-                      // TODO: Support image insertion
-                    },
-                    child: Icon(
-                      Icons.camera_alt_outlined,
-                      size: 28,
-                      color: theme.colorScheme.primary,
+                  hintText: l10n!.message,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 0),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 2,
+                      left: 2,
+                      bottom: 2,
+                      right: 6,
                     ),
+                    child: IconButton.filled(
+                      icon: Icon(
+                        Icons.photo_camera,
+                        size: 28,
+                        color: theme.colorScheme.onPrimary,
+                      ),
+                      onPressed: _sending
+                          ? null
+                          : () async {
+                              _imgFile = await _imgPicker.pickImage(
+                                source: ImageSource.camera,
+                                imageQuality: 15,
+                              );
+
+                              await _sendImage();
+                            },
+                    ),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Icons.image,
+                      size: 28,
+                      color: _sending ? null : theme.colorScheme.primary,
+                    ),
+                    onPressed: _sending
+                        ? null
+                        : () async {
+                            _imgFile = await _imgPicker.pickImage(
+                              source: ImageSource.gallery,
+                              imageQuality: 15,
+                            );
+
+                            await _sendImage();
+                          },
                   ),
                   border: const OutlineInputBorder(
                     borderSide: BorderSide.none,

@@ -134,7 +134,7 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
         sourcePath: _xFile!.path,
         compressFormat: ImageCompressFormat.jpg,
         aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
-        compressQuality: 80,
+        compressQuality: 25,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: l10n!.cardImagePickerCropTitle,
@@ -161,7 +161,12 @@ class _CardImagePickerState extends State<CardImagePicker> with MixinFile {
         _setUploading(true);
 
         try {
-          await _imageRef!.putFile(_file as File);
+          await _imageRef!.putFile(
+            _file as File,
+            SettableMetadata(
+              contentType: _xFile!.mimeType ?? 'image/jpeg',
+            ),
+          );
 
           // Set as default spotlight photo when not existed
           // ignore: use_build_context_synchronously

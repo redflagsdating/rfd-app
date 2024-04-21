@@ -80,6 +80,7 @@ dependencies:
   flutter_svg: ^2.0.9
   age_calculator: ^1.0.0
   cloud_functions: ^4.6.8
+  photo_view: ^0.15.0
 
 dev_dependencies:
   flutter_test:

@@ -191,5 +191,5 @@
   "pgFreeChatSplashHeadline": "You don’t have access to chat yet",
   "pgFreeChatSplashBody": "Continue answering ‘Question of the Day’ on a 3 day streak to unlock free chat with {displayName}",
   "pgFreeChatSplashBtn": "Back to Profile",
-  "pgFreeChatActionMoreLabel": "More actions to {displayName}"
+  "pgFreeChatActionMoreLabel": "Take actions to {displayName}"
 }

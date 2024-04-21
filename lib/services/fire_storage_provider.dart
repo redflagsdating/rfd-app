@@ -27,13 +27,13 @@ class FireStorageProvider {
       _rootRef.child('${_getImagesPath()}/${_uuid.v4()}');
 
   // Store references of the provided user id (uid parameter is required)
-  Reference imgStorageForRef(String uid) => _rootRef.child(_getImagesPath(uid));
-  Reference newImgStorageForRef(String uid) =>
-      _rootRef.child('${_getImagesPath(uid)}/${_uuid.v4()}');
+  Reference imgStorageForRef(String id) => _rootRef.child(_getImagesPath(id));
+  Reference newImgStorageForRef(String id) =>
+      _rootRef.child('${_getImagesPath(id)}/${_uuid.v4()}');
 
-  // Internal general functions
-  String _getImagesPath([String? uid]) {
-    final u = uid ?? userProvider.getIdCache();
+  // Default generates path using the current user's uid when id is not provided
+  String _getImagesPath([String? id]) {
+    final u = id ?? userProvider.getIdCache();
 
     return u.isEmpty ? 'images' : 'images/$u';
   }

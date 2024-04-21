@@ -251,16 +251,17 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                     ProfileSettingsMenu(
                       title: l10n.pgProfileMenuHelpTitle,
                       children: [
-                        ProfileSettingsMenuItem(
-                          label: l10n.pgProfileMenuItemReport,
-                          leadingIcon: Icons.error_outline_sharp,
-                          trailingIcon: Icons.open_in_new,
-                        ),
-                        ProfileSettingsMenuItem(
-                          label: l10n.pgProfileMenuItemSupport,
-                          leadingIcon: Icons.support_agent_outlined,
-                          trailingIcon: Icons.open_in_new,
-                        ),
+                        // TODO: Temporary disabled
+                        // ProfileSettingsMenuItem(
+                        //   label: l10n.pgProfileMenuItemReport,
+                        //   leadingIcon: Icons.error_outline_sharp,
+                        //   trailingIcon: Icons.open_in_new,
+                        // ),
+                        // ProfileSettingsMenuItem(
+                        //   label: l10n.pgProfileMenuItemSupport,
+                        //   leadingIcon: Icons.support_agent_outlined,
+                        //   trailingIcon: Icons.open_in_new,
+                        // ),
                         ProfileSettingsMenuItem(
                           label: l10n.pgProfileMenuItemFaq,
                           leadingIcon: Icons.chat_bubble_outline,
