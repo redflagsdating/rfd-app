@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart' show DateFormat;
+import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/models/message.dart';
 import 'package:red_flags/models/user.dart';
@@ -35,9 +36,9 @@ class _PageFreeChatState extends State<PageFreeChat> {
   final _controller = TextEditingController();
   final _scrollCtrl = ScrollController();
   final _imgPicker = ImagePicker();
+  final List<XFile?> _imgFiles = [];
 
   bool _sending = false;
-  XFile? _imgFile;
   Timer? _throttle;
   DocumentReference<MessageModel>? _textingDocRef;
 
@@ -49,7 +50,7 @@ class _PageFreeChatState extends State<PageFreeChat> {
   }
 
   Future<void> _sendImage() async {
-    if (_imgFile != null) {
+    if (_imgFiles.isNotEmpty) {
       final userProvider = context.read<UserProvider>();
       final logger = context.read<LoggerProvider>().logger;
       final newImgRef = context
@@ -60,44 +61,57 @@ class _PageFreeChatState extends State<PageFreeChat> {
         _sending = true;
       });
 
-      try {
-        // Create new message document to show transition placeholder
-        final newMsgDocRef = await messageRef(widget.connectionId).add(
-          MessageModel(
-            uid: userProvider.getIdCache(),
-            createdAt: DateTime.now(),
-            type: MessageType.image,
-          ),
-        );
+      await Future.wait(
+        _imgFiles.map(
+          (file) async {
+            if (file != null) {
+              try {
+                // Create new message document to show transition placeholder
+                final newMsgDocRef = await messageRef(widget.connectionId).add(
+                  MessageModel(
+                    uid: userProvider.getIdCache(),
+                    createdAt: DateTime.now(),
+                    type: MessageType.image,
+                  ),
+                );
 
-        await newImgRef.putFile(
-          File(_imgFile!.path),
-          SettableMetadata(contentType: _imgFile!.mimeType),
-        );
-        await newMsgDocRef.update({
-          "content": newImgRef.fullPath,
-        });
-      } catch (e) {
-        logger.e(e, time: DateTime.now());
+                // Upload image file
+                await newImgRef.putFile(
+                  File(file.path),
+                  SettableMetadata(
+                    contentType: file.mimeType ?? lookupMimeType(file.path),
+                  ),
+                );
 
-        // ignore: use_build_context_synchronously
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-          ),
-        );
-      } finally {
-        setState(() {
-          _sending = false;
-        });
+                // Update image url into message content
+                await newMsgDocRef.update({
+                  "content": newImgRef.fullPath,
+                });
+              } catch (e) {
+                logger.e(e, time: DateTime.now());
 
-        _imgFile == null;
-        _scrollCtrl.animateTo(
-          0.0,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(e.toString()),
+                  ),
+                );
+              } finally {
+                _scrollCtrl.animateTo(
+                  0.0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              }
+            }
+          },
+        ),
+      );
+
+      _imgFiles.clear();
+      setState(() {
+        _sending = false;
+      });
     }
   }
 
@@ -346,9 +360,11 @@ class _PageFreeChatState extends State<PageFreeChat> {
                       onPressed: _sending
                           ? null
                           : () async {
-                              _imgFile = await _imgPicker.pickImage(
-                                source: ImageSource.camera,
-                                imageQuality: 15,
+                              _imgFiles.add(
+                                await _imgPicker.pickImage(
+                                  source: ImageSource.camera,
+                                  imageQuality: 20,
+                                ),
                               );
 
                               await _sendImage();
@@ -364,10 +380,9 @@ class _PageFreeChatState extends State<PageFreeChat> {
                     onPressed: _sending
                         ? null
                         : () async {
-                            _imgFile = await _imgPicker.pickImage(
-                              source: ImageSource.gallery,
-                              imageQuality: 15,
-                            );
+                            _imgFiles.addAll(await _imgPicker.pickMultiImage(
+                              imageQuality: 20,
+                            ));
 
                             await _sendImage();
                           },

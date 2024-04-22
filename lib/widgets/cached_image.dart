@@ -44,16 +44,18 @@ class _CachedImageState extends State<CachedImage> {
 
   @override
   void initState() {
-    _cacheImage();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _cacheImage();
+    });
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant CachedImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (oldWidget.photoUrl != widget.photoUrl) {
       _cacheImage();
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   @override

@@ -8,8 +8,10 @@ import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/qod_answer.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_freechat.dart';
+import 'package:red_flags/pages/page_freechat_splash.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
+import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
 import 'package:red_flags/widgets/label/label_qod_status.dart';
 import 'package:red_flags/widgets/qod_content.dart';
 
@@ -19,11 +21,13 @@ class CardConnectionActions extends StatefulWidget {
     required this.userModel,
     required this.connectionId,
     required this.lastQodSnapshot,
+    this.enableChat,
   });
 
   final UserModel userModel;
   final String connectionId;
   final QueryDocumentSnapshot<QodModel> lastQodSnapshot;
+  final bool? enableChat;
 
   @override
   State<CardConnectionActions> createState() => CardConnectionActionsState();
@@ -169,15 +173,26 @@ class CardConnectionActionsState extends State<CardConnectionActions>
                             ),
                             Semantics(
                               label: l10n.cardConnectionBtnFreeChat,
-                              child: FilledButton.icon(
+                              child: IconButton.filled(
                                 onPressed: () {
                                   Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => PageFreeChat(
-                                        connectionId: widget.connectionId,
-                                        userModel: widget.userModel,
-                                      ),
-                                    ),
+                                    widget.enableChat == true
+                                        ? MaterialPageRoute(
+                                            builder: (context) => PageFreeChat(
+                                              connectionId: widget.connectionId,
+                                              userModel: widget.userModel,
+                                            ),
+                                          )
+                                        : PageFadeRouteBuilder(
+                                            page: Builder(
+                                              builder: (context) =>
+                                                  PageFreeChatSplash(
+                                                displayName: widget.userModel
+                                                        .displayName ??
+                                                    '',
+                                              ),
+                                            ),
+                                          ),
                                   );
                                 },
                                 style: FilledButton.styleFrom(
@@ -191,7 +206,6 @@ class CardConnectionActionsState extends State<CardConnectionActions>
                                   ),
                                 ),
                                 icon: const FaIcon(FontAwesomeIcons.comment),
-                                label: Text(l10n.cardConnectionBtnFreeChat),
                               ),
                             ),
                             // TODO: Post MVP schedule a date

@@ -91,28 +91,33 @@ class CardConnectionContentState extends State<CardConnectionContent> {
                 builder: (context, snapshot) {
                   final latestQodSnapshot = snapshot.data?.docs.firstOrNull;
 
-                  return latestQodSnapshot == null || !latestQodSnapshot.exists
-                      ? const SizedBox(height: 160)
-                      : Container(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                latestQodSnapshot.data().question,
-                                maxLines: 3,
-                                style: theme.textTheme.titleMedium,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 4),
-                              CardConnectionActions(
-                                userModel: widget.userModel,
-                                connectionId: widget.connectionId,
-                                lastQodSnapshot: latestQodSnapshot,
-                              )
-                            ],
+                  if (latestQodSnapshot != null && latestQodSnapshot.exists) {
+                    final latestQodData = latestQodSnapshot.data();
+
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            latestQodData.question,
+                            maxLines: 3,
+                            style: theme.textTheme.titleMedium,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        );
+                          const SizedBox(height: 4),
+                          CardConnectionActions(
+                            userModel: widget.userModel,
+                            connectionId: widget.connectionId,
+                            lastQodSnapshot: latestQodSnapshot,
+                            enableChat: (snapshot.data?.docs.length ?? 0) > 3,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return const SizedBox(height: 160);
                 },
               ),
             ],
