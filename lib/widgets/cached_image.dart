@@ -29,16 +29,20 @@ class _CachedImageState extends State<CachedImage> {
     final storageProvider = context.read<FireStorageProvider>();
 
     if (photoUrl != null) {
-      setState(() {
-        _loading = true;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = true;
+        });
+      }
 
       final imageUrl = await storageProvider.cacheImage(photoUrl);
 
-      setState(() {
-        _imageUrl = imageUrl;
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _imageUrl = imageUrl;
+          _loading = false;
+        });
+      }
     }
   }
 

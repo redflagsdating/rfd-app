@@ -128,7 +128,7 @@ flutter:
     - assets/rfi-daily-profile-transparent.svg
     - assets/rfi-red-flags-transparent.svg
     - assets/rfi-real-talk-transparent.svg
-    - assets/freechat-splash-bg.png
+    - assets/opt-in-date-splash-bg.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

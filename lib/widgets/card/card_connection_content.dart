@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/profile/page_full_profile_view.dart';
@@ -12,10 +14,12 @@ class CardConnectionContent extends StatefulWidget {
     super.key,
     required this.userModel,
     required this.connectionId,
+    required this.connectionSnapshot,
   });
 
   final UserModel userModel;
   final String connectionId;
+  final DocumentSnapshot<ConnectionModel> connectionSnapshot;
 
   @override
   State<CardConnectionContent> createState() => CardConnectionContentState();
@@ -108,9 +112,9 @@ class CardConnectionContentState extends State<CardConnectionContent> {
                           const SizedBox(height: 4),
                           CardConnectionActions(
                             userModel: widget.userModel,
-                            connectionId: widget.connectionId,
                             lastQodSnapshot: latestQodSnapshot,
-                            enableChat: (snapshot.data?.docs.length ?? 0) > 3,
+                            connectionId: widget.connectionId,
+                            connectionSnapshot: widget.connectionSnapshot,
                           ),
                         ],
                       ),

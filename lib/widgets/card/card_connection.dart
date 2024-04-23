@@ -40,8 +40,8 @@ class _CardConnectionState extends State<CardConnection> {
           if (!snapshot.hasData) {
             return const CardConnectionPlaceholder();
           }
-
-          final connection = snapshot.data?.data();
+          final connectionSnapshot = snapshot.data;
+          final connection = connectionSnapshot?.data();
 
           // Connection document data is empty
           if (connection == null) {
@@ -78,6 +78,7 @@ class _CardConnectionState extends State<CardConnection> {
                       : CardConnectionContent(
                           userModel: docs.first.data(),
                           connectionId: widget.id,
+                          connectionSnapshot: connectionSnapshot!,
                         );
             },
           );

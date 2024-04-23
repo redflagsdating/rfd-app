@@ -8,21 +8,26 @@ enum ConnectionStatus {
 enum ConnectionFields {
   uids,
   status,
+  // Opted in for a data (Go on a date)
+  optedInUids,
 }
 
 class ConnectionModel {
   const ConnectionModel({
     required this.uids,
     required this.status,
+    this.optedInUids,
   });
 
   final List<String> uids;
   final ConnectionStatus status;
+  final List<String>? optedInUids;
 
   Map<String, dynamic> toJson() {
     return {
       ConnectionFields.uids.name: uids,
       ConnectionFields.status.name: status.name,
+      ConnectionFields.optedInUids.name: optedInUids,
     };
   }
 
@@ -32,6 +37,7 @@ class ConnectionModel {
           status: ConnectionStatus.values.firstWhere(
             (value) => value.name == json[ConnectionFields.status.name],
           ),
+          optedInUids: json[ConnectionFields.optedInUids.name]?.cast<String>(),
         );
 }
 

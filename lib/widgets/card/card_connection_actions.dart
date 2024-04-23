@@ -4,11 +4,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_qod.dart';
+import 'package:red_flags/models/connection.dart';
 import 'package:red_flags/models/qod.dart';
 import 'package:red_flags/models/qod_answer.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/pages/page_freechat.dart';
-import 'package:red_flags/pages/page_freechat_splash.dart';
+import 'package:red_flags/pages/page_opt_in_date_splash.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/fade_through_transition_switcher.dart';
 import 'package:red_flags/widgets/animation/page_fade_route_builder.dart';
@@ -21,13 +23,13 @@ class CardConnectionActions extends StatefulWidget {
     required this.userModel,
     required this.connectionId,
     required this.lastQodSnapshot,
-    this.enableChat,
+    required this.connectionSnapshot,
   });
 
   final UserModel userModel;
   final String connectionId;
   final QueryDocumentSnapshot<QodModel> lastQodSnapshot;
-  final bool? enableChat;
+  final DocumentSnapshot<ConnectionModel> connectionSnapshot;
 
   @override
   State<CardConnectionActions> createState() => CardConnectionActionsState();
@@ -69,6 +71,51 @@ class CardConnectionActionsState extends State<CardConnectionActions>
     );
   }
 
+  Future<void> _optInDate(String myUid) async {
+    bool bothOptedIn = false;
+    final logger = context.read<LoggerProvider>().logger;
+
+    try {
+      await FirebaseFirestore.instance.runTransaction(
+        (transaction) async {
+          final connectionRef = widget.connectionSnapshot.reference;
+          final snapshot = await transaction.get(connectionRef);
+          final optedInUids = (snapshot.data()?.optedInUids ?? []);
+
+          if (!optedInUids.contains(myUid)) {
+            optedInUids.add(myUid);
+          }
+
+          bothOptedIn = optedInUids.length >= 2;
+
+          transaction.update(connectionRef, {"optedInUids": optedInUids});
+        },
+      );
+
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).push(
+        PageFadeRouteBuilder(
+          page: Builder(
+            builder: (context) => PageOptInDateSplash(
+              userModel: widget.userModel,
+              connectionId: widget.connectionId,
+              bothOptedIn: bothOptedIn,
+            ),
+          ),
+        ),
+      );
+    } catch (e) {
+      logger.e(e, time: DateTime.now());
+
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -92,11 +139,19 @@ class CardConnectionActionsState extends State<CardConnectionActions>
           builder: (context, snapshot) {
             final qodSnapshot = snapshot.data;
             final status = getQodStatus(qodSnapshot);
+            final myUid = userProvider.getIdCache();
             final isWaitingYours = status == QodStatus.unanswered ||
-                isAwaitingByThem(qodSnapshot, userProvider.getIdCache());
+                isAwaitingByThem(qodSnapshot, myUid);
             final qodBtnLabel = isWaitingYours
                 ? l10n!.cardConnectionBtnAnswerQod
                 : l10n!.cardConnectionBtnViewQod;
+            final optedInUids = widget.connectionSnapshot.data()?.optedInUids;
+            final meOptedInOnly = optedInUids != null &&
+                optedInUids.length == 1 &&
+                optedInUids.contains(myUid);
+            final bothOptedIn = optedInUids != null &&
+                optedInUids.contains(myUid) &&
+                optedInUids.contains(widget.userModel.uid);
 
             return FadeThroughTransitionSwitcher(
               child: !snapshot.hasData
@@ -171,61 +226,61 @@ class CardConnectionActionsState extends State<CardConnectionActions>
                                 child: Text(l10n.cardConnectionBtnViewQod),
                               ),
                             ),
-                            Semantics(
-                              label: l10n.cardConnectionBtnFreeChat,
-                              child: IconButton.filled(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    widget.enableChat == true
-                                        ? MaterialPageRoute(
-                                            builder: (context) => PageFreeChat(
-                                              connectionId: widget.connectionId,
-                                              userModel: widget.userModel,
-                                            ),
-                                          )
-                                        : PageFadeRouteBuilder(
-                                            page: Builder(
-                                              builder: (context) =>
-                                                  PageFreeChatSplash(
-                                                displayName: widget.userModel
-                                                        .displayName ??
-                                                    '',
-                                              ),
-                                            ),
+                            bothOptedIn || meOptedInOnly
+                                ? Semantics(
+                                    label: l10n.cardConnectionBtnFreeChat,
+                                    child: FilledButton.icon(
+                                      icon: const FaIcon(
+                                        FontAwesomeIcons.comment,
+                                      ),
+                                      onPressed: meOptedInOnly
+                                          ? null
+                                          : () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      PageFreeChat(
+                                                    connectionId:
+                                                        widget.connectionId,
+                                                    userModel: widget.userModel,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                      style: FilledButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8),
                                           ),
-                                  );
-                                },
-                                style: FilledButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
+                                        ),
+                                      ),
+                                      label: Text(
+                                        l10n.cardConnectionBtnFreeChat,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                icon: const FaIcon(FontAwesomeIcons.comment),
-                              ),
-                            ),
-                            // TODO: Post MVP schedule a date
-                            // Semantics(
-                            //   label: l10n.cardConnectionBtnGoOnDate,
-                            //   child: FilledButton(
-                            //     onPressed: () {
-                            //       // TODO: Go on a date integration
-                            //     },
-                            //     style: FilledButton.styleFrom(
-                            //       padding: const EdgeInsets.symmetric(
-                            //           horizontal: 16),
-                            //       shape: const RoundedRectangleBorder(
-                            //         borderRadius:
-                            //             BorderRadius.all(Radius.circular(8)),
-                            //       ),
-                            //     ),
-                            //     child: Text(l10n.cardConnectionBtnGoOnDate),
-                            //   ),
-                            // ),
+                                  )
+                                : Semantics(
+                                    label: l10n.cardConnectionBtnGoOnDate,
+                                    child: FilledButton(
+                                      onPressed: () => _optInDate(myUid),
+                                      style: FilledButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                        ),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(8),
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        l10n.cardConnectionBtnGoOnDate,
+                                      ),
+                                    ),
+                                  )
                           ],
                         ),
             );

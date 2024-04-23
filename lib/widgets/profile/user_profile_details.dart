@@ -45,7 +45,7 @@ class _UserProfileDetailsState extends State<UserProfileDetails>
             });
           });
         });
-      } else {
+      } else if (mounted) {
         setState(() {
           _loading = false;
         });
