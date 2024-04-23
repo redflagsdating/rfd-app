@@ -156,7 +156,7 @@ class CardConnectionActionsState extends State<CardConnectionActions>
             return FadeThroughTransitionSwitcher(
               child: !snapshot.hasData
                   ? const SizedBox(height: 48)
-                  : status != QodStatus.answered
+                  : status == QodStatus.unanswered || isWaitingYours
                       ? Semantics(
                           label: qodBtnLabel,
                           child: FilledButton(

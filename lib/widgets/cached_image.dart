@@ -69,6 +69,7 @@ class _CachedImageState extends State<CachedImage> {
             imageUrl: _imageUrl!,
             width: widget.width ?? double.infinity,
             height: widget.height ?? double.infinity,
+            fadeOutDuration: const Duration(milliseconds: 300),
             errorWidget: (context, url, error) {
               return ImagePlaceholder(error: error);
             },
@@ -76,6 +77,7 @@ class _CachedImageState extends State<CachedImage> {
               return Image(
                 image: imageProvider,
                 fit: BoxFit.cover,
+                gaplessPlayback: true,
               );
             },
           )

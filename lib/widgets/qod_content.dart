@@ -196,27 +196,24 @@ class _QodContentState extends State<QodContent> with MixinQod {
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Chip(
-                label: Text(
-                  l10n!.questionOfDay,
-                  style: theme.textTheme
-                      .apply(bodyColor: theme.colorScheme.onPrimary)
-                      .labelLarge,
-                ),
-                visualDensity: VisualDensity.compact,
-                side: MaterialStateBorderSide.resolveWith((states) {
-                  return const BorderSide(color: Colors.transparent);
-                }),
-                color: MaterialStateProperty.resolveWith(
-                  (states) {
-                    return theme.colorScheme.primary;
-                  },
-                ),
-              ),
-            ],
+          Chip(
+            label: Text(
+              l10n!.questionOfDay,
+              style: theme.textTheme
+                  .apply(bodyColor: theme.colorScheme.onPrimary)
+                  .labelLarge,
+            ),
+            visualDensity: VisualDensity.compact,
+            side: MaterialStateBorderSide.resolveWith((states) {
+              return const BorderSide(color: Colors.transparent);
+            }),
+            color: MaterialStateProperty.resolveWith(
+              (states) {
+                return theme.colorScheme.primary;
+              },
+            ),
           ),
           Text(
             widget.qodModel.question,
