@@ -1,16 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'app.dart';
-import 'firebase_options.dart';
+import 'package:red_flags/main_init.dart';
 
 void main() async {
   ///** Flutter ensure binding  */
@@ -28,6 +19,8 @@ void main() async {
       "bundleId": "com.redflags.app",
       "websiteUrl": "https://redflagsdating.com",
       "sumsubApiHost": "api.sumsub.com",
+      "localStoragePrefix": "red.flags.",
+      "firebaseAppName": "rfd-firebase-prod",
       "firebaseProjectId": "rfd-app-prod-1fdad",
       "firebaseStorageBucket": "rfd-app-prod-1fdad.appspot.com",
       "firebaseMessagingSenderId": "409120994021",
@@ -40,45 +33,5 @@ void main() async {
     },
   );
 
-  //** Firebase init */
-  await Firebase.initializeApp(
-    // Unique name is required to avoid using "Default" and clash with dev
-    name: 'rfd-firebase-prod',
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  //** Firestore database clear cached data of the previous sessions */
-  await FirebaseFirestore.instance.clearPersistence();
-
-  // ** Firebase App Check */
-  await FirebaseAppCheck.instance.activate(
-    androidProvider:
-        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.deviceCheck,
-  );
-
-  //** Firebase Crashlytics init for release mode only */
-  if (kReleaseMode) {
-    final crashlytics = FirebaseCrashlytics.instance;
-
-    // Uncaught "fatal" errors
-    FlutterError.onError = crashlytics.recordFlutterFatalError;
-
-    // Uncaught asynchronous errors
-    PlatformDispatcher.instance.onError = (error, stack) {
-      crashlytics.recordError(error, stack, fatal: true);
-      return true;
-    };
-  }
-
-  //** Persistent storage init */
-  /// a.k.a localStorage in JS world.
-  /// (NSUserDefaults on iOS and macOS, SharedPreferences on Android, etc.)
-  SharedPreferences.setPrefix("red.flags.");
-  SharedPreferences localStorage = await SharedPreferences.getInstance();
-
-  // Lock orientation to portrait
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
-    (_) => runApp(App(localStorage: localStorage)),
-  );
+  await initializeApp();
 }

@@ -64,6 +64,7 @@ enum UserFields {
   redFlags,
   greenFlags,
   connections,
+  fcmToken,
 }
 
 @immutable
@@ -89,6 +90,7 @@ class UserModel {
     this.redFlags,
     this.greenFlags,
     this.connections,
+    this.fcmToken,
   });
 
   final String uid;
@@ -112,6 +114,8 @@ class UserModel {
   final List<String>? greenFlags;
   // List of document id of connection collection
   final List<String>? connections;
+  // Firebase Cloud Messaging token
+  final String? fcmToken;
 
   Map<String, dynamic> toJson() {
     return {
@@ -135,6 +139,7 @@ class UserModel {
       UserFields.redFlags.name: redFlags,
       UserFields.greenFlags.name: greenFlags,
       UserFields.connections.name: connections,
+      UserFields.fcmToken.name: fcmToken,
     };
   }
 
@@ -162,6 +167,7 @@ class UserModel {
           redFlags: json[UserFields.redFlags.name]?.cast<String>(),
           greenFlags: json[UserFields.greenFlags.name]?.cast<String>(),
           connections: json[UserFields.connections.name]?.cast<String>(),
+          fcmToken: json[UserFields.fcmToken.name],
         );
 }
 

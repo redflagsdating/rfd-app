@@ -65,6 +65,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NFCReaderUsageDescription</key>
+	<string>Let us scan the document for more precise recognition</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -73,6 +75,11 @@
 	<string>Allow Red Flags to access the photo library on this device in order to select a photo for displaying on your profile.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -90,8 +97,6 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NFCReaderUsageDescription</key>
-	<string>Let us scan the document for more precise recognition</string>
 	<key>com.apple.developer.nfc.readersession.iso7816.select-identifiers</key>
 	<array>
 		<string>A0000002471001</string>

@@ -152,7 +152,7 @@ Note that `dev` and `prod` are two separated **Firebase** environments with diff
 
 #### via **VS Code**
 
-Locate the **VS Code** status bar at the bottom right and select a device (*iOS or Android*) from the ***Device Selector*** area (see [Run the app](https://docs.flutter.dev/get-started/test-drive)) then click ***Run and Debug*** > select the build flavor > ***Run***. 
+Locate the **VS Code** status bar at the bottom right and select a device (*iOS or Android*) from the ***Device Selector*** area (see [Run the app](https://docs.flutter.dev/get-started/test-drive)) then click ***Run and Debug*** > select the build flavor > ***Run***.
 
 <img src="./docs/vscode-run-debug.png" width="300" />
 
@@ -208,6 +208,7 @@ For **Android Studio**, click ***Build Variants*** at the bottom-left panel > se
   - [Storage](/docs/firebase/storage.md)
   - [App Check](/docs/firebase/app-check.md)
   - [Crashlytics](/docs/firebase/crashlytics.md)
+  - [Cloud Messaging](/docs/firebase/fcm.md)
   - [Analytics](/docs/firebase/analytics.md)
 - ***Android***
   - [Cheat sheet](/docs/android/cheat-sheet.md)

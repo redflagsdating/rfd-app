@@ -58,7 +58,6 @@ class App extends StatelessWidget {
           ),
         )
       ],
-      // Automatically switch to material or cupertino base on the platform
       child: Builder(
         builder: (context) {
           final authProvider = Provider.of<rfd.AuthProvider>(context);

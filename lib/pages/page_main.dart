@@ -1,10 +1,13 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_kyc_state.dart';
+import 'package:red_flags/mixins/mixin_permissions.dart';
 import 'package:red_flags/pages/home/page_home.dart';
 import 'package:red_flags/pages/profile/page_profile_settings.dart';
 import 'package:red_flags/pages/profile/page_profile_settings_kyc.dart';
+import 'package:red_flags/services/logger_provider.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/animation/slide_transition_switcher.dart';
 
@@ -15,16 +18,31 @@ class PageMain extends StatefulWidget {
   State<PageMain> createState() => _PageMainState();
 }
 
-class _PageMainState extends State<PageMain> with MixinKycState {
+class _PageMainState extends State<PageMain>
+    with MixinKycState, MixinPermissions {
   bool _reverse = false;
   int _currentIndex = 1;
 
   @override
   void initState() {
     updateKycStatus();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _showKycBanner();
+      await requestNotificationPermissions();
+    });
+
+    // Update user's FCM token on refreshed
+    FirebaseMessaging.instance.onTokenRefresh.listen(
+      (fcmToken) {
+        context.read<UserProvider>().updateFcmToken(fcmToken);
+      },
+    ).onError(
+      (err) {
+        context.read<LoggerProvider>().logger.e(err, time: DateTime.now());
+      },
+    );
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((timeStamp) => _showKycBanner());
   }
 
   void _showKycBanner() {

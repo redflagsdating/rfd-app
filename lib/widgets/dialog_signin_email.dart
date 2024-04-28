@@ -108,7 +108,8 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                                                 if (enabled) {
                                                   widget.authProvider
                                                       .sendSignInLinkToEmail(
-                                                          _textCtrl.text);
+                                                    _textCtrl.text,
+                                                  );
                                                 }
                                               },
                                             ),

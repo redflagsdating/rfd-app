@@ -24,6 +24,16 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+def flutterTargetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')
+if (flutterTargetSdkVersion == null) {
+    flutterTargetSdkVersion = '34'
+}
+
+def flutterCompiledSdkVersion = localProperties.getProperty('flutter.compiledSdkVersion')
+if (flutterCompiledSdkVersion == null) {
+    flutterCompiledSdkVersion = '34'
+}
+
 android {
     namespace "com.redflags.app"
     signingConfigs {
@@ -61,6 +71,8 @@ android {
     ndkVersion flutter.ndkVersion
 
     compileOptions {
+        // For flutter_local_notifications
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -78,10 +90,13 @@ android {
         /// cloud_firestore plugin requires Android SDK 19 above
         /// flutter_facebook_auth requires Android SDK 21
         minSdkVersion 21
-        targetSdkVersion 33
-        compileSdk flutter.compileSdkVersion
+        targetSdkVersion flutterTargetSdkVersion.toInteger()
+        compileSdk flutterCompiledSdkVersion.toInteger()
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        // For flutter_local_notifications
+        multiDexEnabled true
     }
 
 }
@@ -93,4 +108,5 @@ flutter {
 dependencies {
     implementation "androidx.core:core-splashscreen:1.0.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.3"
 }

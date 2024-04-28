@@ -271,6 +271,39 @@ class UserProvider extends ChangeNotifier {
     );
   }
 
+  Future<void> updateFcmToken(String fcmToken) async {
+    if (_userDocRef == null) {
+      logger.d(
+        'Skip update due to NULL user document reference',
+        time: DateTime.now(),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance.runTransaction(
+        (transaction) async {
+          final snapshot = await transaction.get(_userDocRef!);
+          final currentToken = snapshot.data()?.fcmToken;
+
+          if (currentToken == null || currentToken != fcmToken) {
+            transaction.update(
+              userDocRef!,
+              {UserFields.fcmToken.name: fcmToken},
+            );
+
+            logger.d(
+              "Updated FCM token of user ${_userDocRef?.id}",
+              time: DateTime.now(),
+            );
+          }
+        },
+      );
+    } catch (e) {
+      logger.e(e, time: DateTime.now());
+    }
+  }
+
   UserModel getUserModelCacheForProfile() {
     return UserModel(
       uid: getIdCache(),
