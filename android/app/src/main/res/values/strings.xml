@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_message_title">Message from %1$s</string>
+    <string name="notification_message_body">%1$s</string>
+    <string name="notification_new_connections_title">You have new connections ❤️</string>
+    <string name="notification_new_connections_body">Check out the new profiles and answer QoD within 24 hours to stay connected.</string>
+    <string name="notification_remove_connections_title">You have connections got removed!</string>
+    <string name="notification_remove_connections_body">Sadly, we are unable to keep your connections because QoD are not completely answered.</string>
+    <string name="notification_new_qod_title">New QoD for your connection</string>
+    <string name="notification_new_qod_body">%1$s</string>
+    <string name="notification_qod_countdown_title">QoD has %1$s left</string>
+    <string name="notification_qod_countdown_body">Answer the question to stay connected with %1$s</string>
+</resources>

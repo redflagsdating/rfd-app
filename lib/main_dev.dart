@@ -17,6 +17,7 @@ void main() async {
     name: "DEV",
     variables: {
       "longName": "Development",
+      "displayName": "Red Flags Dating Development",
       "bundleId": "com.redflags.app.dev",
       "websiteUrl": "https://redflagsdating.com",
       "sumsubApiHost": "api.sumsub.com",

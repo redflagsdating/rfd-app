@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -10,7 +9,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app.dart';
@@ -22,6 +20,14 @@ Future<FirebaseApp> _initFirebase() async {
     name: FlavorConfig.instance.variables["firebaseAppName"],
     options: DefaultFirebaseOptions.currentPlatform,
   );
+}
+
+/// Required by FCM to have a top-level annotated background message handler.
+/// Leave the empty function since app initialization is not needed and cause
+/// exception when invoke _initFirebase().
+@pragma('vm:entry-point')
+Future<void> fcmBackgroundMessageHandler(RemoteMessage message) async {
+  // await _initFirebase();
 }
 
 Future<void> initializeApp() async {
@@ -60,66 +66,58 @@ Future<void> initializeApp() async {
   );
   SharedPreferences localStorage = await SharedPreferences.getInstance();
 
-  //** Local Notification init */
-  final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  await localNotificationsPlugin.initialize(
-    const InitializationSettings(
-      android: AndroidInitializationSettings('ic_notification'),
-      iOS: DarwinInitializationSettings(),
-    ),
-  );
-
-  // Nested function mainly to get localNotificationsPlugin instance
-  Future<void> showNotification(RemoteMessage message) async {
-    final notification = message.notification;
-
-    if (notification != null) {
-      await localNotificationsPlugin.show(
-        0,
-        notification.title,
-        notification.body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            FlavorConfig.instance.variables["bundleId"],
-            'Red Flags Dating Notification Channel',
-            importance: Importance.max,
-            priority: Priority.high,
-            playSound: true,
-            enableVibration: true,
-            color: const Color(0xFFFF0041),
-          ),
-          iOS: const DarwinNotificationDetails(
-            presentSound: true,
-            presentBanner: true,
-            presentAlert: true,
-            presentBadge: true,
-            categoryIdentifier: 'plainCategory',
-          ),
-        ),
-        payload: json.encode(message.toMap()),
-      );
-    }
-  }
-
-  @pragma('vm:entry-point')
-  Future<void> fcmBackgroundHandler(RemoteMessage message) async {
-    await showNotification(message);
-  }
-
   //** Lock orientation to portrait */
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  //** Register FCM (Push Notification) background messages listener */
-  FirebaseMessaging.onBackgroundMessage(fcmBackgroundHandler);
+  //** Register FCM (Push Notification) background messages */
+  FirebaseMessaging.onBackgroundMessage(fcmBackgroundMessageHandler);
 
   //** Run App */
   runApp(App(localStorage: localStorage));
 
-  //** Register FCM (Push Notification) foreground message */
-  FirebaseMessaging.onMessage.listen(showNotification);
+  // final localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  // final androidNotificationChannel = AndroidNotificationChannel(
+  //   "rfd-high-importance-channel",
+  //   FlavorConfig.instance.variables["displayName"],
+  //   description:
+  //       "The high importance channel is to show notification when app is in foreground",
+  //   importance: Importance.max,
+  // );
 
-  // For iOS only
+  // await localNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(androidNotificationChannel);
+
+  //** Register FCM (Push Notification) foreground message */
+  // TODO: Revisit to show notification on Android foreground message, will need to figure out a proper way for l10n when using flutter_local_notification to show
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //   final notification = message.notification;
+  //   final android = message.notification?.android;
+
+  //   // If `onMessage` is triggered with a notification, construct our own
+  //   // local notification to show to users using the created channel.
+  //   if (notification != null && android != null) {
+  //     localNotificationsPlugin.show(
+  //       notification.hashCode,
+  //       notification.titleLocKey,
+  //       notification.bodyLocKey,
+  //       NotificationDetails(
+  //         android: AndroidNotificationDetails(
+  //           androidNotificationChannel.id,
+  //           androidNotificationChannel.name,
+  //           channelDescription: androidNotificationChannel.description,
+  //           icon: android.smallIcon,
+  //           color: const Color(0xFFFF0041),
+  //           // other properties...
+  //         ),
+  //       ),
+  //       payload: json.encode(message.toMap()),
+  //     );
+  //   }
+  // });
+
+  // For iOS to show notifications when app in foreground
   FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
     sound: true,
     badge: true,

@@ -1,9 +1,21 @@
 # Firebase Cloud Messaging (FCM)
 
-Using FCM to notify (push notification) client app, two Flutter plugins are required. `flutter_local_notifications` plugin is mainly to show notification when app is in the foreground because default notification message [will **NOT** display](https://firebase.google.com/docs/cloud-messaging/flutter/receive?hl=en&authuser=0#foreground_and_notification_messages) a visible notification.
+Using FCM to notify (push notification) client app, [firebase_messaging](https://pub.dev/packages/firebase_messaging) plugin is required.
 
-- [firebase_messaging](https://pub.dev/packages/firebase_messaging)
-- [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications)
+```bash
+flutter pub add firebase_messaging
+```
+
+[flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications) plugin is recommended to show notification when app is in the foreground **especially on Android** () because default notification message [will **NOT** display](https://firebase.google.com/docs/cloud-messaging/flutter/receive?hl=en&authuser=0#foreground_and_notification_messages) a visible notification. On iOS platform, displaying foreground message can be achieved by `setForegroundNotificationPresentationOptions` without needing the plugin `flutter_local_notifications`.
+
+```dart
+// For iOS to show notifications when app in foreground
+FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    sound: true,
+    badge: true,
+    alert: true,
+);
+```
 
 > App in the ***foreground*** means when the application is **open**, **in view** and **in use**.
 
@@ -81,3 +93,7 @@ Follow the official [guide](https://firebase.google.com/docs/cloud-messaging/flu
 ## Flutter Setup
 
 More details of FCM initialization in `main_init.dart`.
+
+## Localization
+
+See the [official guide](https://firebase.google.com/docs/cloud-messaging/flutter/receive?hl=en&authuser=0#localize_messages) and [README](https://github.com/CrossGeeks/FirebasePushNotificationPlugin/blob/master/docs/LocalizedFirebasePushNotifications.md).

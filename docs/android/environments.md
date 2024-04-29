@@ -21,7 +21,7 @@ android {
         dev {
             dimension "env"
             applicationIdSuffix ".dev"
-            resValue "string", "app_name", "Red Flags Dev"
+            resValue "string", "app_name", "Red Flags Dating Dev"
             resValue "string", "facebook_app_id", "6720461168002075"
             resValue "string", "facebook_client_token", "e352f70134fd3a3ecff44f34d4593862"
             resValue "string", "fb_login_protocol_scheme", "fb6720461168002075"
@@ -29,7 +29,7 @@ android {
         }
         prod {
             dimension "env"
-            resValue "string", "app_name", "Red Flags"
+            resValue "string", "app_name", "Red Flags Dating"
             resValue "string", "facebook_app_id", "255952837340203"
             resValue "string", "facebook_client_token", "e393bca70fa3829bbe4ed3b942d29ac7"
             resValue "string", "fb_login_protocol_scheme", "fb255952837340203"

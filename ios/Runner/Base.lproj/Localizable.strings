@@ -1,0 +1,17 @@
+/*
+  Localizable.strings
+  Runner
+
+  Created by Brian Liu on 29/4/2024.
+  
+*/
+"NOTIFICATION_MESSAGE_TITLE" = "Message from %@";
+"NOTIFICATION_MESSAGE_BODY" = "%@";
+"NOTIFICATION_NEW_CONNECTIONS_TITLE" = "You have new connections ❤️";
+"NOTIFICATION_NEW_CONNECTIONS_BODY" = "Check out the new profiles and answer QoD within 24 hours to stay connected.";
+"NOTIFICATION_REMOVE_CONNECTIONS_TITLE" = "You have connections got removed!";
+"NOTIFICATION_REMOVE_CONNECTIONS_BODY" = "Sadly, we are unable to keep your connections because QoD are not completely answered.";
+"NOTIFICATION_NEW_QOD_TITLE" = "New QoD for your connection";
+"NOTIFICATION_NEW_QOD_BODY" = "%@";
+"NOTIFICATION_QOD_COUNTDOWN_TITLE" = "QoD has %@ left";
+"NOTIFICATION_QOD_COUNTDOWN_BODY" = "Answer the question to stay connected with %@";
