@@ -276,8 +276,21 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                           },
                         ),
                         ProfileSettingsMenuItem(
-                          label: l10n.pgProfileMenuItemLegal,
-                          leadingIcon: Icons.policy,
+                          label: l10n.privacyPolicy,
+                          leadingIcon: Icons.privacy_tip_outlined,
+                          trailingIcon: Icons.open_in_new,
+                          onTap: () async {
+                            if (!await Utils.launchPrivacyPolicyWebview()) {
+                              logger.e(
+                                'Unable to launch Privacy Policy webview',
+                                time: DateTime.now(),
+                              );
+                            }
+                          },
+                        ),
+                        ProfileSettingsMenuItem(
+                          label: l10n.termOfService,
+                          leadingIcon: Icons.policy_outlined,
                           trailingIcon: Icons.open_in_new,
                           onTap: () async {
                             if (!await Utils.launchTncWebview()) {
