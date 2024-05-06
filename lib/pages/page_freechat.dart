@@ -39,6 +39,7 @@ class _PageFreeChatState extends State<PageFreeChat> {
   final List<XFile?> _imgFiles = [];
 
   bool _sending = false;
+  bool _texting = false;
   Timer? _throttle;
   DocumentReference<MessageModel>? _textingDocRef;
 
@@ -47,6 +48,47 @@ class _PageFreeChatState extends State<PageFreeChat> {
       _throttle?.cancel();
       _throttle = null;
     }
+  }
+
+  Future<void> _send(String value) async {
+    if (!_form.currentState!.validate() || value.isEmpty) {
+      return;
+    }
+
+    _cancelThrottle();
+
+    if (_textingDocRef != null) {
+      await _textingDocRef!.update(
+        {
+          "content": _controller.text,
+          "createdAt": DateTime.now(),
+        },
+      );
+
+      _textingDocRef = null;
+    } else {
+      await messageRef(widget.connectionId).add(
+        MessageModel(
+          uid: context.read<UserProvider>().getIdCache(),
+          createdAt: DateTime.now(),
+          type: MessageType.text,
+          content: value.trim(),
+        ),
+      );
+    }
+
+    if (_texting == true) {
+      setState(() {
+        _texting = false;
+      });
+    }
+
+    _controller.clear();
+    _scrollCtrl.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   Future<void> _sendImage() async {
@@ -276,7 +318,18 @@ class _PageFreeChatState extends State<PageFreeChat> {
                 textCapitalization: TextCapitalization.sentences,
                 onChanged: (value) {
                   if (value.isEmpty) {
+                    if (_texting == true) {
+                      setState(() {
+                        _texting = false;
+                      });
+                    }
                     return;
+                  }
+
+                  if (_texting == false) {
+                    setState(() {
+                      _texting = true;
+                    });
                   }
 
                   _cancelThrottle();
@@ -305,40 +358,7 @@ class _PageFreeChatState extends State<PageFreeChat> {
                     _textingDocRef = null;
                   }
                 },
-                onFieldSubmitted: (value) async {
-                  if (!_form.currentState!.validate() || value.isEmpty) {
-                    return;
-                  }
-
-                  _cancelThrottle();
-
-                  if (_textingDocRef != null) {
-                    await _textingDocRef!.update(
-                      {
-                        "content": _controller.text,
-                        "createdAt": DateTime.now(),
-                      },
-                    );
-
-                    _textingDocRef = null;
-                  } else {
-                    await messageCollectionRef.add(
-                      MessageModel(
-                        uid: userProvider.getIdCache(),
-                        createdAt: DateTime.now(),
-                        type: MessageType.text,
-                        content: value.trim(),
-                      ),
-                    );
-                  }
-
-                  _controller.clear();
-                  _scrollCtrl.animateTo(
-                    0.0,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeOut,
-                  );
-                },
+                onFieldSubmitted: _send,
                 decoration: InputDecoration(
                   filled: true,
                   isDense: true,
@@ -371,22 +391,34 @@ class _PageFreeChatState extends State<PageFreeChat> {
                             },
                     ),
                   ),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      Icons.image,
-                      size: 28,
-                      color: _sending ? null : theme.colorScheme.primary,
-                    ),
-                    onPressed: _sending
-                        ? null
-                        : () async {
-                            _imgFiles.addAll(await _imgPicker.pickMultiImage(
-                              imageQuality: 20,
-                            ));
-
-                            await _sendImage();
+                  suffixIcon: _texting
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.send,
+                            size: 28,
+                            color: theme.colorScheme.primary,
+                          ),
+                          onPressed: () async {
+                            await _send(_controller.text);
                           },
-                  ),
+                        )
+                      : IconButton(
+                          icon: Icon(
+                            Icons.image,
+                            size: 28,
+                            color: _sending ? null : theme.colorScheme.primary,
+                          ),
+                          onPressed: _sending
+                              ? null
+                              : () async {
+                                  _imgFiles
+                                      .addAll(await _imgPicker.pickMultiImage(
+                                    imageQuality: 20,
+                                  ));
+
+                                  await _sendImage();
+                                },
+                        ),
                   border: const OutlineInputBorder(
                     borderSide: BorderSide.none,
                     borderRadius: BorderRadius.all(Radius.circular(40.0)),
