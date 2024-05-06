@@ -2,12 +2,12 @@
 <resources>
     <string name="notification_message_title">Message from %1$s</string>
     <string name="notification_message_body">%1$s</string>
-    <string name="notification_new_connections_title">You have new connections ❤️</string>
-    <string name="notification_new_connections_body">Check out the new profiles and answer QoD within 24 hours to stay connected.</string>
-    <string name="notification_remove_connections_title">You have connections got removed!</string>
-    <string name="notification_remove_connections_body">Sadly, we are unable to keep your connections because QoD are not completely answered.</string>
-    <string name="notification_new_qod_title">New QoD for your connection</string>
-    <string name="notification_new_qod_body">%1$s</string>
-    <string name="notification_qod_countdown_title">QoD has %1$s left</string>
-    <string name="notification_qod_countdown_body">Answer the question to stay connected with %1$s</string>
+    <string name="notification_new_connections_title">You have new profiles ❤️</string>
+    <string name="notification_new_connections_body">Explore your new profiles and answer QoD within 24 hours to create new connections.</string>
+    <string name="notification_remove_connections_title">You have lost your connection with %1$s</string>
+    <string name="notification_remove_connections_body">Unfortunately, your connection with %1$s has been lost because QoD was not completed.</string>
+    <string name="notification_new_qod_title">Answer the QoD to maintain your connections</string>
+    <string name="notification_new_qod_body">Continue getting to know each other at a deeper level.</string>
+    <string name="notification_qod_countdown_title">You have %1$s to answer your QoD</string>
+    <string name="notification_qod_countdown_body">Maintain your connection with %1$s. Continue building or let them know you are keen to go on a date.</string>
 </resources>

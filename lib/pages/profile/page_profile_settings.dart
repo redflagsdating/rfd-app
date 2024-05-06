@@ -257,11 +257,19 @@ class _PageProfileSettingsState extends State<PageProfileSettings>
                         //   leadingIcon: Icons.error_outline_sharp,
                         //   trailingIcon: Icons.open_in_new,
                         // ),
-                        // ProfileSettingsMenuItem(
-                        //   label: l10n.pgProfileMenuItemSupport,
-                        //   leadingIcon: Icons.support_agent_outlined,
-                        //   trailingIcon: Icons.open_in_new,
-                        // ),
+                        ProfileSettingsMenuItem(
+                          label: l10n.pgProfileMenuItemSupport,
+                          leadingIcon: Icons.support_agent_outlined,
+                          trailingIcon: Icons.open_in_new,
+                          onTap: () async {
+                            if (!await Utils.launchContactSupportWebview()) {
+                              logger.e(
+                                'Unable to launch Contact Support webview',
+                                time: DateTime.now(),
+                              );
+                            }
+                          },
+                        ),
                         ProfileSettingsMenuItem(
                           label: l10n.pgProfileMenuItemFaq,
                           leadingIcon: Icons.chat_bubble_outline,

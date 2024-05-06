@@ -7,11 +7,11 @@
 */
 "NOTIFICATION_MESSAGE_TITLE" = "Message from %@";
 "NOTIFICATION_MESSAGE_BODY" = "%@";
-"NOTIFICATION_NEW_CONNECTIONS_TITLE" = "You have new connections ❤️";
-"NOTIFICATION_NEW_CONNECTIONS_BODY" = "Check out the new profiles and answer QoD within 24 hours to stay connected.";
-"NOTIFICATION_REMOVE_CONNECTIONS_TITLE" = "You have connections got removed!";
-"NOTIFICATION_REMOVE_CONNECTIONS_BODY" = "Sadly, we are unable to keep your connections because QoD are not completely answered.";
-"NOTIFICATION_NEW_QOD_TITLE" = "New QoD for your connection";
-"NOTIFICATION_NEW_QOD_BODY" = "%@";
-"NOTIFICATION_QOD_COUNTDOWN_TITLE" = "QoD has %@ left";
-"NOTIFICATION_QOD_COUNTDOWN_BODY" = "Answer the question to stay connected with %@";
+"NOTIFICATION_NEW_CONNECTIONS_TITLE" = "You have new profiles ❤️";
+"NOTIFICATION_NEW_CONNECTIONS_BODY" = "Explore your new profiles and answer QoD within 24 hours to create new connections.";
+"NOTIFICATION_REMOVE_CONNECTIONS_TITLE" = "You have lost your connection with %@";
+"NOTIFICATION_REMOVE_CONNECTIONS_BODY" = "Unfortunately, your connection with %@ has been lost because QoD was not completed.";
+"NOTIFICATION_NEW_QOD_TITLE" = "Answer the QoD to maintain your connections";
+"NOTIFICATION_NEW_QOD_BODY" = "Continue getting to know each other at a deeper level.";
+"NOTIFICATION_QOD_COUNTDOWN_TITLE" = "You have %@ to answer your QoD";
+"NOTIFICATION_QOD_COUNTDOWN_BODY" = "Maintain your connection with %@. Continue building or let them know you are keen to go on a date.";

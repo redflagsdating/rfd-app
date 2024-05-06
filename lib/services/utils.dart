@@ -12,6 +12,12 @@ class Utils {
     return await launchWebview('$websiteUrl/faqs');
   }
 
+  static Future<bool> launchContactSupportWebview() async {
+    return await launchWebview(
+      'https://forms.clickup.com/9003130255/f/8ca1qcf-3956/PSWECCGIVWHHB2QRNY',
+    );
+  }
+
   static Future<bool> launchTncWebview() async {
     return await launchWebview('$websiteUrl/terms-and-conditions');
   }
