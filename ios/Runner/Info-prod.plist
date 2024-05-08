@@ -68,11 +68,11 @@
 	<key>NFCReaderUsageDescription</key>
 	<string>Let us scan the document for more precise recognition</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow Red Flags to access the camera on this device in order to take a photo for displaying on your profile.</string>
+	<string>Allow access to camera to take photos then upload from your library.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>NSLocationAlwaysUsageDescription</string>
+	<string>Turning on location services allows us to find connections that are nearby.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow Red Flags to access the photo library on this device in order to select a photo for displaying on your profile.</string>
+	<string>Allow access to photos to upload photos from your library.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -103,5 +103,7 @@
 		<string>A0000002472001</string>
 		<string>00000000000000</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
