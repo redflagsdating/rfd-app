@@ -82,10 +82,8 @@
         </receiver>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- Permissions options for the `location` group -->
+    <!-- Permissions options for geolocator -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
      <!-- Permissions options for the `access notification policy` group -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <!-- Permissions options for the `notification` group -->
