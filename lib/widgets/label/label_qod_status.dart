@@ -42,7 +42,7 @@ class _LabelQodStatusState extends State<LabelQodStatus> with MixinQod {
         final qodSnapshot = snapshot.data;
         final status = getQodStatus(qodSnapshot);
         final latestAnswer = getLatestQodAnswer(qodSnapshot);
-        final yourUid = userProvider.getIdCache();
+        final myUid = userProvider.getIdCache();
 
         if (status == QodStatus.answered) {
           label = latestAnswer?.answeredAt != null
@@ -51,9 +51,9 @@ class _LabelQodStatusState extends State<LabelQodStatus> with MixinQod {
                       .format(latestAnswer!.answeredAt),
                 )
               : l10n.unknown;
-        } else if (isAwaitingByYou(qodSnapshot, yourUid)) {
+        } else if (isAwaitingByYou(qodSnapshot, myUid)) {
           label = l10n.labelQodStatusAwaitingByYou(widget.displayName);
-        } else if (isAwaitingByThem(qodSnapshot, yourUid)) {
+        } else if (isAwaitingByThem(qodSnapshot, myUid)) {
           label = l10n.labelQodStatusAwaitingByThem(widget.displayName);
         }
 

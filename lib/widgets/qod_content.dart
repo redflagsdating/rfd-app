@@ -14,14 +14,12 @@ import 'package:red_flags/widgets/label/label_qod_status.dart';
 class QodContent extends StatefulWidget {
   const QodContent({
     super.key,
-    required this.qodModel,
     required this.userModel,
-    required this.qodDocRef,
+    required this.qodSnapshot,
   });
 
-  final QodModel qodModel;
   final UserModel userModel;
-  final DocumentReference<QodModel> qodDocRef;
+  final QueryDocumentSnapshot<QodModel> qodSnapshot;
 
   @override
   State<QodContent> createState() => _QodContentState();
@@ -42,8 +40,10 @@ class _QodContentState extends State<QodContent> with MixinQod {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
+    final qodDocRef = widget.qodSnapshot.reference;
+    final qodModel = widget.qodSnapshot.data();
     final userProvider = Provider.of<UserProvider>(context);
-    final answerCollectionRef = qodAnswerRef(widget.qodDocRef);
+    final answerCollectionRef = qodAnswerRef(qodDocRef);
 
     final slivers = [
       SliverFillRemaining(
@@ -135,12 +135,12 @@ class _QodContentState extends State<QodContent> with MixinQod {
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: LabelQodStatus(
                       displayName: widget.userModel.displayName ?? '',
-                      qodDocRef: widget.qodDocRef,
+                      qodDocRef: qodDocRef,
                       fontSize: 14,
                     ),
                   ),
                 ),
-                if (isWaitingYours || isQodNew(widget.qodModel))
+                if (isWaitingYours || isQodNew(qodModel))
                   Form(
                     key: _form,
                     child: ConstrainedBox(
@@ -216,8 +216,8 @@ class _QodContentState extends State<QodContent> with MixinQod {
             ),
           ),
           Text(
-            widget.qodModel.question,
-            semanticsLabel: widget.qodModel.question,
+            qodModel.question,
+            semanticsLabel: qodModel.question,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: 20),

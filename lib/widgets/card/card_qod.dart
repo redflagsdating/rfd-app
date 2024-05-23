@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:red_flags/mixins/mixin_qod.dart';
 import 'package:red_flags/models/qod.dart';
+import 'package:red_flags/models/qod_answer.dart';
 import 'package:red_flags/models/user.dart';
 import 'package:red_flags/services/user_provider.dart';
 import 'package:red_flags/widgets/circle_avatar_user.dart';
@@ -10,13 +12,13 @@ import 'package:red_flags/widgets/circle_avatar_user.dart';
 class CardQod extends StatefulWidget {
   const CardQod({
     super.key,
-    required this.qodModel,
     required this.userModel,
+    required this.qodSnapshot,
     this.onTap,
   });
 
-  final QodModel qodModel;
   final UserModel userModel;
+  final QueryDocumentSnapshot<QodModel> qodSnapshot;
   final void Function()? onTap;
 
   @override
@@ -28,7 +30,9 @@ class _CardQodState extends State<CardQod> with MixinQod {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final qodModel = widget.qodSnapshot.data();
     final userProvider = Provider.of<UserProvider>(context);
+    final myUid = userProvider.getIdCache();
 
     return Stack(
       clipBehavior: Clip.none,
@@ -45,29 +49,41 @@ class _CardQodState extends State<CardQod> with MixinQod {
                   Padding(
                     padding: const EdgeInsets.only(right: 20),
                     child: Text(
-                      widget.qodModel.question,
+                      qodModel.question,
                       maxLines: 2,
-                      semanticsLabel: widget.qodModel.question,
+                      semanticsLabel: qodModel.question,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      // LabelQodStatus(qod: widget.qod),
-                      const Spacer(),
-                      CircleAvatarUser(
-                        photoUrl: userProvider.getPhotoUrlCache(),
-                        size: 40,
-                      ),
-                      const SizedBox(width: 6),
-                      CircleAvatarUser(
-                        photoUrl: widget.userModel.photoUrl,
-                        size: 40,
-                      ),
-                    ],
-                  ),
+                  StreamBuilder(
+                    stream:
+                        qodAnswerRef(widget.qodSnapshot.reference).snapshots(),
+                    builder: (context, snapshot) {
+                      final qodStatus = getQodStatus(snapshot.data);
+
+                      return qodStatus != QodStatus.unanswered
+                          ? Row(
+                              children: [
+                                const Spacer(),
+                                if (!isAwaitingByThem(snapshot.data, myUid))
+                                  CircleAvatarUser(
+                                    photoUrl: userProvider.getPhotoUrlCache(),
+                                    size: 40,
+                                  ),
+                                if (qodStatus == QodStatus.answered)
+                                  const SizedBox(width: 6),
+                                if (!isAwaitingByYou(snapshot.data, myUid))
+                                  CircleAvatarUser(
+                                    photoUrl: widget.userModel.photoUrl,
+                                    size: 40,
+                                  ),
+                              ],
+                            )
+                          : const SizedBox(height: 40);
+                    },
+                  )
                 ],
               ),
             ),
@@ -82,7 +98,7 @@ class _CardQodState extends State<CardQod> with MixinQod {
             color: theme.colorScheme.primary,
           ),
         ),
-        if (isQodNew(widget.qodModel))
+        if (isQodNew(qodModel))
           Positioned(
             top: -20,
             left: 20,

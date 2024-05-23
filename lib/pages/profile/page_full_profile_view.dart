@@ -181,8 +181,8 @@ class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
                                 opacity: _visible ? 1 : 0,
                                 duration: const Duration(milliseconds: 500),
                                 child: CardQod(
-                                  qodModel: docSnapshot.data(),
                                   userModel: widget.userModel,
+                                  qodSnapshot: docSnapshot,
                                   onTap: () {
                                     showModalBottomSheet(
                                       context: context,
@@ -191,8 +191,7 @@ class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
                                       isScrollControlled: true,
                                       builder: (context) {
                                         return QodContent(
-                                          qodModel: docSnapshot.data(),
-                                          qodDocRef: docSnapshot.reference,
+                                          qodSnapshot: docSnapshot,
                                           userModel: widget.userModel,
                                         );
                                       },

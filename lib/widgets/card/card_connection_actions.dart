@@ -62,8 +62,7 @@ class CardConnectionActionsState extends State<CardConnectionActions>
         // Wrapped inside Scaffold mainly for Snackbar
         return Scaffold(
           body: QodContent(
-            qodModel: widget.lastQodSnapshot.data(),
-            qodDocRef: widget.lastQodSnapshot.reference,
+            qodSnapshot: widget.lastQodSnapshot,
             userModel: widget.userModel,
           ),
         );
