@@ -254,15 +254,15 @@ class _PageFullProfileViewState extends State<PageFullProfileView> {
                 sliver: SliverAppBar(
                   pinned: true,
                   primary: false,
-                  expandedHeight: !hasQod ? 360 : 320,
-                  collapsedHeight: !hasQod ? 240 : 300,
+                  expandedHeight: 360,
+                  collapsedHeight: !hasQod ? 240 : 360,
                   automaticallyImplyLeading: false,
                   forceElevated: innerBoxIsScrolled,
                   flexibleSpace: Stack(
                     children: [
                       CachedImage(
                         photoUrl: widget.userModel.photoUrl,
-                        height: !hasQod ? 360 : 300,
+                        height: 360,
                       ),
                       Positioned(
                         top: 0,
