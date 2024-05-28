@@ -206,10 +206,10 @@ class _QodContentState extends State<QodContent> with MixinQod {
                   .labelLarge,
             ),
             visualDensity: VisualDensity.compact,
-            side: MaterialStateBorderSide.resolveWith((states) {
+            side: WidgetStateBorderSide.resolveWith((states) {
               return const BorderSide(color: Colors.transparent);
             }),
-            color: MaterialStateProperty.resolveWith(
+            color: WidgetStateProperty.resolveWith(
               (states) {
                 return theme.colorScheme.primary;
               },

@@ -53,7 +53,7 @@ class _CardFreechatMessageState extends State<CardFreechatMessage> {
             decoration: BoxDecoration(
               color: isMine
                   ? theme.colorScheme.inversePrimary
-                  : theme.colorScheme.surfaceVariant,
+                  : theme.colorScheme.onInverseSurface,
               borderRadius: BorderRadius.only(
                 topLeft: const Radius.circular(12),
                 topRight: const Radius.circular(12),

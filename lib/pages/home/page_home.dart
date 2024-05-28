@@ -24,7 +24,7 @@ class _PageHomeState extends State<PageHome> with MixinApi {
     final userProvider = Provider.of<UserProvider>(context);
 
     return StreamBuilder(
-      stream: userProvider.userDocRef!.snapshots(),
+      stream: userProvider.userDocRef?.snapshots(),
       builder: (context, snapshot) {
         final userModel = snapshot.data?.data();
         final connections = userModel?.connections ?? [];

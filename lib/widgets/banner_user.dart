@@ -133,10 +133,10 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                           size: 14,
                         ),
                         visualDensity: VisualDensity.compact,
-                        side: MaterialStateBorderSide.resolveWith((states) {
+                        side: WidgetStateBorderSide.resolveWith((states) {
                           return const BorderSide(color: Colors.transparent);
                         }),
-                        color: MaterialStateProperty.resolveWith(
+                        color: WidgetStateProperty.resolveWith(
                           (states) {
                             return theme.colorScheme.tertiary;
                           },
@@ -158,10 +158,10 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                           size: 14,
                         ),
                         visualDensity: VisualDensity.compact,
-                        side: MaterialStateBorderSide.resolveWith((states) {
+                        side: WidgetStateBorderSide.resolveWith((states) {
                           return const BorderSide(color: Colors.transparent);
                         }),
-                        color: MaterialStateProperty.resolveWith(
+                        color: WidgetStateProperty.resolveWith(
                           (states) {
                             return theme.colorScheme.inversePrimary;
                           },
@@ -196,7 +196,7 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
                       distance == null
                           ? WidgetSpan(
                               child: LoadingAnimationWidget.prograssiveDots(
-                                color: theme.colorScheme.surfaceVariant,
+                                color: theme.colorScheme.onInverseSurface,
                                 size: isCompact ? 16 : 20,
                               ),
                             )

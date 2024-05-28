@@ -77,7 +77,7 @@ class _PageFreeChatState extends State<PageFreeChat> {
       );
     }
 
-    if (_texting == true) {
+    if (_texting == true && mounted) {
       setState(() {
         _texting = false;
       });

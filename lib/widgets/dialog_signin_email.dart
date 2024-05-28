@@ -34,7 +34,7 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
       body: Dialog.fullscreen(
         child: SingleChildScrollView(
           child: Container(
-            color: theme.colorScheme.background,
+            color: theme.colorScheme.surface,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             child: Form(
               key: _emailForm,

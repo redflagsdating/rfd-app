@@ -109,10 +109,10 @@ class _CardQodState extends State<CardQod> with MixinQod {
                   .apply(bodyColor: theme.colorScheme.onSecondary)
                   .labelSmall,
               visualDensity: VisualDensity.compact,
-              side: MaterialStateBorderSide.resolveWith((states) {
+              side: WidgetStateBorderSide.resolveWith((states) {
                 return const BorderSide(color: Colors.transparent);
               }),
-              color: MaterialStateProperty.resolveWith(
+              color: WidgetStateProperty.resolveWith(
                 (states) {
                   return theme.colorScheme.secondary;
                 },

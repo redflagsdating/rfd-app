@@ -5,22 +5,22 @@ final chipTheme = ChipThemeData(
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(20),
   ),
-  side: MaterialStateBorderSide.resolveWith(
+  side: WidgetStateBorderSide.resolveWith(
     (states) {
-      if (!states.contains(MaterialState.selected)) {
+      if (!states.contains(WidgetState.selected)) {
         return BorderSide(color: lightColorScheme.outlineVariant);
       }
 
       return null;
     },
   ),
-  color: MaterialStateProperty.resolveWith(
+  color: WidgetStateProperty.resolveWith(
     (states) {
-      const Set<MaterialState> interactiveStates = <MaterialState>{
-        MaterialState.pressed,
-        MaterialState.hovered,
-        MaterialState.focused,
-        MaterialState.selected,
+      const Set<WidgetState> interactiveStates = <WidgetState>{
+        WidgetState.pressed,
+        WidgetState.hovered,
+        WidgetState.focused,
+        WidgetState.selected,
       };
       if (states.any(interactiveStates.contains)) {
         return lightColorScheme.inversePrimary;

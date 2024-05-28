@@ -122,7 +122,7 @@ class _CardRealTalkState extends State<CardRealTalk> {
           useSafeArea: true,
           showDragHandle: true,
           isScrollControlled: true,
-          backgroundColor: theme.colorScheme.background,
+          backgroundColor: theme.colorScheme.surface,
           builder: (context) {
             return StatefulBuilder(
               builder: (context, setState) {

@@ -35,7 +35,7 @@ class _ProfileSettingsMenuState extends State<ProfileSettingsMenu> {
           width: double.infinity,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-            color: theme.colorScheme.background,
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(

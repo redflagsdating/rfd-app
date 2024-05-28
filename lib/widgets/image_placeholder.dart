@@ -36,7 +36,7 @@ class _ImagePlaceholderState extends State<ImagePlaceholder> {
         width: widget.width,
         color: hasError
             ? theme.colorScheme.errorContainer
-            : theme.colorScheme.surfaceVariant.withOpacity(0.5),
+            : theme.colorScheme.onInverseSurface,
         child: widget.loading == true
             ? LoadingAnimationWidget.fourRotatingDots(
                 color: theme.colorScheme.surface,

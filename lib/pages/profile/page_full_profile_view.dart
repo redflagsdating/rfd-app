@@ -92,9 +92,11 @@ class _PageFullProfileQodViewState extends State<_PageFullProfileQodView> {
   @override
   void initState() {
     Future.delayed(const Duration(milliseconds: 100), () {
-      setState(() {
-        _visible = true;
-      });
+      if (mounted) {
+        setState(() {
+          _visible = true;
+        });
+      }
     });
     super.initState();
   }

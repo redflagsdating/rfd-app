@@ -34,7 +34,7 @@ class _CardQodAnswerState extends State<CardQodAnswer> {
           ),
           child: Card(
             elevation: 0,
-            color: widget.color ?? theme.colorScheme.surfaceVariant,
+            color: widget.color ?? theme.colorScheme.onInverseSurface,
             margin: const EdgeInsets.all(0),
             child: Padding(
               padding: const EdgeInsets.only(

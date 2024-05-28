@@ -113,8 +113,8 @@ class App extends StatelessWidget {
                 colorScheme: lightColorScheme,
                 cardTheme: CardTheme(
                   clipBehavior: Clip.hardEdge,
-                  color: lightColorScheme.background,
-                  surfaceTintColor: lightColorScheme.background,
+                  color: lightColorScheme.surface,
+                  surfaceTintColor: lightColorScheme.surface,
                 ),
                 useMaterial3: true,
                 pageTransitionsTheme: const PageTransitionsTheme(

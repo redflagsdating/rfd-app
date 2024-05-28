@@ -36,19 +36,23 @@ class _UserProfileDetailsState extends State<UserProfileDetails>
       if (photos.isNotEmpty) {
         photos.toList().forEach((element) {
           storageProvider.cacheImage(element.fullPath).then((value) {
-            setState(() {
-              _photoUrls.add(value);
+            if (mounted) {
+              setState(() {
+                _photoUrls.add(value);
 
-              if (_loading) {
-                _loading = false;
-              }
-            });
+                if (_loading) {
+                  _loading = false;
+                }
+              });
+            }
           });
         });
-      } else if (mounted) {
-        setState(() {
-          _loading = false;
-        });
+      } else {
+        if (mounted) {
+          setState(() {
+            _loading = false;
+          });
+        }
       }
     });
 
