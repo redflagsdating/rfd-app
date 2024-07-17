@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:animations/animations.dart';
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
@@ -92,7 +93,13 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       decoration: const AssetImage("assets/signin-bg.jpg"),
       content: Column(
         children: <Widget>[
-          if (loggedInProvider != null && !_showDialogSigninEmail)
+          // Eval Apple has this ridiculous App Review guideline to promote
+          // sign in with Apple and force us to remove Google Sign-in if
+          // we refused to integrate with Apple Sign-in.
+          // https://developer.apple.com/app-store/review/guidelines/#login-services
+          if (!Platform.isIOS &&
+              loggedInProvider != null &&
+              !_showDialogSigninEmail)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 10),
               child: Text(
@@ -107,36 +114,41 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
                     .bodySmall,
               ),
             ),
-          Semantics(
-            button: true,
-            enabled: true,
-            label: l10n!.pgSignInWithBtn("Google"),
-            child: FilledButton(
-              key: const Key("page_signin_google"),
-              style: FilledButton.styleFrom(
-                minimumSize: const Size.fromHeight(40),
-              ),
-              onPressed: () {
-                authProvider
-                    .handleSignIn(SocialAuthProvider.google)
-                    .whenComplete(
-                  () {
-                    if (authProvider.message.isNotEmpty) {
-                      _scaffoldMessenger.showSnackBar(
-                        SnackBar(
-                          content: Text(authProvider.message),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-              child: Text(
-                l10n.pgSignInWithBtn("Google"),
-                textAlign: TextAlign.center,
+          // Eval Apple has this ridiculous App Review guideline to promote
+          // sign in with Apple and force us to remove Google Sign-in if
+          // we refused to integrate with Apple Sign-in.
+          // https://developer.apple.com/app-store/review/guidelines/#login-services
+          if (!Platform.isIOS)
+            Semantics(
+              button: true,
+              enabled: true,
+              label: l10n!.pgSignInWithBtn("Google"),
+              child: FilledButton(
+                key: const Key("page_signin_google"),
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                ),
+                onPressed: () {
+                  authProvider
+                      .handleSignIn(SocialAuthProvider.google)
+                      .whenComplete(
+                    () {
+                      if (authProvider.message.isNotEmpty) {
+                        _scaffoldMessenger.showSnackBar(
+                          SnackBar(
+                            content: Text(authProvider.message),
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+                child: Text(
+                  l10n.pgSignInWithBtn("Google"),
+                  textAlign: TextAlign.center,
+                ),
               ),
             ),
-          ),
           // TODO: Temporarily disable Facebook sign-in until Facebook App is reviewed
           // const SizedBox(height: 8),
           // Semantics(
@@ -173,7 +185,7 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
           Semantics(
             button: true,
             enabled: true,
-            label: l10n.pgSignInWithBtn(l10n.email),
+            label: l10n!.pgSignInWithBtn(l10n.email),
             child: FilledButton(
               key: const Key("page_signin_email"),
               style: FilledButton.styleFrom(

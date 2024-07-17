@@ -63,7 +63,6 @@ Add below snippet inside `<manifest>`.
 <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 <!-- Permissions options for flutter_local_notifications -->
 <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-<uses-permission android:name="android.permission.USE_EXACT_ALARM" />
 ```
 
 ### Create notification icon using Android Studio
