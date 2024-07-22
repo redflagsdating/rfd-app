@@ -68,11 +68,11 @@
 	<key>NFCReaderUsageDescription</key>
 	<string>Let us scan the document for more precise recognition</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Allow access to camera to take photos then upload from your library.</string>
+	<string>This app would like to use your camera to take photos for uploading your profile photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Turning on location services allows us to find connections that are nearby.</string>
+	<string>This app requires you turning on location services to search people nearby your area for better matching experience.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Allow access to photos to upload photos from your library.</string>
+	<string>This app requires access to your photo library to upload your profile photos.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
