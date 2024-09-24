@@ -40,13 +40,17 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
     if (widget.showIntro == true) {
       // Workaround using Navigator inside initState()
       Future.microtask(
-        () => Navigator.of(context).push(
-          PageFadeRouteBuilder(
-            page: Builder(
-              builder: (context) => const PageSignInIntro(),
-            ),
-          ),
-        ),
+        () {
+          if (mounted) {
+            Navigator.of(context).push(
+              PageFadeRouteBuilder(
+                page: Builder(
+                  builder: (context) => const PageSignInIntro(),
+                ),
+              ),
+            );
+          }
+        },
       );
     }
   }
@@ -65,7 +69,9 @@ class _PageSignInState extends State<PageSignIn> with WidgetsBindingObserver {
       _subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) async {
           if (_authProvider.isPending()) {
-            Navigator.pop(context);
+            if (mounted) {
+              Navigator.pop(context);
+            }
             await _authProvider.handleSignIn(event.link.toString());
             await _subscription.cancel();
           }

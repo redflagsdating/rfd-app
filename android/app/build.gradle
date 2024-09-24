@@ -89,7 +89,8 @@ android {
         applicationId "com.redflags.app"
         /// cloud_firestore plugin requires Android SDK 19 above
         /// flutter_facebook_auth requires Android SDK 21
-        minSdkVersion 21
+        /// 20/09/2024 firebase_auth requires 23
+        minSdkVersion 23
         targetSdkVersion flutterTargetSdkVersion.toInteger()
         compileSdk flutterCompiledSdkVersion.toInteger()
         versionCode flutterVersionCode.toInteger()

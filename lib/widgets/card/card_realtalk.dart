@@ -140,7 +140,12 @@ class _CardRealTalkState extends State<CardRealTalk> {
                             onDelete: widget.initialQuestion != null
                                 ? () {
                                     onConfirmDelete().whenComplete(
-                                        () => Navigator.pop(context));
+                                      () {
+                                        if (context.mounted) {
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                    );
                                   }
                                 : null,
                             onBack: widget.initialQuestion != null

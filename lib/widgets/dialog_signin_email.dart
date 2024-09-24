@@ -93,7 +93,8 @@ class _DialogSigninEmailState extends State<DialogSigninEmail> {
                                       .whenComplete(
                                     () {
                                       if (widget.authProvider.status ==
-                                          AuthStatus.pending) {
+                                              AuthStatus.pending &&
+                                          context.mounted) {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           SnackBar(

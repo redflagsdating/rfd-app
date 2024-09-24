@@ -46,6 +46,7 @@ mixin MixinPermissions<T extends StatefulWidget> on State<T> {
   /// you won't see the request permissions prompt at all.
   Future<NotificationSettings> requestNotificationPermissions() async {
     final fcm = FirebaseMessaging.instance;
+    final theme = Theme.of(context);
     final userProvider = context.read<UserProvider>();
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
@@ -58,16 +59,26 @@ mixin MixinPermissions<T extends StatefulWidget> on State<T> {
     // user receives a notification.
     switch (settings.authorizationStatus) {
       case AuthorizationStatus.denied:
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            duration: const Duration(seconds: 6),
-            content: Text(l10n!.snackBarNotificationDenied(l10n.brandName)),
-            action: SnackBarAction(
-              label: l10n.settings,
-              onPressed: () {
-                AppSettings.openAppSettings(type: AppSettingsType.notification);
-              },
+        scaffoldMessenger.showMaterialBanner(
+          MaterialBanner(
+            content: Text(
+              l10n!.snackBarNotificationDenied(l10n.brandName),
             ),
+            leading: Icon(
+              Icons.notifications_off_sharp,
+              color: theme.colorScheme.onSecondary,
+            ),
+            actions: [
+              FilledButton.tonal(
+                child: Text(l10n.settings),
+                onPressed: () {
+                  scaffoldMessenger.clearMaterialBanners();
+                  AppSettings.openAppSettings(
+                    type: AppSettingsType.notification,
+                  );
+                },
+              ),
+            ],
           ),
         );
         break;

@@ -46,6 +46,7 @@ class _ProfileSettingsMenuItemState extends State<ProfileSettingsMenuItem> {
                 if (page != null) {
                   // Delay for UX transition
                   Future.delayed(const Duration(milliseconds: 150), () {
+                    if (!context.mounted) return;
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => page,

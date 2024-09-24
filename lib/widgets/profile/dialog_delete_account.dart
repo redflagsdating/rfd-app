@@ -102,14 +102,17 @@ class _DialogDeleteAccountState extends State<DialogDeleteAccount>
     try {
       _subscription = FirebaseDynamicLinks.instance.onLink.listen(
         (event) async {
-          final authProvider = context.read<AuthProvider>();
+          if (mounted) {
+            final authProvider = context.read<AuthProvider>();
 
-          if (await authProvider.handleReAuthenticate(event.link.toString())) {
-            await authProvider.deleteUser();
-            await _subscription.cancel();
+            if (await authProvider
+                .handleReAuthenticate(event.link.toString())) {
+              await authProvider.deleteUser();
+              await _subscription.cancel();
 
-            // ignore: use_build_context_synchronously
-            Navigator.pop(context);
+              // ignore: use_build_context_synchronously
+              Navigator.pop(context);
+            }
           }
         },
       );

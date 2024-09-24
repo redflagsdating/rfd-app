@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
@@ -135,7 +134,6 @@ class _TextFormFieldLocationState extends State<TextFormFieldLocation>
                 try {
                   List<Location> locations = await locationFromAddress(
                     value,
-                    localeIdentifier: Platform.localeName,
                   );
 
                   if (locations.isEmpty) {

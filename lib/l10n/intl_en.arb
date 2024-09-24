@@ -105,7 +105,7 @@
   "realtalkEditorEmptyErrorText": "Don't leave the answer empty, try other questions if you stuck.",
   "realtalkEditorShortErrorText": "Minimum 100 characters",
   "scaffoldBrandingTagLine": "Real talk. Real connection",
-  "snackBarNotificationDenied": "You've denied {brandName} to send you notification. These can be configured in Settings to allow {brandName} to notify you updates from your connections.",
+  "snackBarNotificationDenied": "Turn on notification in Settings to allow {brandName} to notify you updates from your connections.",
   "pgSignInWithHintText": "You had previously signed in via \"{singInWith}\"",
   "pgSignInWithBtn": "Continue with {provider}",
   "@pgSignInWithBtn": {

@@ -28,12 +28,12 @@ class TextFieldChips extends StatefulWidget {
 }
 
 class _TextFieldChipsState extends State<TextFieldChips> {
-  late TextfieldTagsController _controller;
+  late StringTagController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = TextfieldTagsController();
+    _controller = StringTagController();
   }
 
   @override
@@ -46,66 +46,63 @@ class _TextFieldChipsState extends State<TextFieldChips> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return TextFieldTags(
+    return TextFieldTags<String>(
       textfieldTagsController: _controller,
       initialTags: widget.initialChips,
       letterCase: LetterCase.normal,
       textSeparators: const [','],
       validator: widget.validator,
-      inputfieldBuilder:
-          (context, controller, focusNode, error, onChanged, onSubmitted) {
-        return ((context, sc, tags, onTagDelete) {
-          return Semantics(
-            textField: true,
-            readOnly: widget.readOnly,
-            label: widget.labelText,
-            child: TextField(
-              readOnly: widget.readOnly ?? false,
-              controller: controller,
-              focusNode: focusNode,
-              onChanged: onChanged,
-              onSubmitted: onSubmitted,
-              maxLength: 20,
-              decoration: InputDecoration(
-                border: const UnderlineInputBorder(),
-                labelText: widget.labelText,
-                hintText: _controller.hasTags ? '' : widget.hintText,
-                helperText: widget.helperText ?? l10n!.textFieldChipsHelperText,
-                errorText: error,
-                prefixIcon: tags.isNotEmpty
-                    ? Wrap(
-                        spacing: 6,
-                        runSpacing: 0,
-                        alignment: WrapAlignment.start,
-                        children: [
-                          ...(widget.initialChips ?? []).map(
-                            (String tag) {
-                              final value = tag.capitalize();
+      inputFieldBuilder: (context, inputFieldValues) {
+        return Semantics(
+          textField: true,
+          readOnly: widget.readOnly,
+          label: widget.labelText,
+          child: TextField(
+            readOnly: widget.readOnly ?? false,
+            controller: inputFieldValues.textEditingController,
+            focusNode: inputFieldValues.focusNode,
+            onChanged: inputFieldValues.onTagChanged,
+            onSubmitted: inputFieldValues.onTagSubmitted,
+            maxLength: 20,
+            decoration: InputDecoration(
+              border: const UnderlineInputBorder(),
+              labelText: widget.labelText,
+              hintText: _controller.getTags is List ? '' : widget.hintText,
+              helperText: widget.helperText ?? l10n!.textFieldChipsHelperText,
+              errorText: inputFieldValues.error,
+              prefixIcon: inputFieldValues.tags.isNotEmpty
+                  ? Wrap(
+                      spacing: 6,
+                      runSpacing: 0,
+                      alignment: WrapAlignment.start,
+                      children: [
+                        ...(widget.initialChips ?? []).map(
+                          (String tag) {
+                            final value = tag.capitalize();
 
-                              return InputChip(
-                                selected: true,
-                                showCheckmark: false,
-                                label: Text(value),
-                                visualDensity: VisualDensity.compact,
-                                deleteIcon: const Icon(
-                                  Icons.cancel,
-                                  size: 20,
-                                ),
-                                onDeleted: () {
-                                  onTagDelete(value);
-                                  widget.onDeleted!(value);
-                                },
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 2)
-                        ],
-                      )
-                    : null,
-              ),
+                            return InputChip(
+                              selected: true,
+                              showCheckmark: false,
+                              label: Text(value),
+                              visualDensity: VisualDensity.compact,
+                              deleteIcon: const Icon(
+                                Icons.cancel,
+                                size: 20,
+                              ),
+                              onDeleted: () {
+                                inputFieldValues.onTagRemoved(value);
+                                widget.onDeleted!(value);
+                              },
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 2)
+                      ],
+                    )
+                  : null,
             ),
-          );
-        });
+          ),
+        );
       },
     );
   }

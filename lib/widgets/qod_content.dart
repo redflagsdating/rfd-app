@@ -82,6 +82,7 @@ class _QodContentState extends State<QodContent> with MixinQod {
                   "answeredAt": DateTime.now(),
                 }).then(
                   (value) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(l10n!.fieldQodResponseUpdated),
@@ -100,6 +101,7 @@ class _QodContentState extends State<QodContent> with MixinQod {
                 // Add answer to the QoD
                 await answerCollectionRef.add(qodAnswerModel).then(
                   (value) {
+                    if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(l10n!.fieldQodResponseSaved),

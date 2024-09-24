@@ -291,7 +291,7 @@ class AuthProvider extends ChangeNotifier with MixinApi {
 
         if (accessToken != null) {
           final OAuthCredential credential =
-              FacebookAuthProvider.credential(accessToken.token);
+              FacebookAuthProvider.credential(accessToken.tokenString);
 
           logger.d(
             'Successfully create credential from Facebook accessToken',

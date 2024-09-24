@@ -47,7 +47,6 @@ class _BannerUserState extends State<BannerUser> with MixinPermissions {
         if (locality != null) {
           final location = await locationFromAddress(
             locality,
-            localeIdentifier: Platform.localeName,
           );
           final meters = Geolocator.distanceBetween(
             location.first.latitude,

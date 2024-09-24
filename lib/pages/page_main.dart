@@ -35,10 +35,12 @@ class _PageMainState extends State<PageMain>
     // Update user's FCM token on refreshed
     FirebaseMessaging.instance.onTokenRefresh.listen(
       (fcmToken) {
+        if (!mounted) return;
         context.read<UserProvider>().updateFcmToken(fcmToken);
       },
     ).onError(
       (err) {
+        if (!mounted) return;
         context.read<LoggerProvider>().logger.e(err, time: DateTime.now());
       },
     );
@@ -68,6 +70,7 @@ class _PageMainState extends State<PageMain>
 
                 Future.delayed(const Duration(milliseconds: 300)).whenComplete(
                   () {
+                    if (!mounted) return;
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => PageProfileSettingsKyc(
