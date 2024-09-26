@@ -1334,7 +1334,6 @@ PODS:
   - flutter_idensic_mobile_sdk_plugin (1.28.0):
     - Flutter
     - IdensicMobileSDK (= 1.28.0)
-    - IdensicMobileSDK/MRTDReader (= 1.28.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_secure_storage (6.0.0):
@@ -1483,11 +1482,6 @@ PODS:
   - IdensicMobileSDK/Core (1.28.0)
   - IdensicMobileSDK/Default (1.28.0):
     - IdensicMobileSDK/Core
-  - IdensicMobileSDK/MRTDReader (1.28.0):
-    - IdensicMobileSDK/MRTDReader-latest
-  - IdensicMobileSDK/MRTDReader-latest (1.28.0):
-    - IdensicMobileSDK/Core
-    - OpenSSL-Universal
   - image_cropper (0.0.4):
     - Flutter
     - TOCropViewController (~> 2.7.4)
@@ -1499,7 +1493,6 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
-  - OpenSSL-Universal (1.1.2200)
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -1590,7 +1583,6 @@ SPEC REPOS:
     - GTMSessionFetcher
     - leveldb-library
     - nanopb
-    - OpenSSL-Universal
     - PromisesObjC
     - PromisesSwift
     - RecaptchaInterop
@@ -1691,7 +1683,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: f9e2bf027d549db18b6195a37b31c85f56e40200
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_facebook_auth: 48be46091bd1a5cc5a66055f1228a9d99a28bfaa
-  flutter_idensic_mobile_sdk_plugin: 51e11a8dc6a8cc59d9c38f2ce137a3e2df08a056
+  flutter_idensic_mobile_sdk_plugin: 1afaed3715d7a9c9ff00aaeabfed1e383bf4092d
   flutter_local_notifications: 4cde75091f6327eb8517fa068a0a5950212d2086
   flutter_secure_storage: d33dac7ae2ea08509be337e775f6b59f1ff45f12
   geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
@@ -1709,7 +1701,6 @@ SPEC CHECKSUMS:
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  OpenSSL-Universal: 6e1ae0555546e604dbc632a2b9a24a9c46c41ef6
   package_info_plus: 58f0028419748fad15bf008b270aaa8e54380b1c
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
@@ -1721,6 +1712,6 @@ SPEC CHECKSUMS:
   TOCropViewController: 80b8985ad794298fb69d3341de183f33d1853654
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
 
-PODFILE CHECKSUM: 75a07aa00ce89b5a08946fbbc23d0c35462af4a7
+PODFILE CHECKSUM: df71e0c8f148751cad13d97d75596cfc2b77dfc2
 
 COCOAPODS: 1.15.2
